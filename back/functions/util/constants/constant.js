@@ -11,9 +11,11 @@ const MAILER = {
 
 const COLLECTION = {
     ACCOUNT_REQUEST: 'accountRequest',
+    ADMIN: 'admin',
     CALL: 'call',
-    CEO: 'ceo',
-    EMPLOYEE: 'employee'
+    CEO: 'ceos',
+    EMPLOYEE: 'employee',
+    USER: 'user'
 }
 
 exports.module = {

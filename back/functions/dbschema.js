@@ -7,6 +7,12 @@ accountRequest: {
 
 // index by email
 
+user: {
+    email,
+    role,
+    userId
+}
+
 admin: {
     email, 
     firstname,
@@ -39,8 +45,10 @@ employee: {
 
 call: {
     createdAt,
-    employeeId,
+    employeeEmail,
+    employeeCompanyName,
     duration,
     callFeedback,
-    employeeFeedback
+    employeeFeedback,
+    callId
 }

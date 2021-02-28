@@ -3,20 +3,15 @@ const { COLLECTION } = require('../util/constants/constant');
 
 exports.deleteEmployee = (req, res) => {
     const document = db.doc(`/${COLLECTION.EMPLOYEE}/${req.params.employeeEmail}`);
-    let companyName;
+    const companyName = req.user.companyName;
 
     document.get()
         .then(doc => {
-            if(!doc.exists) {
+            if (!doc.exists) {
                 return res.status(404).json({ error: 'Employee not found.' });
             }
-
-            companyName = doc.data().companyName;
-
-            return db.doc(`/${COLLECTION.CEO}/${req.user.email}`).get();
-        })
-        .then(doc => {
-            if(doc.data().companyName !== companyName) {
+            
+            if (doc.data().companyName !== companyName) {
                 return res.status(403).json({ error: 'Unauthorized' });
             } else {
                 return document.delete();

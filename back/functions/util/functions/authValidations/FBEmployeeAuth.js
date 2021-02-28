@@ -20,11 +20,15 @@ module.exports = (req, res, next) => {
             .get();
     })
     .then(data => {
-        req.user.email = data.docs[0].data().email;
-        req.user.imageUrl = data.docs[0].data().imageUrl;
-        req.user.role = ROLE.EMPLOYEE;
+        if (data.docs.lenght > 0) {
+            req.user.email = data.docs[0].data().email;
+            req.user.imageUrl = data.docs[0].data().imageUrl;
+            req.user.role = ROLE.EMPLOYEE;
+            
+            return next();
+        }
         
-        return next();
+        return res.status(403).json({ error: 'Unauthorized'});
     })
     .catch(err => {
         console.error('Error while veryfying token.', err)

@@ -10,23 +10,20 @@ module.exports = (req, res, next) => {
         return res.status(403).json({ error: 'Unauthorized'});
     }
 
-    const role = req.body.role;
-    if (role === COLLECTION.CEO) {
-        return next();
-    } else {
-        admin.auth().verifyIdToken(idToken)
+    admin.auth().verifyIdToken(idToken)
         .then(decodedToken => {
             req.user = decodedToken;
             return db
-                .collection(COLLECTION.CEO)
-                .where('ceoId', '==', req.user.uid)
+                .collection(COLLECTION.USER)
+                .where('userId', '==', req.user.uid)
                 .limit(1)
                 .get();
         })
         .then(data => {
-            if (data.exists) {
+            if (data.docs.lenght > 0) {
                 req.user.email = data.docs[0].data().email;
                 req.user.imageUrl = data.docs[0].data().imageUrl;
+                req.user.role = data.docs[0].data().role;
                 
                 return next();
             }
@@ -37,5 +34,4 @@ module.exports = (req, res, next) => {
             console.error('Error while veryfying token.', err)
             return res.status(403).json(err);
         });
-    }
 };

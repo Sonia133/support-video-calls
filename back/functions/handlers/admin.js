@@ -21,6 +21,15 @@ exports.addAdmin = () => {
         return db.doc(`/${COLLECTION.ADMIN}/${MAILER.EMAIL}`).set(userCredentials);
     })
     .then(() => {
+        const newUser = {
+            email: MAILER.EMAIL,
+            userId: adminId,
+            role: ROLE.ADMIN
+        }
+
+        return db.doc(`/${COLLECTION.USER}/${MAILER.EMAIL}`).set(newUser);
+    })
+    .then(() => {
         console.log('Admin initialized successfully!');
     })
     .catch((err) => {
