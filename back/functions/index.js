@@ -11,7 +11,7 @@ const {
     getAuthenticatedUser, uploadImage
 } = require('./handlers/authenticatedUser');
 const { updateSchedule, getEmployeeDetails, getEmployees } = require('./handlers/employee');
-const { deleteEmployee } = require('./handlers/ceo');
+const { deleteEmployee, getCeos } = require('./handlers/ceo');
 const { addAdmin, deleteCeo } = require('./handlers/admin');
 const { getCalls, getCallsPerEmployee, getCallsPerCompany } = require('./handlers/call');
 
@@ -40,6 +40,7 @@ app.delete('/employee/:employeeEmail', FBCeoAuth, deleteEmployee);
 
 // admin routes
 app.delete('/ceo/:ceoEmail', FBAdminAuth, deleteCeo);
+app.get('/ceos', FBAdminAuth, getCeos);
 
 // user auth -> common functionality
 app.post('/updateImage', FBUserAuth, uploadImage);

@@ -25,3 +25,19 @@ exports.deleteEmployee = (req, res) => {
             res.status(500).json({ error: err.code })
         })
 }
+
+exports.getCeos = (req, res) => {
+    db.collection(COLLECTION.CEO)
+    .get()
+    .then(data => {
+        let ceos = [];
+        data.forEach(document => {
+            ceos.push({
+                ...document.data(),
+                ceoId: document.id
+            }); 
+        });
+        return res.json(ceos);
+    })
+    .catch(err => console.error(err));
+}
