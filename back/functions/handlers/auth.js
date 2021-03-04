@@ -3,7 +3,7 @@ const config = require('../util/constants/config');
 
 const emailEncoder = require('email-encoder');
 
-const { validateEmail, validatePassword, validateNewPassword } = require('../util/functions/validators');
+const { validateLoginData, validateEmail, validatePassword, validateNewPassword } = require('../util/functions/validators');
 
 const { COLLECTION, ROLE } = require('../util/constants/constant');
 const { onboardMail } = require('../util/functions/mailer');
@@ -15,7 +15,9 @@ exports.requestAccount = (req, res) => {
         companyName: req.body.companyName
     };
 
-    const token = emailEncoder(req.body.email);
+    let token = emailEncoder(req.body.email);
+    token = token.replace(/#/g, "^^");
+    token = token.replace(/&/g, "!");
 
     const { valid, errors } = validateEmail(newUserRequest.email);
     if (!valid) return res.status(400).json(errors);
@@ -71,7 +73,7 @@ exports.signup = (req, res) => {
 
     const noImg = 'no-img.png';
     const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${noImg}?alt=media`;
-    let token, userId, role, email;
+    let token, userId, role, email, companyName;
 
     db.doc(`/${COLLECTION.ACCOUNT_REQUEST}/${emailToken}`)
     .get()
@@ -81,6 +83,7 @@ exports.signup = (req, res) => {
         } else {
             email = doc.data().email;
             role = doc.data().role;
+            companyName = doc.data().companyName;
 
             return firebase.auth().createUserWithEmailAndPassword(email, newUser.password);
         }
@@ -103,7 +106,7 @@ exports.signup = (req, res) => {
                 imageUrl: imageUrl,
                 firstname: req.body.firstname,
                 lastname: req.body.lastname,
-                companyName: req.body.companyName,
+                companyName: companyName,
                 generatedLink: '',
                 ceoId: userId
             }
@@ -113,7 +116,7 @@ exports.signup = (req, res) => {
                 imageUrl: imageUrl,
                 firstname: req.body.firstname,
                 lastname: req.body.lastname,
-                companyName: req.body.companyName,
+                companyName: companyName,
                 schedule: [], 
                 available: false,
                 employeeId: userId
@@ -135,6 +138,7 @@ exports.signup = (req, res) => {
         return res.status(201).json({ token });
     })
     .catch(err => {
+        console.log(err)
         return res.status(500).json({ general: 'Something went wrong. Please try again!' });
     })
 }
@@ -177,7 +181,8 @@ exports.changePassword = (req, res) => {
     if (!valid) return res.status(400).json(errors);
 
     const user = firebase.auth().currentUser;
-    const credential = firebase.auth.EmailAuthProvider(user.email, changePasswordRequest.oldPassword);
+    console.log(firebase.auth().currentUser)
+    const credential = firebase.auth.EmailAuthProvider.credential(user.email, changePasswordRequest.oldPassword);
 
     user.reauthenticateWithCredential(credential)
     .then(() => {
@@ -199,7 +204,7 @@ exports.forgotPassword = (req, res) => {
 
     auth.sendPasswordResetEmail(email)
     .then(() => {
-        res.status(200).json({ message: 'Password successfully changed.' });
+        res.status(200).json({ message: 'Email for password update successfully changed.' });
     })
     .catch((err) => {
         if (err.code === "auth/invalid-email") {

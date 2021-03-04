@@ -1,5 +1,5 @@
 const { db } = require('../util/functions/admin');
-const { COLLECTION } = require('../util/constants/constant');
+const { COLLECTION, ROLE } = require('../util/constants/constant');
 const { generatedLinkMail } = require('../util/functions/mailer');
 const { validateSchedule } = require('../util/functions/validators');
 
@@ -69,8 +69,8 @@ exports.getEmployeeDetails = (req, res) => {
     const companyName = req.params.companyName;
 
     const employees = db.collection(COLLECTION.EMPLOYEE)
-                    .where('employeeEmail', '==', employeeEmail)
-                    .orderBy('createdAt', 'desc');
+                    .where('email', '==', req.params.employeeEmail)
+                    .orderBy('lastname');
 
     if (req.user.role === ROLE.ADMIN) {
         employees.get()
@@ -112,7 +112,7 @@ exports.updateSchedule = (req, res) => {
     const { valid, errors } = validateSchedule(req.body.schedule);
     if (!valid) return res.status(400).json(errors);
 
-    let ceoId;
+    let ceoId, link;
 
     db.doc(`/${COLLECTION.EMPLOYEE}/${req.user.email}`)
     .update({
@@ -120,19 +120,19 @@ exports.updateSchedule = (req, res) => {
         available: true
     })
     .then(() => {
-        return db.collection(COLLECTION.CEO).where('companyName', '==', req.body.companyName).get();
+        return db.collection(COLLECTION.CEO).where('companyName', '==', req.user.companyName).get();
     })
-    .then(docs => {
-        const doc = docs[0];
-        ceoId = doc.id;
+    .then(data => {
+        const doc = data.docs[0];
+        ceoEmail = doc.data().email;
 
         if (doc.data().generatedLink === '') {
-            const link = `http://localhost:3000/${doc.data().companyName}`;
+            link = `http://localhost:3000/${doc.data().companyName}`;
 
             generatedLinkMail(doc.data().email, link);
         }
         
-        return db.doc(`/${COLLECTION.CEO}/${ceoId}`).update({
+        return db.doc(`/${COLLECTION.CEO}/${ceoEmail}`).update({
             boarderUsers: doc.data().boardedUsers + 1,
             generatedLink: link
         });
@@ -141,7 +141,7 @@ exports.updateSchedule = (req, res) => {
         res.status(200).json({ message: 'Schedule added successfully.' });
     })
     .catch(err => {
-        console.error(error);
+        console.error(err);
         return res.status(500).json({ general: 'Something went wrong. Please try again!' });
     })
 }

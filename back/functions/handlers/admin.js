@@ -1,5 +1,6 @@
-const { db } = require('../util/functions/admin');
+const { db, firebase } = require('../util/functions/admin');
 const { COLLECTION, MAILER } = require('../util/constants/constant');
+const config = require('../util/constants/config');
 
 exports.addAdmin = () => {
     const noImg = 'no-img.png';

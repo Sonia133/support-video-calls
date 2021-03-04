@@ -14,16 +14,17 @@ module.exports = (req, res, next) => {
     .then(decodedToken => {
         req.user = decodedToken;
         return db
-            .collection(COLLECTION.EMPLOYEEs)
-            .where('userId', '==', req.user.uid)
+            .collection(COLLECTION.EMPLOYEE)
+            .where('employeeId', '==', req.user.uid)
             .limit(1)
             .get();
     })
     .then(data => {
-        if (data.docs.lenght > 0) {
+        if (data.docs.length > 0) {
             req.user.email = data.docs[0].data().email;
             req.user.imageUrl = data.docs[0].data().imageUrl;
             req.user.role = ROLE.EMPLOYEE;
+            req.user.companyName = data.docs[0].data().companyName;
             
             return next();
         }

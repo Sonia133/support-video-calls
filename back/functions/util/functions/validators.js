@@ -36,9 +36,11 @@ exports.validatePassword = (data) => {
 exports.validateSchedule = (data) => {
     let errors = {};
 
-    if (isEmpty(data)) errors.schedule = 'Must not be empty.'
     if (data.length !== 5) errors.days = 'Schedule should have an entrance for each of the five working days'
-
+    data.forEach(day => {
+        if (isEmpty(day)) errors.schedule = 'Day must not be empty.'
+    }) 
+    
     return {
         errors,
         valid: Object.keys(errors).length === 0 ? true : false
@@ -49,6 +51,20 @@ exports.validateNewPassword = (oldPassword, newPassword) => {
     let errors = {};
 
     if (oldPassword === newPassword) errors.password = 'New password can\'t be one of the old passwords'
+
+    return {
+        errors,
+        valid: Object.keys(errors).length === 0 ? true : false
+    }
+}
+
+exports.validateLoginData = (data) => {
+    let errors = {};
+    
+    if (isEmpty(data.email)) errors.email = 'Must not be empty.'
+    else if (!isEmail(data.email)) errors.email = 'Must be a valid email.'
+
+    if (isEmpty(data.password)) errors.password = 'Must not be empty.'
 
     return {
         errors,

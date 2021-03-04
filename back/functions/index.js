@@ -26,7 +26,7 @@ addAdmin();
 
 // auth routes
 app.post('/requestAccount', FBRequestAuth, requestAccount);
-app.post('/invite/validation/:token', validateToken);
+app.get('/invite/validation/:token', validateToken);
 app.post('/signup/:token', signup);
 app.post('/login', login);
 app.post('/forgotPassword', forgotPassword);
@@ -44,12 +44,12 @@ app.delete('/ceo/:ceoEmail', FBAdminAuth, deleteCeo);
 // user auth -> common functionality
 app.post('/updateImage', FBUserAuth, uploadImage);
 app.get('/user', FBUserAuth, getAuthenticatedUser);
-app.get('./employees/:companyName', FBUserAuth, getEmployees);
-app.get('./employee/:companyName/:employeeEmail', FBUserAuth, getEmployeeDetails);
+app.get('/employees/:companyName', FBUserAuth, getEmployees);
+app.get('/employee/:companyName/:employeeEmail', FBUserAuth, getEmployeeDetails);
 
 // call routes
 app.get('/calls', FBAdminAuth, getCalls);
-app.get('./calls/company/:companyName', FBUserAuth, getCallsPerCompany);
-app.get('./calls/employee/:companyName/:employeeEmail', FBUserAuth, getCallsPerEmployee);
+app.get('/calls/company/:companyName', FBUserAuth, getCallsPerCompany);
+app.get('/calls/employee/:companyName/:employeeEmail', FBUserAuth, getCallsPerEmployee);
 
 exports.api = functions.region('europe-west1').https.onRequest(app);

@@ -1,25 +1,19 @@
-const ROLE = {
+exports.ROLE = {
     ADMIN:'admin',
     CEO: 'ceo',
     EMPLOYEE: 'employee'
 };
 
-const MAILER = {
+exports.MAILER = {
     EMAIL: 'degreeprojectvideosc@gmail.com',
     PASSWORD: 'licentade10'
 }
 
-const COLLECTION = {
+exports.COLLECTION = {
     ACCOUNT_REQUEST: 'accountRequest',
     ADMIN: 'admin',
     CALL: 'call',
-    CEO: 'ceos',
+    CEO: 'ceo',
     EMPLOYEE: 'employee',
     USER: 'user'
-}
-
-exports.module = {
-    COLLECTION,
-    MAILER,
-    ROLE
 }

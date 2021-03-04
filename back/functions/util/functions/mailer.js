@@ -9,16 +9,13 @@ exports.onboardMail = async (receiver, inviteLink) => {
       pass: MAILER.PASSWORD
     },
   });
-
-  let info = await transporter.sendMail({
+  console.log(inviteLink)
+  await transporter.sendMail({
     from: MAILER.EMAIL, 
     to: receiver, 
     subject: "Platform invite link",
-    text: "Hello! We are happy to welcome you to our comunity!",
-    html: `<a href=${inviteLink}>Click here for redirect</a>`,
+    text: `Hello! We are happy to welcome you to our comunity! Invitation link: ${inviteLink}`
   });
-
-  console.log("Message sent: %s", info.messageId);
 }
 
 exports.generatedLinkMail = async (receiver, link) => {

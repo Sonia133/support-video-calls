@@ -20,7 +20,7 @@ module.exports = (req, res, next) => {
                 .get();
         })
         .then(data => {
-            if (data.docs.lenght > 0) {
+            if (data.docs.length > 0) {
                 req.user.email = data.docs[0].data().email;
                 req.user.imageUrl = data.docs[0].data().imageUrl;
                 req.user.role = data.docs[0].data().role;
