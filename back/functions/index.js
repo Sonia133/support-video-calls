@@ -7,13 +7,13 @@ app.use(cors());
 const {
     login, requestAccount, validateToken, signup, changePassword, forgotPassword
 } = require('./handlers/auth');
-const {
-    getAuthenticatedUser, uploadImage
-} = require('./handlers/authenticatedUser');
-const { updateSchedule, getEmployeeDetails, getEmployees } = require('./handlers/employee');
+const { getAuthenticatedUser, uploadImage } = require('./handlers/authenticatedUser');
+const { updateSchedule, getEmployee, getEmployees, getFeedback } = require('./handlers/employee');
 const { deleteEmployee, getCeos } = require('./handlers/ceo');
 const { addAdmin, deleteCeo } = require('./handlers/admin');
-const { getCalls, getCallsPerEmployee, getCallsPerCompany } = require('./handlers/call');
+const { 
+    getCalls, getCallsPerEmployee, getCallsPerCompany, addCallDetails, findEmployee
+} = require('./handlers/call');
 
 const FBRequestAuth = require('./util/functions/authValidations/FBRequestAuth');
 const FBAdminAuth = require('./util/functions/authValidations/FBAdminAuth');
@@ -46,11 +46,14 @@ app.get('/ceos', FBAdminAuth, getCeos);
 app.post('/updateImage', FBUserAuth, uploadImage);
 app.get('/user', FBUserAuth, getAuthenticatedUser);
 app.get('/employees/:companyName', FBUserAuth, getEmployees);
-app.get('/employee/:companyName/:employeeEmail', FBUserAuth, getEmployeeDetails);
+app.get('/employee/:companyName/:employeeEmail', FBUserAuth, getEmployee);
+app.get('/employee/feedback/:companyName/:employeeEmail', FBUserAuth, getFeedback);
 
 // call routes
 app.get('/calls', FBAdminAuth, getCalls);
 app.get('/calls/company/:companyName', FBUserAuth, getCallsPerCompany);
 app.get('/calls/employee/:companyName/:employeeEmail', FBUserAuth, getCallsPerEmployee);
+app.get('/call/start/:companyName', findEmployee);
+app.post('/call/end', addCallDetails);
 
 exports.api = functions.region('europe-west1').https.onRequest(app);

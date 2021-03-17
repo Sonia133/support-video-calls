@@ -43,12 +43,12 @@ employee: {
     employeeId
 }
 
+// index by id
 call: {
     createdAt,
     employeeEmail,
-    employeeCompanyName,
+    companyName,
     duration,
-    callFeedback,
-    employeeFeedback,
-    callId
+    feedback,
+    comments
 }

@@ -22,28 +22,8 @@ exports.getEmployees = (req, res) => {
             return res.json(employees);
         })
         .catch(err => console.error(err));
-    } else if (req.user.role === ROLE.CEO ) {
-        db.doc(`/${COLLECTION.CEO}/${req.user.email}`).get()
-        .then(doc => {
-            if (doc.data().companyName === companyName) {
-                employees.get()
-                .then(data => {
-                    let employees = [];
-                    data.forEach(document => {
-                        employees.push({
-                            ...document.data(),
-                            employeeId: document.id
-                        }); 
-                    });
-                    return res.json(employees);
-                })
-                .catch(err => console.error(err));
-            } else {
-                return res.status(403).json({ error: 'Unauthorized'});
-            }
-        })
-    } else if (req.user.role === ROLE.EMPLOYEE) {
-        db.doc(`/${COLLECTION.EMPLOYEE}/${req.user.email}`).get()
+    } else if (req.user.role === ROLE.CEO || req.user.role === ROLE.EMPLOYEE) {
+        db.doc(`/${req.user.role}/${req.user.email}`).get()
         .then(doc => {
             if (doc.data().companyName === companyName) {
                 employees.get()
@@ -65,40 +45,38 @@ exports.getEmployees = (req, res) => {
     }
 }
 
-exports.getEmployeeDetails = (req, res) => {
+exports.getEmployee = (req, res) => {
     const companyName = req.params.companyName;
+    const employee = db.collection(`${COLLECTION.EMPLOYEE}/${req.params.employeeEmail}`);
 
-    const employees = db.collection(COLLECTION.EMPLOYEE)
-                    .where('email', '==', req.params.employeeEmail)
-                    .orderBy('lastname');
-
+    let employeeData;
     if (req.user.role === ROLE.ADMIN) {
-        employees.get()
-        .then(data => {
-            let employees = [];
-            data.forEach(document => {
-                employees.push({
-                    ...document.data(),
-                    employeeId: document.id
-                }); 
-            });
-            return res.json(employees);
+        employee.get()
+        .then(doc => {
+            if (!doc.exists) {
+                return res.status(404).json({ error: 'Employee not found!'} );
+            }
+    
+            employeeData = doc.data();
+            employeeData.employeeId = doc.id; 
+            
+            return res.json(employeeData);
         })
         .catch(err => console.error(err));
     } else if (req.user.role === ROLE.CEO || req.user.role === ROLE.EMPLOYEE) {
         db.doc(`/${req.user.role}/${req.user.email}`).get()
         .then(doc => {
             if (doc.data().companyName === companyName) {
-                employees.get()
-                .then(data => {
-                    let employees = [];
-                    data.forEach(document => {
-                        employees.push({
-                            ...document.data(),
-                            employeeId: document.id
-                        }); 
-                    });
-                    return res.json(employees);
+                employee.get()
+                .then(doc => {
+                    if (!doc.exists) {
+                        return res.status(404).json({ error: 'Employee not found!'} );
+                    }
+            
+                    employeeData = doc.data();
+                    employeeData.employeeId = doc.id;
+
+                    return res.json(employeeData);
                 })
                 .catch(err => console.error(err));
             } else {
@@ -127,7 +105,7 @@ exports.updateSchedule = (req, res) => {
         ceoEmail = doc.data().email;
 
         if (doc.data().generatedLink === '') {
-            link = `http://localhost:3000/${doc.data().companyName}`;
+            link = `http://localhost:3000/call/${doc.data().companyName}`;
 
             generatedLinkMail(doc.data().email, link);
         }
@@ -144,4 +122,77 @@ exports.updateSchedule = (req, res) => {
         console.error(err);
         return res.status(500).json({ general: 'Something went wrong. Please try again!' });
     })
+}
+
+exports.getFeedback = (req, res) => {
+    const companyName = req.params.companyName;
+    const employeeEmail = req.params.employeeEmail;
+
+    const employee = db.collection(`${COLLECTION.EMPLOYEE}/${employeeEmail}`);
+    const calls = db.collection(COLLECTION.CALL).where("employeeEmail", "==", employeeEmail);
+
+    let employeeData;
+    let callsNumber = 0;
+    let feedbackGrade = 0;
+
+    if (req.user.role === ROLE.ADMIN) {
+        employee.get()
+        .then(doc => {
+            if (!doc.exists) {
+                return res.status(404).json({ error: 'Employee not found!'} );
+            }
+    
+            employeeData = doc.data();
+            employeeData.employeeId = doc.id; 
+            employeeData.comments = [];
+
+            calls.get()
+            .then(data => {
+                data.forEach(doc => {
+                    employeeData.comments.push(doc.data().comments);
+                    callsNumber += 1
+                    feedbackGrade += doc.data().feedback;
+                })
+
+                employeeData.callsNumber = callsNumber;
+                employeeData.feedback = feedbackGrade / callsNumber;
+            })
+
+            return res.json(employeeData);
+        })
+        .catch(err => console.error(err));
+    } else if (req.user.role === ROLE.CEO) {
+        db.doc(`/${req.user.role}/${req.user.email}`).get()
+        .then(doc => {
+            if (doc.data().companyName === companyName) {
+                employee.get()
+                .then(doc => {
+                    if (!doc.exists) {
+                        return res.status(404).json({ error: 'Employee not found!'} );
+                    }
+            
+                    employeeData = doc.data();
+                    employeeData.employeeId = doc.id; 
+                    employeeData.comments = [];
+
+                    calls.get()
+                    .then(data => {
+                        data.forEach(doc => {
+                            employeeData.comments.push(doc.data().comments);
+                            callsNumber += 1
+                            feedbackGrade += doc.data().feedback;
+                        })
+
+                        employeeData.callsNumber = callsNumber;
+                        employeeData.feedback = feedbackGrade / callsNumber;
+                    })
+
+                    return res.json(employeeData);
+                })
+                .catch(err => console.error(err));
+            } else {
+                return res.status(403).json({ error: 'Unauthorized'});
+            }
+        })
+    } 
 }
