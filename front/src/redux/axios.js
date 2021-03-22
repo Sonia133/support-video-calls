@@ -10,4 +10,12 @@ const api = axios.create({
   responseType: "json",
 });
 
+api.interceptors.request.use((req) => {
+  const token = localStorage.getItem("FBIdToken");
+  if (token) {
+    req.headers["Authorization"] = `Bearer ${token}`;
+  }
+  return req;
+});
+
 export default api;

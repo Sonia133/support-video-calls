@@ -2,6 +2,11 @@ const { db } = require("../util/functions/admin");
 const { COLLECTION, ROLE } = require("../util/constants/constant");
 const { chooseEmployee } = require("../util/functions/chooseEmployee");
 
+const configTwilio = require('../util/constants/configTwilio'); 
+const accountSid = configTwilio.twilio.accountSid;
+const authToken = configTwilio.twilio.authToken;
+const client = require('twilio')(accountSid, authToken);
+
 exports.getCalls = (req, res) => {
   db.collection(COLLECTION.CALL)
     .orderBy("createdAt", "desc")
@@ -139,6 +144,7 @@ exports.getCallsPerEmployee = (req, res) => {
 };
 
 exports.findEmployee = (req, res) => {
+  const roomName = req.body.roomName;
   const companyName = req.params.companyName;
   let employees = [];
 
@@ -193,6 +199,7 @@ exports.findEmployee = (req, res) => {
         .doc(`${COLLECTION.EMPLOYEE}/${chosenEmployee.email}`)
         .update({
           available: false,
+          currentCallId: roomName
         });
     })
     .then(() => {
@@ -202,21 +209,29 @@ exports.findEmployee = (req, res) => {
 };
 
 exports.addCallDetails = (req, res) => {
-  duration = req.body.duration;
-  feedback = req.body.feedback;
-  comments = req.body.comments;
+  // duration = req.body.duration;
+  // feedback = req.body.feedback;
+  // comments = req.body.comments;
   employeeEmail = req.body.employeeEmail;
   companyName = req.body.companyName;
-  createdAt = req.body.createdAt;
+  roomName = req.body.roomName;
+  // createdAt = req.body.createdAt;
 
-  db.doc(COLLECTION.CALL)
+  let duration, createdAt;
+  client.video.rooms.list({uniqueName: roomName, limit: 1})
+  .then(rooms => {
+    const room = rooms[0];
+    duration = room.duration;
+    createdAt = room.dateCreated;
+
+    db.doc(COLLECTION.CALL)
     .add({
       employeeEmail,
       createdAt,
       companyName,
       duration,
-      feedback,
-      comments,
+      feedback: '',
+      comments: [],
     })
     .then(() => {
       return db.doc(`${COLLECTION.EMPLOYEE}/${employeeEmail}`).update({
@@ -224,7 +239,6 @@ exports.addCallDetails = (req, res) => {
       });
     })
     .then(() => {
-      //database.ref(`/notifs/`) forEach(snap=> snap.value().employeeFree = true);
       return res.status(200).json({ message: "Call updated successfully." });
     })
     .catch((err) => {
@@ -233,4 +247,5 @@ exports.addCallDetails = (req, res) => {
         .status(500)
         .json({ general: "Something went wrong. Please try again!" });
     });
+  });
 };

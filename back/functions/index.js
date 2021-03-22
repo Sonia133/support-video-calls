@@ -14,6 +14,7 @@ const { addAdmin, deleteCeo } = require('./handlers/admin');
 const { 
     getCalls, getCallsPerEmployee, getCallsPerCompany, addCallDetails, findEmployee
 } = require('./handlers/call');
+const { videoToken } = require('./handlers/video');
 
 const FBRequestAuth = require('./util/functions/authValidations/FBRequestAuth');
 const FBAdminAuth = require('./util/functions/authValidations/FBAdminAuth');
@@ -55,5 +56,8 @@ app.get('/calls/company/:companyName', FBUserAuth, getCallsPerCompany);
 app.get('/calls/employee/:companyName/:employeeEmail', FBUserAuth, getCallsPerEmployee);
 app.get('/call/start/:companyName', findEmployee);
 app.post('/call/end', addCallDetails);
+
+// initiate video calls routes
+app.post('/video/token', videoToken);
 
 exports.api = functions.region('europe-west1').https.onRequest(app);

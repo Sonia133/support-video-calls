@@ -40,6 +40,7 @@ employee: {
     schedule, // ['9-5', '8-2', ..] if empty => notBoarded
     available,
     imageUrl,
+    currentCallId,
     employeeId
 }
 
