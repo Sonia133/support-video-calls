@@ -209,13 +209,11 @@ exports.findEmployee = (req, res) => {
 };
 
 exports.addCallDetails = (req, res) => {
-  // duration = req.body.duration;
   // feedback = req.body.feedback;
   // comments = req.body.comments;
   employeeEmail = req.body.employeeEmail;
   companyName = req.body.companyName;
   roomName = req.body.roomName;
-  // createdAt = req.body.createdAt;
 
   let duration, createdAt;
   client.video.rooms.list({uniqueName: roomName, limit: 1})

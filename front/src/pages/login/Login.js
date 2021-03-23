@@ -9,7 +9,7 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { loginUser } from "../../redux/actions/authActions";
+import { loginUser } from "../../redux/actions/userActions";
 
 const Login = () => {
   const history = useHistory();

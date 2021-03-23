@@ -1,8 +1,13 @@
+import { CircularProgress } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import Participant from "./Participant";
 
 const Room = ({ roomName, room, handleLogout }) => {
   const [participants, setParticipants] = useState([]);
+  const [isLoggedIn, isLoadingEmployee] = useSelector((state) => 
+    [state.user?.authenticated, state.call?.loading]
+  );
 
   useEffect(() => {
     const participantConnected = (participant) => {
@@ -10,9 +15,6 @@ const Room = ({ roomName, room, handleLogout }) => {
     };
 
     const participantDisconnected = (participant) => {
-        // get auth user -> take email
-        // disconnect all participants? here on in logout? what s the difference between these two handlers?
-        // send to backend endcall: employeeEmail, companyName, roomName -> !! only if auth 
       setParticipants((prevParticipants) =>
         prevParticipants.filter((p) => p !== participant)
       );
@@ -46,7 +48,8 @@ const Room = ({ roomName, room, handleLogout }) => {
         )}
       </div>
       <h3>Remote Participants</h3>
-      <div className="remote-participants">{remoteParticipants}</div>
+      {!isLoggedIn && isLoadingEmployee ? <CircularProgress /> : 
+        <div className="remote-participants">{remoteParticipants}</div>}
     </div>
   );
 };

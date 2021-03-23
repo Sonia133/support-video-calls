@@ -4,7 +4,7 @@ const initialState = {
   authenticated: !!localStorage.getItem("FBIdToken"),
 };
 
-const AuthReducer = (state = initialState, action) => {
+const UserReducer = (state = initialState, action) => {
   switch (action.type) {
     case ActionTypes.USER.SET_UNAUTHENTICATED:
       return initialState;
@@ -30,4 +30,4 @@ const AuthReducer = (state = initialState, action) => {
   }
 };
 
-export default AuthReducer;
+export default UserReducer;

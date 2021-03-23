@@ -6,10 +6,11 @@ import axios from "../../redux/axios";
 import { v4 as uuidv4 } from "uuid";
 import { useParams } from "react-router";
 import socket from "../../socket/index.js";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { findEmployee, endCall } from "../../redux/actions/callActions.js";
 
 const VideoChat = () => {
-  // const isLoggedIn = something
+  const dispatch = useDispatch();
   const { companyName } = useParams();
   const [isEmployee, email] = useSelector((state) => [
     state.user?.role === "employee",
@@ -30,19 +31,13 @@ const VideoChat = () => {
 
   const handleSubmit = useCallback(
     async (event) => {
-      // if auth
       event.preventDefault();
       setConnecting(true);
-      // if not auth
+      
       const data = await axios
         .post("/video/token", { identity: username, room: roomName })
         .then((res) => res.data);
-      // somewhere here axios.post for find employee -> send in body the roomname
-
-      // else
-      // get auth user -> firstname lastname currentcallId
-      //const data = await axios.post("/video/token", { identity: firstname + lastname, room: currentCallId })
-      //.then((res) => res.data);
+      
       Video.connect(data.token, {
         name: roomName,
       })
@@ -58,6 +53,8 @@ const VideoChat = () => {
             companyName: companyName,
             isClient: true,
           });
+
+          dispatch(findEmployee(roomName, companyName));
         })
         .catch((err) => {
           console.error(err);
@@ -75,6 +72,19 @@ const VideoChat = () => {
         });
         prevRoom.disconnect();
       }
+      
+      if (!isEmployee) {
+          dispatch(endCall(roomName, companyName, email));
+          socket.ref(`calls/${username}`).remove();
+
+          socket.ref("calls").orderByChild("isClient").equalTo(true)
+            .orderByChild("joinedAt").limitToFirst(1).get()
+          .then((data) => {
+            dispatch(findEmployee(data.val().roomId, data.val().companyName));
+            return null;
+          })
+      }
+
       return null;
     });
   }, []);
@@ -86,16 +96,11 @@ const VideoChat = () => {
         .once("value", async (snapshot) => {
           setRoomName(snapshot.val())
           setConnecting(true);
-          // if not auth
+
           const data = await axios
             .post("/video/token", { identity: email, room: snapshot.val() })
             .then((res) => res.data);
-          // somewhere here axios.post for find employee -> send in body the snapshot.val()
-
-          // else
-          // get auth user -> firstname lastname currentcallId
-          //const data = await axios.post("/video/token", { identity: firstname + lastname, room: currentCallId })
-          //.then((res) => res.data);
+         
           Video.connect(data.token, {
             name: snapshot.val(),
           })
@@ -112,7 +117,6 @@ const VideoChat = () => {
   }, [isEmployee]);
 
   useEffect(() => {
-    // if auth -> handleSubmit()? or create some other function without event param
     if (room) {
       const tidyUp = (event) => {
         if (event.persisted) {

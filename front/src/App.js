@@ -5,7 +5,7 @@ import "./App.css";
 import store from "./redux/store";
 import VideoChat from "./components/VideoCalls/VideoChat";
 import jwtDecode from "jwt-decode";
-import { getUserData, logoutUser } from "./redux/actions/authActions";
+import { getUserData, logoutUser } from "./redux/actions/userActions";
 import Login from "./pages/login/Login";
 import Home from "./components/Home";
 
