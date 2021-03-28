@@ -6,6 +6,11 @@ const initialState = {
 
 const UserReducer = (state = initialState, action) => {
   switch (action.type) {
+    case ActionTypes.USER.VALIDATE_TOKEN:
+      return {
+        ...state,
+        token: action.payload
+      }
     case ActionTypes.USER.SET_UNAUTHENTICATED:
       return initialState;
     case ActionTypes.USER.SET_USER:

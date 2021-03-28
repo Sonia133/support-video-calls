@@ -23,7 +23,7 @@ const FBEmployeeAuth = require('./util/functions/authValidations/FBEmployeeAuth'
 const FBUserAuth = require('./util/functions/authValidations/FBUserAuth');
 
 // initialize admin
-addAdmin();
+// addAdmin();
 
 // auth routes
 app.post('/requestAccount', FBRequestAuth, requestAccount);

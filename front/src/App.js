@@ -7,7 +7,9 @@ import VideoChat from "./components/VideoCalls/VideoChat";
 import jwtDecode from "jwt-decode";
 import { getUserData, logoutUser } from "./redux/actions/userActions";
 import Login from "./pages/login/Login";
-import Home from "./components/Home";
+import SignUp from "./pages/signup/SignUp";
+import GetStarted from "./pages/signup/GetStarted";
+import Home from "./pages/home/Home";
 
 function App() {
   const token = localStorage.FBIdToken;
@@ -30,16 +32,13 @@ function App() {
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/login" component={Login} />
+          <Route exact path="/invite/:token" component={SignUp} />
+          <Route exact path="/getstarted" component={GetStarted} />
           <Route exact path="/call/:companyName" component={VideoChat} />
         </Switch>
       </Router>
     </Provider>
   );
 }
-
-// sorina@mail.com: {
-//   roomId: "id camera"
-//   joinedAt: "timestamp"
-// }
 
 export default App;

@@ -28,6 +28,10 @@ const Login = () => {
     dispatch(loginUser(formData));
   };
 
+  const onRequest = () => {
+      history.push("/getstarted");
+  }
+
   return (
     <Box
       my={4}
@@ -53,11 +57,15 @@ const Login = () => {
         placeholder="Enter password"
         type="password"
       />
-      {!!error?.general && (
-        <Typography color="error">{error.general}</Typography>
+      {!!error?.error && (
+        <Typography color="error">{error.error}</Typography>
       )}
       <Button onClick={handleSubmit(onSubmit)} disabled={loading}>
         {loading ? <CircularProgress /> : <Typography>Login</Typography>}
+      </Button>
+      <Typography>Register your own company</Typography>
+      <Button onClick={onRequest}>
+        <Typography>Here</Typography>
       </Button>
     </Box>
   );

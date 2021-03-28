@@ -120,7 +120,7 @@ exports.updateSchedule = (req, res) => {
     })
     .catch(err => {
         console.error(err);
-        return res.status(500).json({ general: 'Something went wrong. Please try again!' });
+        return res.status(500).json({ error: 'Something went wrong. Please try again!' });
     })
 }
 

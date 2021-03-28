@@ -243,7 +243,7 @@ exports.addCallDetails = (req, res) => {
       console.error(err);
       return res
         .status(500)
-        .json({ general: "Something went wrong. Please try again!" });
+        .json({ error: "Something went wrong. Please try again!" });
     });
   });
 };

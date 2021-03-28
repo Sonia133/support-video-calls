@@ -3,6 +3,7 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import thunk from "redux-thunk";
 import UserReducer from "./reducers/userReducer";
 import CallReducer from "./reducers/callReducer";
+import UIReducer from "./reducers/uiReducer";
 
 const initialState = {};
 
@@ -10,7 +11,8 @@ const middleware = [thunk];
 
 const reducers = combineReducers({
   user: UserReducer,
-  call: CallReducer
+  call: CallReducer,
+  ui: UIReducer
 });
 
 const store = createStore(

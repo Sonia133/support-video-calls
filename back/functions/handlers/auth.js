@@ -1,7 +1,6 @@
 const { db, firebase } = require('../util/functions/admin');
 const config = require('../util/constants/config');
-
-const emailEncoder = require('email-encoder');
+const bcrypt = require('bcrypt');
 
 const { validateLoginData, validateEmail, validatePassword, validateNewPassword } = require('../util/functions/validators');
 
@@ -15,14 +14,12 @@ exports.requestAccount = (req, res) => {
         companyName: req.body.companyName
     };
 
-    let token = emailEncoder(req.body.email);
-    token = token.replace(/#/g, "^^");
-    token = token.replace(/&/g, "!");
+    const token = bcrypt.hashSync(req.body.email, 10);
 
     const { valid, errors } = validateEmail(newUserRequest.email);
     if (!valid) return res.status(400).json(errors);
 
-    db.doc(`/${COLLECTION.ACCOUNT_REQUEST}/${newUserRequest.token}`).get()
+    db.doc(`/${COLLECTION.ACCOUNT_REQUEST}/${token}`).get()
         .then(doc => {
             if(doc.exists) {
                 return res.status(400).json({ email: 'It was already sent a request from this email. Please check your inbox.' });
@@ -38,7 +35,7 @@ exports.requestAccount = (req, res) => {
             res.status(200).json({ message: 'Request successfully sent.' });
         })
         .catch((err) => {
-            return res.status(500).json({ general: 'Something went wrong. Please try again!' });
+            return res.status(500).json({ error: 'Something went wrong. Please try again!' });
         });
 };
 
@@ -49,9 +46,9 @@ exports.validateToken = (req, res) => {
     .get()
     .then(doc => {
         if (!doc.exists) {
-            return res.status(404).json({ error: 'Page not found!'} );
+            return res.status(404).json({ inexistent: 'Page not found!'} );
         } else {
-            return res.status(200).json({ message: 'Validation completed successfully.' });
+            return res.status(201).json({ token });
         }
     })
     .catch(err => {
@@ -75,6 +72,7 @@ exports.signup = (req, res) => {
     const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${noImg}?alt=media`;
     let token, userId, role, email, companyName;
 
+    console.log(emailToken)
     db.doc(`/${COLLECTION.ACCOUNT_REQUEST}/${emailToken}`)
     .get()
     .then(doc => {
@@ -140,7 +138,7 @@ exports.signup = (req, res) => {
     })
     .catch(err => {
         console.log(err)
-        return res.status(500).json({ general: 'Something went wrong. Please try again!' });
+        return res.status(500).json({ error: 'Something went wrong. Please try again!' });
     })
 }
 
@@ -163,10 +161,10 @@ exports.login = (req, res) => {
         .catch(err => {
             console.error(err);
             if (err.code === "auth/user-not-found") {
-                return res.status(403).json({ general: 'This email does not exist.'})
+                return res.status(403).json({ error: 'This email does not exist.'})
             }
             if (err.code === "auth/wrong-password") {
-                return res.status(403).json({ general: 'Wrong password.'})
+                return res.status(403).json({ error: 'Wrong password.'})
             }
             return res.status(500).json({ error: err.code })
         });
@@ -192,7 +190,7 @@ exports.changePassword = (req, res) => {
     .then(() => {
         res.status(200).json({ message: 'Password successfully changed.' });
     }).catch(() => {
-        return res.status(500).json({ general: 'Something went wrong. Please try again!' });
+        return res.status(500).json({ error: 'Something went wrong. Please try again!' });
     });
 }
 
@@ -209,10 +207,10 @@ exports.forgotPassword = (req, res) => {
     })
     .catch((err) => {
         if (err.code === "auth/invalid-email") {
-            return res.status(403).json({ general: 'Invalid email.'})
+            return res.status(403).json({ error: 'Invalid email.'})
         }
         if (err.code === "auth/user-not-found") {
-            return res.status(403).json({ general: 'User not found.'})
+            return res.status(403).json({ error: 'User not found.'})
         }
         return res.status(500).json({ error: err.code })
     })
