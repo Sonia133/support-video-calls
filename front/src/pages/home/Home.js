@@ -1,24 +1,27 @@
-import { Box, Button, TextField, Typography } from "@material-ui/core";
+import { Box, Button, CircularProgress, TextField, Typography } from "@material-ui/core";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import socket from "../../socket";
-import { sendRegisterRequest } from "../../redux/actions/userActions";
+import { sendRegisterRequest, updateSchedule } from "../../redux/actions/userActions";
 
 const Home = () => {
   const history = useHistory();
   const isLoggedIn = useSelector((state) => state.user.authenticated);
-  const [isEmployee, isCeo, isAdmin, email, companyName] = useSelector((state) => [
+  const [isEmployee, isCeo, isAdmin, email, companyName, schedule, loadingUser] = useSelector((state) => [
     state.user?.role === "employee",
     state.user?.role === "ceo",
     state.user?.admin === "admin",
     state.user?.email,
-    state.user?.companyName
+    state.user?.companyName,
+    state.user?.schedule,
+    state.user?.loading
   ]);
   const { loading, error } = useSelector((state) => state.ui);
   let [addEmployee, setAddEmployee] = useState(false);
+  let [updated, setUpdated] = useState(false);
   const { register, handleSubmit, errors } = useForm();
   const dispatch = useDispatch();
 
@@ -35,11 +38,32 @@ const Home = () => {
     }
   }, [isEmployee]);
 
+  const updateScheduleEmployee = () => {
+    setUpdated(true);
+  }
+
   const addNewEmployee = () => {
     setAddEmployee(true);
   }
 
-  const onSubmit = (formData) => {
+  const onSubmitSchedule = (formData) => {
+    let formDataToSend = {}
+    console.log(formData);
+    let scheduleToSend = [];
+    for (let i = 0; i < 5; i ++) {
+      scheduleToSend[i] = `${formData[2*i+1]}-${formData[2*i+2]}`;
+    }
+
+    formDataToSend.schedule = scheduleToSend;
+    dispatch(updateSchedule(formDataToSend));
+    if (!!error) {
+      setUpdated(false);
+    } else {
+      setUpdated(true);
+    }
+  }
+
+  const onSubmitEmployee = (formData) => {
     formData.role = "employee";
     formData.companyName = companyName;
     console.log(formData);
@@ -55,11 +79,123 @@ const Home = () => {
     if (!isLoggedIn) {
       history.push("/login");
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, isEmployee, schedule, updated]);
 
   return (
     <Box>
       <div>HOME</div>
+      {isEmployee && loadingUser && schedule.length === 0 && (
+        <CircularProgress />
+      )}
+      {isEmployee && schedule.length === 0 && !updated && (
+        <Box>
+          <Button onClick={updateScheduleEmployee}>Update schedule</Button>
+          {!!error?.error && (
+            <Typography color="error">{error.error}</Typography>
+          )}
+        </Box>
+      )}
+      {isEmployee && schedule.length === 0 && updated && (
+        <Box
+          my={4}
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Typography>Monday</Typography>
+          <TextField
+              error={!!errors['1']?.message}
+              helperText={errors['1']?.message ?? ""}
+              name="1"
+              inputRef={register({ required: "Starting hour on monday is required" })}
+              variant="outlined"
+              type="number"
+          />
+          <TextField
+              error={!!errors['2']?.message}
+              helperText={errors['2']?.message ?? ""}
+              name="2"
+              inputRef={register({ required: "Ending hour on monday is required" })}
+              variant="outlined"
+              type="number"
+          />
+          <Typography>Tuesday</Typography>
+          <TextField
+              error={!!errors['3']?.message}
+              helperText={errors['3']?.message ?? ""}
+              name="3"
+              inputRef={register({ required: "Starting hour on tuesday is required" })}
+              variant="outlined"
+              type="number"
+          />
+          <TextField
+              error={!!errors['4']?.message}
+              helperText={errors['4']?.message ?? ""}
+              name="4"
+              inputRef={register({ required: "Ending hour on tuesday is required" })}
+              variant="outlined"
+              type="number"
+          />
+          <Typography>Wednesday</Typography>
+          <TextField
+              error={!!errors['5']?.message}
+              helperText={errors['5']?.message ?? ""}
+              name="5"
+              inputRef={register({ required: "Starting hour on wednesday is required" })}
+              variant="outlined"
+              type="number"
+          />
+          <TextField
+              error={!!errors['6']?.message}
+              helperText={errors['6']?.message ?? ""}
+              name="6"
+              inputRef={register({ required: "Ending hour on wednesday is required" })}
+              variant="outlined"
+              type="number"
+          />
+          <Typography>Thursday</Typography>
+          <TextField
+              error={!!errors['7']?.message}
+              helperText={errors['7']?.message ?? ""}
+              name="7"
+              inputRef={register({ required: "Starting hour on thursday is required" })}
+              variant="outlined"
+              type="number"
+          />
+          <TextField
+              error={!!errors['8']?.message}
+              helperText={errors['8']?.message ?? ""}
+              name="8"
+              inputRef={register({ required: "Ending hour on thursday is required" })}
+              variant="outlined"
+              type="number"
+          />
+          <Typography>Friday</Typography>
+          <TextField
+              error={!!errors['9']?.message}
+              helperText={errors['9']?.message ?? ""}
+              name="9"
+              inputRef={register({ required: "Starting hour on friday is required" })}
+              variant="outlined"
+              type="number"
+          />
+          <TextField
+              error={!!errors['10']?.message}
+              helperText={errors['10']?.message ?? ""}
+              name="10"
+              inputRef={register({ required: "Ending hour on friday is required" })}
+              variant="outlined"
+              type="number"
+          />
+          {!!error?.error && (
+              <Typography color="error">{error.error}</Typography>
+          )}
+          <Button onClick={handleSubmit(onSubmitSchedule)} disabled={loading}>
+              <Typography>Submit schedule</Typography>
+          </Button>
+        </Box>
+      )}
       {isCeo && !addEmployee && (
         <Box>
           <Button onClick={addNewEmployee}>Add employee</Button>
@@ -87,7 +223,7 @@ const Home = () => {
           {!!error?.error && (
               <Typography color="error">{error.error}</Typography>
           )}
-          <Button onClick={handleSubmit(onSubmit)} disabled={loading}>
+          <Button onClick={handleSubmit(onSubmitEmployee)} disabled={loading}>
               <Typography>Submit employee</Typography>
           </Button>
         </Box>

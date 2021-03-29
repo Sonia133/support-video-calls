@@ -39,6 +39,10 @@ exports.validateSchedule = (data) => {
     if (data.length !== 5) errors.days = 'Schedule should have an entrance for each of the five working days'
     data.forEach(day => {
         if (isEmpty(day)) errors.schedule = 'Day must not be empty.'
+        let hours = day.split("-");
+
+        if ((parseInt(hours[0]) < 0 && parseInt(hours[0]) > 23) || (hours[1] < 0 && hours[1] > 23)) errors.hour = 'Invalid hour.'
+        if (parseInt(hours[0]) > parseInt(hours[1])) errors.inconsistency = 'Starting hour can not be bigger than ending hour.'
     }) 
     
     return {

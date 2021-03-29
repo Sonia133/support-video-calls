@@ -87,6 +87,8 @@ exports.getEmployee = (req, res) => {
 }
 
 exports.updateSchedule = (req, res) => {
+    console.log(req.body)
+    console.log(req.body.schedule)
     const { valid, errors } = validateSchedule(req.body.schedule);
     if (!valid) return res.status(400).json(errors);
 

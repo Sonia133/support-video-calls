@@ -68,6 +68,21 @@ export const loginUser = (userData) => (dispatch) => {
     });
 };
 
+export const updateSchedule = (schedule) => (dispatch) => {
+  dispatch({ type: ActionTypes.USER.LOADING_USER });
+  axios.post('/employee/updateSchedule', schedule)
+  .then(() => {
+    dispatch(getUserData());
+  })
+  .catch((err) => {
+    console.log(err);
+    dispatch({
+      type: ActionTypes.USER.SET_ERRORS,
+      payload: err.response?.data,
+    });
+  });
+}
+
 export const getUserData = () => (dispatch) => {
   dispatch({ type: ActionTypes.USER.LOADING_USER });
   axios
