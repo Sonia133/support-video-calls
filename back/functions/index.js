@@ -8,7 +8,7 @@ const {
     login, requestAccount, validateToken, signup, changePassword, forgotPassword
 } = require('./handlers/auth');
 const { getAuthenticatedUser, uploadImage } = require('./handlers/authenticatedUser');
-const { updateSchedule, getEmployee, getEmployees, getFeedback } = require('./handlers/employee');
+const { updateSchedule, getEmployee, getEmployees, getFeedback, setAvailability } = require('./handlers/employee');
 const { deleteEmployee, getCeos } = require('./handlers/ceo');
 const { addAdmin, deleteCeo } = require('./handlers/admin');
 const { 
@@ -31,10 +31,11 @@ app.get('/invite/validation/:token', validateToken);
 app.post('/signup/:token', signup);
 app.post('/login', login);
 app.post('/forgotPassword', forgotPassword);
-app.post('/changePassword', changePassword);
+app.post('/changePassword', FBUserAuth, changePassword);
 
 // employee routes
 app.post('/employee/updateSchedule', FBEmployeeAuth, updateSchedule);
+app.post('/employee/changeAvailability', FBEmployeeAuth, setAvailability);
 
 // ceo routes
 app.delete('/employee/:employeeEmail', FBCeoAuth, deleteEmployee);

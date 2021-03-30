@@ -18,13 +18,14 @@ export const validateTokenEnroll = (token) => (dispatch) => {
   })
 }
 
-export const signup = (userData, token) => (dispatch) => {
+export const signup = (userData, token, history) => (dispatch) => {
   dispatch({ type: ActionTypes.USER.LOADING_USER });
   axios.post(`/signup/${token}`, userData)
   .then(({ data }) => {
     localStorage.setItem("FBIdToken", data.token);
     dispatch(getUserData());
     dispatch({ type: ActionTypes.USER.CLEAR_ERRORS });
+    history.push('/');
   })
   .catch((err) => {
     console.log(err);
@@ -68,9 +69,56 @@ export const loginUser = (userData) => (dispatch) => {
     });
 };
 
+export const forgotPassword = (userData, history) => (dispatch) => {
+    dispatch({ type: ActionTypes.UI.LOADING_UI });
+    axios.post('/forgotPassword', userData)
+    .then(() => {
+        history.push('/login');
+        dispatch({ type: ActionTypes.UI.STOP_LOADING_UI });
+    })
+    .catch((err) => {
+      console.log(err);
+      dispatch({
+        type: ActionTypes.USER.SET_ERRORS,
+        payload: err.response?.data,
+      });
+    });
+}
+
+export const changePassword = (userData, history) => (dispatch) => {
+  dispatch({ type: ActionTypes.UI.LOADING_UI });
+  axios.post('/changePassword', userData)
+  .then(() => {
+      history.push('/');
+      dispatch({ type: ActionTypes.UI.STOP_LOADING_UI });
+  })
+  .catch((err) => {
+    console.log(err);
+    dispatch({
+      type: ActionTypes.USER.SET_ERRORS,
+      payload: err.response?.data,
+    });
+  });
+}
+
 export const updateSchedule = (schedule) => (dispatch) => {
   dispatch({ type: ActionTypes.USER.LOADING_USER });
   axios.post('/employee/updateSchedule', schedule)
+  .then(() => {
+    dispatch(getUserData());
+  })
+  .catch((err) => {
+    console.log(err);
+    dispatch({
+      type: ActionTypes.USER.SET_ERRORS,
+      payload: err.response?.data,
+    });
+  });
+}
+
+export const changeAvailability = (userData) => (dispatch) => {
+  dispatch({ type: ActionTypes.USER.LOADING_USER });
+  axios.post('/employee/changeAvailability', userData)
   .then(() => {
     dispatch(getUserData());
   })
@@ -89,7 +137,6 @@ export const getUserData = () => (dispatch) => {
     .get("/user")
     .then(({ data }) => {
       dispatch({ type: ActionTypes.USER.SET_USER, payload: data });
-      console.log(data);
       if (data.role === "employee") {
         socket.ref(`calls/${data.email.replace(".", "-")}`).remove();
         socket.ref(`calls/${data.email.replace(".", "-")}`).set({

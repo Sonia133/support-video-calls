@@ -87,8 +87,6 @@ exports.getEmployee = (req, res) => {
 }
 
 exports.updateSchedule = (req, res) => {
-    console.log(req.body)
-    console.log(req.body.schedule)
     const { valid, errors } = validateSchedule(req.body.schedule);
     if (!valid) return res.status(400).json(errors);
 
@@ -119,6 +117,21 @@ exports.updateSchedule = (req, res) => {
     })
     .then(() => {
         res.status(200).json({ message: 'Schedule added successfully.' });
+    })
+    .catch(err => {
+        console.error(err);
+        return res.status(500).json({ error: 'Something went wrong. Please try again!' });
+    })
+}
+
+exports.setAvailability = (req, res) => {
+
+    db.doc(`/${COLLECTION.EMPLOYEE}/${req.user.email}`)
+    .update({
+        available: req.body.available
+    })
+    .then(() => {
+        res.status(200).json({ message: `Employee set available:${req.body.available} successfully.` });
     })
     .catch(err => {
         console.error(err);

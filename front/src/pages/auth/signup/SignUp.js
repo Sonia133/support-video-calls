@@ -9,7 +9,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
-import { signup, validateTokenEnroll } from "../../redux/actions/userActions";
+import { signup, validateTokenEnroll } from "../../../redux/actions/userActions";
 
 const SignUp = () => {
   const history = useHistory();
@@ -21,11 +21,7 @@ const SignUp = () => {
 
   const onSubmit = (formData) => {
     console.log(formData);
-    dispatch(signup(formData, token));
-    console.log(!!error)
-    if (!error) {
-      history.push('/');
-    }
+    dispatch(signup(formData, token, history));
   };
 
   let renderInitial = <CircularProgress />;

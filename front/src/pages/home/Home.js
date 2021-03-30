@@ -5,21 +5,22 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import socket from "../../socket";
-import { sendRegisterRequest, updateSchedule } from "../../redux/actions/userActions";
+import { changeAvailability, logoutUser, sendRegisterRequest, updateSchedule } from "../../redux/actions/userActions";
 
 const Home = () => {
   const history = useHistory();
   const isLoggedIn = useSelector((state) => state.user.authenticated);
-  const [isEmployee, isCeo, isAdmin, email, companyName, schedule, loadingUser] = useSelector((state) => [
+  const [isEmployee, isCeo, isAdmin, email, companyName, schedule, loading, available] = useSelector((state) => [
     state.user?.role === "employee",
     state.user?.role === "ceo",
     state.user?.admin === "admin",
     state.user?.email,
     state.user?.companyName,
     state.user?.schedule,
-    state.user?.loading
+    state.user?.loading,
+    state.user?.available
   ]);
-  const { loading, error } = useSelector((state) => state.ui);
+  const { loading: loadingUi, error } = useSelector((state) => state.ui);
   let [addEmployee, setAddEmployee] = useState(false);
   let [updated, setUpdated] = useState(false);
   const { register, handleSubmit, errors } = useForm();
@@ -30,7 +31,6 @@ const Home = () => {
       socket
         .ref(`calls/${email.replace(".", "-")}/roomId`)
         .on("value", (snapshot) => {
-          console.log(snapshot.val());
           if (!!snapshot.val()) {
             history.push(`/call/${companyName}`);
           }
@@ -47,15 +47,12 @@ const Home = () => {
   }
 
   const onSubmitSchedule = (formData) => {
-    let formDataToSend = {}
-    console.log(formData);
     let scheduleToSend = [];
     for (let i = 0; i < 5; i ++) {
       scheduleToSend[i] = `${formData[2*i+1]}-${formData[2*i+2]}`;
     }
 
-    formDataToSend.schedule = scheduleToSend;
-    dispatch(updateSchedule(formDataToSend));
+    dispatch(updateSchedule({ schedule: scheduleToSend }));
     if (!!error) {
       setUpdated(false);
     } else {
@@ -66,25 +63,37 @@ const Home = () => {
   const onSubmitEmployee = (formData) => {
     formData.role = "employee";
     formData.companyName = companyName;
-    console.log(formData);
+
     dispatch(sendRegisterRequest(formData));
     if (!!error) {
       setAddEmployee(false);
     } else {
       setAddEmployee(true);
     }
-};
+  };
+
+  const onChangePassword = () => {
+    history.push('/changepassword');
+  }
+
+  const onLogout = () => {
+    dispatch(logoutUser());
+  }
+
+  const onChangeAvailability = () => {
+    dispatch(changeAvailability({ available: !available }));
+  }
 
   useEffect(() => {
     if (!isLoggedIn) {
       history.push("/login");
     }
-  }, [isLoggedIn, isEmployee, schedule, updated]);
+  }, [isLoggedIn, isEmployee, schedule, updated, available]);
 
   return (
     <Box>
       <div>HOME</div>
-      {isEmployee && loadingUser && schedule.length === 0 && (
+      {isEmployee && loading && schedule.length === 0 && (
         <CircularProgress />
       )}
       {isEmployee && schedule.length === 0 && !updated && (
@@ -191,9 +200,19 @@ const Home = () => {
           {!!error?.error && (
               <Typography color="error">{error.error}</Typography>
           )}
-          <Button onClick={handleSubmit(onSubmitSchedule)} disabled={loading}>
+          <Button onClick={handleSubmit(onSubmitSchedule)} disabled={loadingUi}>
               <Typography>Submit schedule</Typography>
           </Button>
+        </Box>
+      )}
+      {isEmployee && (
+        <Box>
+          {!loading && (
+          <Button onClick={onChangeAvailability}>Go {available === true? "busy" : "available"}</Button>)}
+          {loading && (<CircularProgress/>)}
+          {!!error?.error && (
+            <Typography color="error">{error.error}</Typography>
+          )}
         </Box>
       )}
       {isCeo && !addEmployee && (
@@ -223,11 +242,17 @@ const Home = () => {
           {!!error?.error && (
               <Typography color="error">{error.error}</Typography>
           )}
-          <Button onClick={handleSubmit(onSubmitEmployee)} disabled={loading}>
+          <Button onClick={handleSubmit(onSubmitEmployee)} disabled={loadingUi}>
               <Typography>Submit employee</Typography>
           </Button>
         </Box>
       )}
+      <Button onClick={onChangePassword}>
+        <Typography>Change password</Typography>
+      </Button>
+      <Button onClick={onLogout}>
+        <Typography>Log out</Typography>
+      </Button>
     </Box>
   );
 };

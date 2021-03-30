@@ -24,6 +24,11 @@ const UserReducer = (state = initialState, action) => {
         ...state,
         loading: true,
       };
+    case ActionTypes.USER.STOP_LOADING_USER:
+      return {
+        ...state,
+        loading: false,
+      };
     case ActionTypes.USER.SET_ERRORS:
       return {
         ...state,

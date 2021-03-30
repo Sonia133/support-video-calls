@@ -24,7 +24,7 @@ exports.validateEmail = (email) => {
 exports.validatePassword = (data) => {
     let errors = {};
 
-    if (isEmpty(data.password)) errors.password = 'Must not be empty.'
+    if (isEmpty(data.password) || isEmpty(data.confirmPassword)) errors.password = 'Must not be empty.'
     if (data.password !== data.confirmPassword) errors.confirmPassword = 'Passwords do not match.'
 
     return {
@@ -53,7 +53,10 @@ exports.validateSchedule = (data) => {
 
 exports.validateNewPassword = (oldPassword, newPassword) => {
     let errors = {};
+    console.log(oldPassword)
+    console.log(newPassword)
 
+    if (isEmpty(oldPassword) || isEmpty(newPassword)) errors.empty = 'Must not be empty.'
     if (oldPassword === newPassword) errors.password = 'New password can\'t be one of the old passwords'
 
     return {

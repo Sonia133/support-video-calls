@@ -9,7 +9,7 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { loginUser } from "../../redux/actions/userActions";
+import { loginUser } from "../../../redux/actions/userActions";
 
 const Login = () => {
   const history = useHistory();
@@ -30,6 +30,10 @@ const Login = () => {
 
   const onRequest = () => {
       history.push("/getstarted");
+  }
+
+  const onForgotPassword = () => {
+     history.push('/forgotpassword');
   }
 
   return (
@@ -66,6 +70,9 @@ const Login = () => {
       <Typography>Register your own company</Typography>
       <Button onClick={onRequest}>
         <Typography>Here</Typography>
+      </Button>
+      <Button onClick={onForgotPassword}>
+        <Typography>You forgot your password?</Typography>
       </Button>
     </Box>
   );

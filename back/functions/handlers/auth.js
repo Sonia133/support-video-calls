@@ -1,4 +1,4 @@
-const { db, firebase } = require('../util/functions/admin');
+const { db, firebase, admin } = require('../util/functions/admin');
 const config = require('../util/constants/config');
 const bcrypt = require('bcrypt');
 
@@ -179,18 +179,19 @@ exports.changePassword = (req, res) => {
     const { valid, errors } = validateNewPassword(changePasswordRequest.oldPassword, changePasswordRequest.newPassword);
     if (!valid) return res.status(400).json(errors);
 
-    const user = firebase.auth().currentUser;
-    console.log(firebase.auth().currentUser)
-    const credential = firebase.auth.EmailAuthProvider.credential(user.email, changePasswordRequest.oldPassword);
-
-    user.reauthenticateWithCredential(credential)
-    .then(() => {
-        return user.updatePassword(changePasswordRequest.newPassword);        
+    console.log(req.user.email)
+    admin.auth().getUserByEmail(req.user.email)
+    .then((user) => {
+        console.log(user)
+        return admin.auth().updateUser(user.uid, {
+            password: changePasswordRequest.newPassword
+        })        
     })
     .then(() => {
         res.status(200).json({ message: 'Password successfully changed.' });
-    }).catch(() => {
-        return res.status(500).json({ error: 'Something went wrong. Please try again!' });
+    }).catch((err) => {
+        console.log(err)
+        return res.status(500).json({ error: err });
     });
 }
 
