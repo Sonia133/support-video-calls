@@ -55,7 +55,7 @@ app.get('/employee/feedback/:companyName/:employeeEmail', FBUserAuth, getFeedbac
 app.get('/calls', FBAdminAuth, getCalls);
 app.get('/calls/company/:companyName', FBUserAuth, getCallsPerCompany);
 app.get('/calls/employee/:companyName/:employeeEmail', FBUserAuth, getCallsPerEmployee);
-app.get('/call/start/:companyName', findEmployee);
+app.post('/call/start/:companyName', findEmployee);
 app.post('/call/end', addCallDetails);
 
 // initiate video calls routes

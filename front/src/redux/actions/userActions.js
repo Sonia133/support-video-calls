@@ -148,7 +148,23 @@ export const getUserData = () => (dispatch) => {
     .catch((err) => console.log(err));
 };
 
-export const logoutUser = () => (dispatch) => {
-  localStorage.removeItem("FBIdToken");
-  dispatch({ type: ActionTypes.USER.SET_UNAUTHENTICATED });
+export const logoutUser = (role) => (dispatch) => {  
+  if (role === 'employee') {
+    axios.post('/employee/changeAvailability', { available: false })
+    .then(() => {
+      localStorage.removeItem("FBIdToken");
+      dispatch({ type: ActionTypes.USER.SET_UNAUTHENTICATED });
+    })
+    .catch((err) => {
+      console.log(err);
+      dispatch({
+        type: ActionTypes.USER.SET_ERRORS,
+        payload: err.response?.data,
+      });
+    });
+  } else {
+    localStorage.removeItem("FBIdToken");
+    dispatch({ type: ActionTypes.USER.SET_UNAUTHENTICATED });
+  }
+  
 };

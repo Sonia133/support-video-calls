@@ -12,7 +12,9 @@ const UserReducer = (state = initialState, action) => {
         token: action.payload
       }
     case ActionTypes.USER.SET_UNAUTHENTICATED:
-      return initialState;
+      return {
+        authenticated: false,
+      };
     case ActionTypes.USER.SET_USER:
       return {
         authenticated: true,

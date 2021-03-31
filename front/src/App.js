@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Provider } from "react-redux";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, useHistory } from "react-router-dom";
 import "./App.css";
 import store from "./redux/store";
 import VideoChat from "./components/VideoCalls/VideoChat";
@@ -21,12 +21,10 @@ function App() {
       const decodedToken = jwtDecode(token);
   
       if (decodedToken.exp * 1000 < Date.now()) {
-        console.log('expired')
         store.dispatch(logoutUser());
         window.location.href = "/login";
         setToken(undefined);
       } else {
-        console.log('still')
         store.dispatch(getUserData());
       }
     } else {

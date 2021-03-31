@@ -8,9 +8,12 @@ import { useParams } from "react-router";
 import socket from "../../socket/index.js";
 import { useDispatch, useSelector } from "react-redux";
 import { findEmployee, endCall } from "../../redux/actions/callActions.js";
+import { CircularProgress } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
 
 const VideoChat = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const { companyName } = useParams();
   const [isEmployee, email] = useSelector((state) => [
     state.user?.role === "employee",
@@ -25,7 +28,6 @@ const VideoChat = () => {
     setUsername(event.target.value);
     const roomNameUuid = uuidv4();
 
-    console.log(roomNameUuid);
     setRoomName(roomNameUuid);
   }, []);
 
@@ -46,14 +48,15 @@ const VideoChat = () => {
           setRoom(room);
         })
         .then(() => {
-          socket.ref(`calls/${username}`).remove();
-          socket.ref(`calls/${username}`).set({
+          socket.ref(`calls/${username.replace(".", "-")}`).remove();
+          socket.ref(`calls/${username.replace(".", "-")}`).set({
             roomId: roomName,
             joinedAt: new Date().toISOString(),
             companyName: companyName,
             isClient: true,
           });
 
+          console.log('here')
           dispatch(findEmployee(roomName, companyName));
         })
         .catch((err) => {
@@ -64,25 +67,36 @@ const VideoChat = () => {
     [roomName, username]
   );
 
-  const handleLogout = useCallback(() => {
-    setRoom((prevRoom) => {
+  const handleLogout = useCallback(() => {  
+    var employeeEmail;
+
+    setRoom((prevRoom) => {      
       if (prevRoom) {
+        if (!isEmployee) {
+          var iterator_obj = prevRoom.participants.entries();
+          employeeEmail = iterator_obj.next().value[1].identity;
+        }
         prevRoom.localParticipant.tracks.forEach((trackPub) => {
           trackPub.track.stop();
         });
         prevRoom.disconnect();
       }
-      
-      if (!isEmployee) {
-          dispatch(endCall(roomName, companyName, email));
-          socket.ref(`calls/${username}`).remove();
 
-          socket.ref("calls").orderByChild("isClient").equalTo(true)
-            .orderByChild("joinedAt").limitToFirst(1).get()
-          .then((data) => {
-            dispatch(findEmployee(data.val().roomId, data.val().companyName));
-            return null;
-          })
+      if (isEmployee) {
+        dispatch(endCall(companyName, email));
+      }
+
+      if (!isEmployee) {
+          socket.ref(`calls/${username.replace(".", "-")}`).remove();
+          // console.log(employeeEmail)
+          dispatch(endCall(companyName, employeeEmail));
+
+          // socket.ref("calls").orderByChild("isClient").equalTo(true)
+          //   .orderByChild("joinedAt").limitToFirst(1).get()
+          // .then((data) => {
+          //   dispatch(findEmployee(data.val().roomId, data.val().companyName));
+          //   return null;
+          // })
       }
 
       return null;
@@ -141,14 +155,18 @@ const VideoChat = () => {
       <Room roomName={roomName} room={room} handleLogout={handleLogout} />
     );
   } else {
-    render = (
-      <Lobby
-        username={username}
-        handleUsernameChange={handleUsernameChange}
-        handleSubmit={handleSubmit}
-        connecting={connecting}
-      />
-    );
+    if (isEmployee) {
+      render = <CircularProgress />
+    } else {
+      render = (
+        <Lobby
+          username={username}
+          handleUsernameChange={handleUsernameChange}
+          handleSubmit={handleSubmit}
+          connecting={connecting}
+        />
+      );
+    }
   }
   return render;
 };

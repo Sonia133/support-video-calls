@@ -10,7 +10,7 @@ import { changeAvailability, logoutUser, sendRegisterRequest, updateSchedule } f
 const Home = () => {
   const history = useHistory();
   const isLoggedIn = useSelector((state) => state.user.authenticated);
-  const [isEmployee, isCeo, isAdmin, email, companyName, schedule, loading, available] = useSelector((state) => [
+  const [isEmployee, isCeo, isAdmin, email, companyName, schedule, loading, available, role] = useSelector((state) => [
     state.user?.role === "employee",
     state.user?.role === "ceo",
     state.user?.admin === "admin",
@@ -18,7 +18,8 @@ const Home = () => {
     state.user?.companyName,
     state.user?.schedule,
     state.user?.loading,
-    state.user?.available
+    state.user?.available,
+    state.user?.role
   ]);
   const { loading: loadingUi, error } = useSelector((state) => state.ui);
   let [addEmployee, setAddEmployee] = useState(false);
@@ -31,8 +32,10 @@ const Home = () => {
       socket
         .ref(`calls/${email.replace(".", "-")}/roomId`)
         .on("value", (snapshot) => {
-          if (!!snapshot.val()) {
+          if (snapshot.val() !== '') {
             history.push(`/call/${companyName}`);
+          } else {
+            history.push('/');
           }
         });
     }
@@ -77,7 +80,7 @@ const Home = () => {
   }
 
   const onLogout = () => {
-    dispatch(logoutUser());
+    dispatch(logoutUser(role));
   }
 
   const onChangeAvailability = () => {
@@ -86,6 +89,7 @@ const Home = () => {
 
   useEffect(() => {
     if (!isLoggedIn) {
+      console.log('here')
       history.push("/login");
     }
   }, [isLoggedIn, isEmployee, schedule, updated, available]);

@@ -213,16 +213,29 @@ exports.addCallDetails = (req, res) => {
   // comments = req.body.comments;
   employeeEmail = req.body.employeeEmail;
   companyName = req.body.companyName;
-  roomName = req.body.roomName;
+  let roomName;
 
   let duration, createdAt;
-  client.video.rooms.list({uniqueName: roomName, limit: 1})
+
+  db.doc(`${COLLECTION.EMPLOYEE}/${employeeEmail}`).get()
+  .then(doc => {
+    roomName = doc.data().currentCallId;
+    return client.video.rooms.list({uniqueName: roomName, limit: 1});
+  })
   .then(rooms => {
     const room = rooms[0];
-    duration = room.duration;
+
+    end = new Date(room.dateUpdated);
+    start = new Date(room.dateCreated);
+    duration = end - start;
+    if (duration > 60e3) {
+      duration = duration / 60e3;
+    } else {
+      duration = (1 / 60) * (duration / 1e3);
+    }
     createdAt = room.dateCreated;
 
-    db.doc(COLLECTION.CALL)
+    db.collection(COLLECTION.CALL)
     .add({
       employeeEmail,
       createdAt,
@@ -234,6 +247,7 @@ exports.addCallDetails = (req, res) => {
     .then(() => {
       return db.doc(`${COLLECTION.EMPLOYEE}/${employeeEmail}`).update({
         available: true,
+        currentCallId: ''
       });
     })
     .then(() => {

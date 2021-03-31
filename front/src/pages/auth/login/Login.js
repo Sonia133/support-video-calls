@@ -9,11 +9,11 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { loginUser } from "../../../redux/actions/userActions";
+import { changeAvailability, loginUser } from "../../../redux/actions/userActions";
 
 const Login = () => {
   const history = useHistory();
-  const { loading, error, authenticated } = useSelector((state) => state.user);
+  const { loading, error, authenticated, role, schedule } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const { register, handleSubmit, errors } = useForm();
 
@@ -21,10 +21,13 @@ const Login = () => {
     if (authenticated) {
       history.push("/");
     }
-  }, [authenticated]);
+
+    if (role === 'employee' && schedule !== []) {
+      dispatch(changeAvailability({ available: true }));
+    }
+  }, [authenticated, role]);
 
   const onSubmit = (formData) => {
-    console.log(formData);
     dispatch(loginUser(formData));
   };
 

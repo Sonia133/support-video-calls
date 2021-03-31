@@ -108,12 +108,11 @@ exports.updateSchedule = (req, res) => {
             link = `http://localhost:3000/call/${doc.data().companyName}`;
 
             generatedLinkMail(doc.data().email, link);
+
+            return db.doc(`/${COLLECTION.CEO}/${ceoEmail}`).update({
+                generatedLink: link
+            });
         }
-        
-        return db.doc(`/${COLLECTION.CEO}/${ceoEmail}`).update({
-            boarderUsers: doc.data().boardedUsers + 1,
-            generatedLink: link
-        });
     })
     .then(() => {
         res.status(200).json({ message: 'Schedule added successfully.' });
