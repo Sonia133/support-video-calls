@@ -32,7 +32,7 @@ const Home = () => {
       socket
         .ref(`calls/${email.replace(".", "-")}/roomId`)
         .on("value", (snapshot) => {
-          if (snapshot.val() !== '') {
+          if (snapshot.val() !== '' && snapshot.val() !== null) {
             history.push(`/call/${companyName}`);
           } else {
             history.push('/');

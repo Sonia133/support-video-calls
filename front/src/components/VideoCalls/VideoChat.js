@@ -54,6 +54,7 @@ const VideoChat = () => {
             joinedAt: new Date().toISOString(),
             companyName: companyName,
             isClient: true,
+            inCall: false,
             hasEnded: false
           });
 
@@ -82,8 +83,16 @@ const VideoChat = () => {
       if (prevRoom) {
         const localParticipant = prevRoom.localParticipant.identity;
 
-        var iterator_obj = prevRoom.participants.entries();
-        const remoteParticipant = iterator_obj.next().value[1].identity;
+        let hasRemoteParticipant = false;
+        prevRoom.participants.forEach((entry) => {
+          hasRemoteParticipant = true;
+        })
+
+        let remoteParticipant;
+        if (hasRemoteParticipant) {
+          var iterator_obj = prevRoom.participants.entries();
+          remoteParticipant = iterator_obj.next().value[1].identity;
+        }
     
         if (isEmployee) {
           socket.ref(`calls/${remoteParticipant.replace(".", "-")}`).update({
@@ -98,8 +107,12 @@ const VideoChat = () => {
               hasEnded: true
             });
             socket.ref(`calls/${username.replace(".", "-")}`).remove();
-
-            dispatch(endCall(companyName, remoteParticipant, localParticipant, remoteParticipant));
+            
+            if (remoteParticipant) {
+              dispatch(endCall(companyName, remoteParticipant, localParticipant, remoteParticipant));
+            } else {
+              return null;
+            }
     
             // socket.ref("calls").orderByChild("isClient").equalTo(true)
             //   .orderByChild("joinedAt").limitToFirst(1).get()
@@ -131,6 +144,13 @@ const VideoChat = () => {
             .then((room) => {
               setConnecting(false);
               setRoom(room);
+              console.log(room)
+              var iterator_obj = room.participants.entries();
+              const remoteParticipant = iterator_obj.next().value[1].identity;
+
+              socket.ref(`calls/${remoteParticipant.replace(".", "-")}`).update({
+                inCall: true
+              });
             })
             .catch((err) => {
               console.error(err);
