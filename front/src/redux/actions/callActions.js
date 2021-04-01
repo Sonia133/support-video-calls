@@ -21,10 +21,12 @@ export const findEmployee = (roomName, companyName) => (dispatch) => {
     });
 };
 
-export const endCall = (companyName, employeeEmail) => (dispatch) => {
+export const endCall = (companyName, employeeEmail, localParticipant, remoteParticipant) => (dispatch) => {
     const callData = {
         companyName,
-        employeeEmail
+        employeeEmail,
+        localParticipant,
+        remoteParticipant
     };
     
     axios.post("/call/end", callData)

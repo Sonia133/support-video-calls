@@ -89,7 +89,6 @@ const Home = () => {
 
   useEffect(() => {
     if (!isLoggedIn) {
-      console.log('here')
       history.push("/login");
     }
   }, [isLoggedIn, isEmployee, schedule, updated, available]);

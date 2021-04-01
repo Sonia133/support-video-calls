@@ -54,9 +54,19 @@ const VideoChat = () => {
             joinedAt: new Date().toISOString(),
             companyName: companyName,
             isClient: true,
+            hasEnded: false
           });
 
-          console.log('here')
+          socket
+          .ref(`calls/${username.replace(".", "-")}/hasEnded`)
+          .on("value", (snapshot) => {
+            if (snapshot.val() === true) {
+              if(!isEmployee) {
+                history.push('/endcall');
+              }
+            }
+          });
+
           dispatch(findEmployee(roomName, companyName));
         })
         .catch((err) => {
@@ -67,40 +77,40 @@ const VideoChat = () => {
     [roomName, username]
   );
 
-  const handleLogout = useCallback(() => {  
-    var employeeEmail;
-
-    setRoom((prevRoom) => {      
+  const handleLogout = useCallback(() => {
+    setRoom((prevRoom) => {
       if (prevRoom) {
-        if (!isEmployee) {
-          var iterator_obj = prevRoom.participants.entries();
-          employeeEmail = iterator_obj.next().value[1].identity;
+        const localParticipant = prevRoom.localParticipant.identity;
+
+        var iterator_obj = prevRoom.participants.entries();
+        const remoteParticipant = iterator_obj.next().value[1].identity;
+    
+        if (isEmployee) {
+          socket.ref(`calls/${remoteParticipant.replace(".", "-")}`).update({
+            hasEnded: true
+          });
+          socket.ref(`calls/${remoteParticipant.replace(".", "-")}`).remove();
+          dispatch(endCall(companyName, email, localParticipant, remoteParticipant));
         }
-        prevRoom.localParticipant.tracks.forEach((trackPub) => {
-          trackPub.track.stop();
-        });
-        prevRoom.disconnect();
+    
+        if (!isEmployee) {
+            socket.ref(`calls/${username.replace(".", "-")}`).update({
+              hasEnded: true
+            });
+            socket.ref(`calls/${username.replace(".", "-")}`).remove();
+
+            dispatch(endCall(companyName, remoteParticipant, localParticipant, remoteParticipant));
+    
+            // socket.ref("calls").orderByChild("isClient").equalTo(true)
+            //   .orderByChild("joinedAt").limitToFirst(1).get()
+            // .then((data) => {
+            //   dispatch(findEmployee(data.val().roomId, data.val().companyName));
+            //   return null;
+            // })
+        }
       }
-
-      if (isEmployee) {
-        dispatch(endCall(companyName, email));
-      }
-
-      if (!isEmployee) {
-          socket.ref(`calls/${username.replace(".", "-")}`).remove();
-          // console.log(employeeEmail)
-          dispatch(endCall(companyName, employeeEmail));
-
-          // socket.ref("calls").orderByChild("isClient").equalTo(true)
-          //   .orderByChild("joinedAt").limitToFirst(1).get()
-          // .then((data) => {
-          //   dispatch(findEmployee(data.val().roomId, data.val().companyName));
-          //   return null;
-          // })
-      }
-
       return null;
-    });
+    })  
   }, []);
 
   useEffect(() => {
@@ -108,7 +118,7 @@ const VideoChat = () => {
       socket
         .ref(`calls/${email.replace(".", "-")}/roomId`)
         .once("value", async (snapshot) => {
-          setRoomName(snapshot.val())
+          setRoomName(snapshot.val());
           setConnecting(true);
 
           const data = await axios

@@ -7,6 +7,9 @@ const accountSid = configTwilio.twilio.accountSid;
 const authToken = configTwilio.twilio.authToken;
 const client = require('twilio')(accountSid, authToken);
 
+var Twilio = require('twilio');
+const clientDisconnect = new Twilio(configTwilio.twilio.apiKey, configTwilio.twilio.apiSecret, {accountSid: accountSid});
+
 exports.getCalls = (req, res) => {
   db.collection(COLLECTION.CALL)
     .orderBy("createdAt", "desc")
@@ -144,6 +147,7 @@ exports.getCallsPerEmployee = (req, res) => {
 };
 
 exports.findEmployee = (req, res) => {
+  console.log('find')
   const roomName = req.body.roomName;
   const companyName = req.params.companyName;
   let employees = [];
@@ -209,10 +213,11 @@ exports.findEmployee = (req, res) => {
 };
 
 exports.addCallDetails = (req, res) => {
-  // feedback = req.body.feedback;
-  // comments = req.body.comments;
   employeeEmail = req.body.employeeEmail;
   companyName = req.body.companyName;
+  remoteParticipant = req.body.remoteParticipant;
+  localParticipant = req.body.localParticipant;
+
   let roomName;
 
   let duration, createdAt;
@@ -249,6 +254,16 @@ exports.addCallDetails = (req, res) => {
         available: true,
         currentCallId: ''
       });
+    })
+    .then(() => {
+      return clientDisconnect.video.rooms(roomName)
+        .participants(remoteParticipant)
+        .update({status: 'disconnected'})
+    })
+    .then(() => {
+      return clientDisconnect.video.rooms(roomName)
+        .participants(localParticipant)
+        .update({status: 'disconnected'})
     })
     .then(() => {
       return res.status(200).json({ message: "Call updated successfully." });

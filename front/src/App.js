@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Switch, useHistory } from "react-router
 import "./App.css";
 import store from "./redux/store";
 import VideoChat from "./components/VideoCalls/VideoChat";
+import Feedback from "./components/VideoCalls/Feedback";
 import jwtDecode from "jwt-decode";
 import { getUserData, logoutUser } from "./redux/actions/userActions";
 import Login from "./pages/auth/login/Login";
@@ -43,6 +44,7 @@ function App() {
           <Route exact path="/invite/:token" component={SignUp} />
           <Route exact path="/getstarted" component={GetStarted} />
           <Route exact path="/call/:companyName" component={VideoChat} />
+          <Route exact path="/endcall" component={Feedback} />
         </Switch>
       </Router>
     </Provider>
