@@ -12,7 +12,7 @@ const { updateSchedule, getEmployee, getEmployees, getFeedback, setAvailability 
 const { deleteEmployee, getCeos } = require('./handlers/ceo');
 const { addAdmin, deleteCeo } = require('./handlers/admin');
 const { 
-    getCalls, getCallsPerEmployee, getCallsPerCompany, addCallDetails, findEmployee
+    getCalls, getCallsPerEmployee, getCallsPerCompany, addCallDetails, findEmployee, addFeedback
 } = require('./handlers/call');
 const { videoToken } = require('./handlers/video');
 
@@ -57,6 +57,7 @@ app.get('/calls/company/:companyName', FBUserAuth, getCallsPerCompany);
 app.get('/calls/employee/:companyName/:employeeEmail', FBUserAuth, getCallsPerEmployee);
 app.post('/call/start/:companyName', findEmployee);
 app.post('/call/end', addCallDetails);
+app.post('/call/feedback', addFeedback);
 
 // initiate video calls routes
 app.post('/video/token', videoToken);

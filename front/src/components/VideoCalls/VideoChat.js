@@ -63,7 +63,7 @@ const VideoChat = () => {
           .on("value", (snapshot) => {
             if (snapshot.val() === true) {
               if(!isEmployee) {
-                history.push('/endcall');
+                history.push(`/endcall/${roomName}`);
               }
             }
           });
@@ -109,18 +109,19 @@ const VideoChat = () => {
             socket.ref(`calls/${username.replace(".", "-")}`).remove();
             
             if (remoteParticipant) {
+              console.log(remoteParticipant)
               dispatch(endCall(companyName, remoteParticipant, localParticipant, remoteParticipant));
             } else {
               return null;
             }
-    
-            // socket.ref("calls").orderByChild("isClient").equalTo(true)
+        }
+
+        // socket.ref("calls").orderByChild("incall").equalTo(false)
             //   .orderByChild("joinedAt").limitToFirst(1).get()
             // .then((data) => {
             //   dispatch(findEmployee(data.val().roomId, data.val().companyName));
             //   return null;
             // })
-        }
       }
       return null;
     })  

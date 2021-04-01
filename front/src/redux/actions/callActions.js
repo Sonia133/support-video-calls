@@ -44,3 +44,18 @@ export const endCall = (companyName, employeeEmail, localParticipant, remotePart
       });
     });
 }
+
+export const sendFeedback = (formData) => (dispatch) {
+  dispatch({ type: ActionTypes.UI.LOADING_UI });
+  axios.post('/call/feedback', formData)
+  .then(() => {
+    dispatch({ type: ActionTypes.UI.STOP_LOADING_UI });
+  })
+  .catch((err) => {
+    console.log(err);
+    dispatch({
+      type: ActionTypes.UI.SET_ERRORS,
+      payload: err.response?.data,
+    });
+  });
+}

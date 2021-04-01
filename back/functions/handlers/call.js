@@ -240,14 +240,14 @@ exports.addCallDetails = (req, res) => {
     }
     createdAt = room.dateCreated;
 
-    db.collection(COLLECTION.CALL)
-    .add({
+    db.doc(`/${COLLECTION.CALL}/${roomName}`)
+    .set({
       employeeEmail,
       createdAt,
       companyName,
       duration,
-      feedback: '',
-      comments: [],
+      feedback: 0,
+      comments: '',
     })
     .then(() => {
       return db.doc(`${COLLECTION.EMPLOYEE}/${employeeEmail}`).update({
@@ -276,3 +276,21 @@ exports.addCallDetails = (req, res) => {
     });
   });
 };
+
+exports.addFeedback = (req, res) => {
+  const { roomName, feedback, comments } = req.body;
+
+  db.doc(`/${COLLECTION.CALL}/${roomName}`).update({
+    feedback,
+    comments
+  })
+  .then(() => {
+    res.status(200).json({ message: 'Feedback sent successfully!' });
+  })
+  .catch((err) => {
+    console.error(err);
+      return res
+        .status(500)
+        .json({ error: "Something went wrong. Please try again!" });
+  });
+}

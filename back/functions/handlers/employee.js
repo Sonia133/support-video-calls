@@ -147,6 +147,7 @@ exports.getFeedback = (req, res) => {
 
     let employeeData;
     let callsNumber = 0;
+    let callsRated = 0;
     let feedbackGrade = 0;
 
     if (req.user.role === ROLE.ADMIN) {
@@ -165,11 +166,14 @@ exports.getFeedback = (req, res) => {
                 data.forEach(doc => {
                     employeeData.comments.push(doc.data().comments);
                     callsNumber += 1
-                    feedbackGrade += doc.data().feedback;
+                    if (doc.data().feedback > 0) {
+                        callsRated += 1;
+                        feedbackGrade += doc.data().feedback;
+                    }
                 })
 
                 employeeData.callsNumber = callsNumber;
-                employeeData.feedback = feedbackGrade / callsNumber;
+                employeeData.feedback = feedbackGrade / callsRated;
             })
 
             return res.json(employeeData);

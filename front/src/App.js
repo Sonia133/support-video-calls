@@ -44,7 +44,7 @@ function App() {
           <Route exact path="/invite/:token" component={SignUp} />
           <Route exact path="/getstarted" component={GetStarted} />
           <Route exact path="/call/:companyName" component={VideoChat} />
-          <Route exact path="/endcall" component={Feedback} />
+          <Route exact path="/endcall/:roomName" component={Feedback} />
         </Switch>
       </Router>
     </Provider>
