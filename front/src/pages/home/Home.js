@@ -5,12 +5,13 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import socket from "../../socket";
-import { changeAvailability, logoutUser, sendRegisterRequest, updateSchedule } from "../../redux/actions/userActions";
+import { changeAvailability, logoutUser, sendRegisterRequest, updateSchedule, uploadImage } from "../../redux/actions/userActions";
 
 const Home = () => {
   const history = useHistory();
   const isLoggedIn = useSelector((state) => state.user.authenticated);
-  const [isEmployee, isCeo, isAdmin, email, companyName, schedule, loading, available, role] = useSelector((state) => [
+  const [imageUrl, isEmployee, isCeo, isAdmin, email, companyName, schedule, loading, available, role] = useSelector((state) => [
+    state.user.imageUrl,
     state.user?.role === "employee",
     state.user?.role === "ceo",
     state.user?.admin === "admin",
@@ -86,6 +87,20 @@ const Home = () => {
   const onChangeAvailability = () => {
     dispatch(changeAvailability({ available: !available }));
   }
+
+  const onImageChange = (event) => {
+    const image = event.target.files[0];
+    
+    const formData = new FormData();
+    formData.append('image', image, image.name);
+
+    dispatch(uploadImage(formData));
+  };
+
+  const onEditPicture = () => {
+    const fileInput = document.getElementById('imageInput');
+    fileInput.click();
+  };
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -250,6 +265,13 @@ const Home = () => {
           </Button>
         </Box>
       )}
+      <Box>
+        <img src={imageUrl} alt="profile"/>
+        <input style={{display: 'none'}} type="file" id="imageInput" onChange={onImageChange}></input>
+        <Button onClick={onEditPicture}>
+          <Typography>Update image</Typography>
+        </Button>
+      </Box>
       <Button onClick={onChangePassword}>
         <Typography>Change password</Typography>
       </Button>

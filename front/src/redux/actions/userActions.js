@@ -148,6 +148,21 @@ export const getUserData = () => (dispatch) => {
     .catch((err) => console.log(err));
 };
 
+export const uploadImage = (formData)  => (dispatch) => {
+  dispatch({ type: ActionTypes.USER.LOADING_USER });
+  axios.post('/updateImage', formData)
+      .then(() => {
+          dispatch(getUserData());
+      })
+      .catch((err) => {
+        console.log(err);
+        dispatch({
+          type: ActionTypes.USER.SET_ERRORS,
+          payload: err.response?.data,
+        });
+      });
+}
+
 export const logoutUser = (role) => (dispatch) => {  
   if (role === 'employee') {
     axios.post('/employee/changeAvailability', { available: false })

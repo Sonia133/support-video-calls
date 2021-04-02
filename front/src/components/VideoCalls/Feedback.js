@@ -17,6 +17,7 @@ const Feedback = () => {
             formData.comments = '';
         }
         formData.roomName = roomName;
+        console.log(formData)
         setSent(true);
         dispatch(sendFeedback(formData));
     }

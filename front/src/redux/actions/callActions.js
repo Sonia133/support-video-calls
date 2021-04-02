@@ -45,7 +45,8 @@ export const endCall = (companyName, employeeEmail, localParticipant, remotePart
     });
 }
 
-export const sendFeedback = (formData) => (dispatch) {
+export const sendFeedback = (formData) => (dispatch) => {
+  console.log(formData)
   dispatch({ type: ActionTypes.UI.LOADING_UI });
   axios.post('/call/feedback', formData)
   .then(() => {

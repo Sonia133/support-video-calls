@@ -1,4 +1,4 @@
-const { db } = require("../util/functions/admin");
+const { admin, db } = require("../util/functions/admin");
 const config = require("../util/constants/config");
 const { COLLECTION } = require("../util/constants/constant");
 

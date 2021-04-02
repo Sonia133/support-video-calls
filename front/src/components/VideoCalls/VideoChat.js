@@ -61,7 +61,8 @@ const VideoChat = () => {
           socket
           .ref(`calls/${username.replace(".", "-")}/hasEnded`)
           .on("value", (snapshot) => {
-            if (snapshot.val() === true) {
+            console.log(snapshot.val())
+            if (snapshot.val() === true || snapshot.val() === null) {
               if(!isEmployee) {
                 history.push(`/endcall/${roomName}`);
               }
