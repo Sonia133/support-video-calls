@@ -1,4 +1,3 @@
-import { Button, Typography } from "@material-ui/core";
 import React, { useState, useEffect, useRef } from "react";
 
 const Participant = ({ participant }) => {

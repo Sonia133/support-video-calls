@@ -82,6 +82,7 @@ const VideoChat = () => {
   const handleLogout = useCallback(() => {
     setRoom((prevRoom) => {
       if (prevRoom) {
+        console.log(prevRoom)
         const localParticipant = prevRoom.localParticipant.identity;
 
         let hasRemoteParticipant = false;
@@ -116,13 +117,6 @@ const VideoChat = () => {
               return null;
             }
         }
-
-        // socket.ref("calls").orderByChild("incall").equalTo(false)
-            //   .orderByChild("joinedAt").limitToFirst(1).get()
-            // .then((data) => {
-            //   dispatch(findEmployee(data.val().roomId, data.val().companyName));
-            //   return null;
-            // })
       }
       return null;
     })  

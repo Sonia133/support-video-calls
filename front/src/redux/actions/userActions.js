@@ -142,6 +142,7 @@ export const getUserData = () => (dispatch) => {
         socket.ref(`calls/${data.email.replace(".", "-")}`).set({
           roomId: "",
           joinedAt: new Date().toISOString(),
+          isClient: false
         });
       }
     })
