@@ -4,7 +4,7 @@ import {
     TextField,
     Typography
 } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { sendRegisterRequest } from "../../../redux/actions/userActions";
@@ -14,56 +14,87 @@ const GetStarted = () => {
     const { register, handleSubmit, errors } = useForm();
     const { loading, error } = useSelector((state) => state.ui);
     let [enrolled, setEnrolled] = useState(false);
+    let [submitted, setSubmitted] = useState(false);
 
     const onSubmit = (formData) => {
+        setSubmitted(true);
+
         formData.role = "ceo";
         console.log(formData);
         dispatch(sendRegisterRequest(formData));
-        if (!!error) {
-            setEnrolled(false);
-        } else {
-            setEnrolled(true);
-        }
     };
+
+    useEffect(() => {
+        if (submitted) {
+            if (error) {
+                setEnrolled(false);
+            } else {
+                setEnrolled(true);
+            }
+        }
+    }, [])
 
     let render;
     if (enrolled) {
         render = (
-            <Typography>Enrolled succesfully! Now check your email for the next step!</Typography>
+            <div style={{height: "100%", display: "flex"}}>
+                <Box
+                    px={6}
+                    py={4}
+                    className="auth-container"
+                    style={{background: "#fff"}}
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                >
+                    <Typography>Enrolled succesfully! Now check your email for the next step!</Typography>
+                </Box>
+            </div>
         );
     }
     else {
         render = (
-            <Box
-                my={4}
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-            >
-                <TextField
-                    error={!!errors.email?.message}
-                    helperText={errors.email?.message ?? ""}
-                    name="email"
-                    inputRef={register({ required: "Email is required" })}
-                    variant="outlined"
-                    placeholder="Enter email"
-                />
-                <TextField
-                    error={!!errors.companyName?.message}
-                    helperText={errors.companyName?.message ?? ""}
-                    name="companyName"
-                    inputRef={register({ required: "Company name is required" })}
-                    variant="outlined"
-                    placeholder="Enter company name"
-                />
-                {!!error?.error && (
-                    <Typography color="error">{error.error}</Typography>
-                )}
-                <Button onClick={handleSubmit(onSubmit)} disabled={loading}>
-                    <Typography>Get Started</Typography>
-                </Button>
-            </Box>
+            <div style={{height: "100%", display: "flex"}}>
+                <Box
+                    px={6}
+                    py={4}
+                    className="auth-container"
+                    style={{background: "#fff"}}
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                >
+                    <h2>Register your company</h2>
+                    <TextField
+                        error={!!errors.email?.message}
+                        helperText={errors.email?.message ?? ""}
+                        label="Email"
+                        name="email"
+                        inputRef={register({ required: "Email is required" })}
+                        variant="outlined"
+                        InputLabelProps={{shrink: true }}
+                    />
+                    <TextField
+                        error={!!errors.companyName?.message}
+                        helperText={errors.companyName?.message ?? ""}
+                        label="Company"
+                        name="companyName"
+                        inputRef={register({ required: "Company name is required" })}
+                        variant="outlined"
+                        InputLabelProps={{shrink: true }}
+                    />
+                    {!!error?.error && (
+                        <Typography color="error">{error.error}</Typography>
+                    )}
+                    {!!error?.email && <Typography color="error">{error.email}</Typography>}
+                    <Button onClick={handleSubmit(onSubmit)} disabled={loading} variant="contained" color="primary">
+                        <Typography>Get Started</Typography>
+                    </Button>
+                    <p>Back to <a href="/login"> login</a>?</p>
+                </Box>
+            </div>
         );
     }
     

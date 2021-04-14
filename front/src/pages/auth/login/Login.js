@@ -35,49 +35,57 @@ const Login = () => {
       history.push("/getstarted");
   }
 
-  const onForgotPassword = () => {
-     history.push('/forgotpassword');
-  }
-
   return (
-    <Box
-      my={4}
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
-    >
-      <TextField
-        error={!!errors.email?.message}
-        helperText={errors.email?.message ?? ""}
-        name="email"
-        inputRef={register({ required: "Email is required" })}
-        variant="outlined"
-        placeholder="Enter email"
-      />
-      <TextField
-        error={!!errors.password?.message}
-        helperText={errors.password?.message ?? ""}
-        name="password"
-        inputRef={register({ required: "Password is required" })}
-        variant="outlined"
-        placeholder="Enter password"
-        type="password"
-      />
-      {!!error?.error && (
-        <Typography color="error">{error.error}</Typography>
-      )}
-      <Button onClick={handleSubmit(onSubmit)} disabled={loading}>
-        {loading ? <CircularProgress /> : <Typography>Login</Typography>}
-      </Button>
-      <Typography>Register your own company</Typography>
-      <Button onClick={onRequest}>
-        <Typography>Here</Typography>
-      </Button>
-      <Button onClick={onForgotPassword}>
-        <Typography>You forgot your password?</Typography>
-      </Button>
-    </Box>
+    <div style={{height: "100%", display: "flex"}}>
+      <Box 
+        className="auth-container"
+      >
+        <Box
+          className="auth-box"
+          p={6}
+          style={{borderRadius: "2% 0 0 2%"}}
+        >
+          <h2>Sign in</h2>
+          <TextField
+            label="Email"
+            error={!!errors.email?.message}
+            helperText={errors.email?.message ?? ""}
+            name="email"
+            inputRef={register({ required: "Email is required" })}
+            variant="outlined"
+            InputLabelProps={{shrink: true }}
+          />
+          <TextField
+            label="Password"
+            error={!!errors.password?.message}
+            helperText={errors.password?.message ?? ""}
+            name="password"
+            inputRef={register({ required: "Password is required" })}
+            variant="outlined"
+            placeholder="Enter password"
+            type="password"
+            InputLabelProps={{shrink: true }}
+          />
+          {!!error?.error && (
+            <Typography color="error">{error.error}</Typography>
+          )}
+          <a href="/forgotpassword">Forgot your password?</a>
+          <Button onClick={handleSubmit(onSubmit)} disabled={loading} variant="contained" color="primary">
+            {loading ? <CircularProgress /> : <Typography>Sign in</Typography>}
+          </Button>
+        </Box>
+        <Box 
+          className="alternative-auth-box"
+          p={6}
+        >
+          <h1 style={{color: "#fff"}}>Hello, Friend!</h1>
+          <p style={{color: "#fff", textAlign: "center"}}>Do you want to register your own company?</p>
+            <Button onClick={onRequest} variant="contained">
+              <Typography>Register</Typography>
+            </Button>
+        </Box>
+      </Box>
+    </div>
   );
 };
 

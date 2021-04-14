@@ -19,9 +19,24 @@ exports.requestAccount = (req, res) => {
     const { valid, errors } = validateEmail(newUserRequest.email);
     if (!valid) return res.status(400).json(errors);
 
-    db.doc(`/${COLLECTION.ACCOUNT_REQUEST}/${token}`).get()
+    db.collection(`/${newUserRequest.role}`).get()
+        .then((data) => {
+            let found = 0;
+            data.forEach((document) => {
+                if (document.data().email === newUserRequest.email) {
+                    found = 1;
+                    console.log('here')
+                    return res.status(400).json({ email: 'You have already signed up.' });
+                } 
+            })
+
+            if (data === 0) {
+                return db.doc(`/${COLLECTION.ACCOUNT_REQUEST}/${token}`).get();
+            }
+        })
         .then(doc => {
             if(doc.exists) {
+                console.log('here1')
                 return res.status(400).json({ email: 'It was already sent a request from this email. Please check your inbox.' });
             } else {
                 return db.doc(`/${COLLECTION.ACCOUNT_REQUEST}/${token}`).set(newUserRequest);
