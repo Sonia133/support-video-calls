@@ -1,6 +1,7 @@
 import {
     Box,
     Button,
+    CircularProgress,
     TextField,
     Typography
 } from "@material-ui/core";
@@ -20,19 +21,18 @@ const GetStarted = () => {
         setSubmitted(true);
 
         formData.role = "ceo";
-        console.log(formData);
         dispatch(sendRegisterRequest(formData));
     };
 
     useEffect(() => {
-        if (submitted) {
+        if (submitted && !loading) {
             if (error) {
                 setEnrolled(false);
             } else {
                 setEnrolled(true);
             }
         }
-    }, [])
+    }, [loading])
 
     let render;
     if (enrolled) {
@@ -90,7 +90,7 @@ const GetStarted = () => {
                     )}
                     {!!error?.email && <Typography color="error">{error.email}</Typography>}
                     <Button onClick={handleSubmit(onSubmit)} disabled={loading} variant="contained" color="primary">
-                        <Typography>Get Started</Typography>
+                        {loading ? <CircularProgress /> : <Typography>Get started</Typography>}
                     </Button>
                     <p>Back to <a href="/login"> login</a>?</p>
                 </Box>

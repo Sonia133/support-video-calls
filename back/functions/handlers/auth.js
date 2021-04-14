@@ -25,20 +25,24 @@ exports.requestAccount = (req, res) => {
             data.forEach((document) => {
                 if (document.data().email === newUserRequest.email) {
                     found = 1;
-                    console.log('here')
                     return res.status(400).json({ email: 'You have already signed up.' });
                 } 
             })
 
-            if (data === 0) {
-                return db.doc(`/${COLLECTION.ACCOUNT_REQUEST}/${token}`).get();
+            if (found === 0) {
+                return db.collection(`/${COLLECTION.ACCOUNT_REQUEST}`).get();
             }
         })
-        .then(doc => {
-            if(doc.exists) {
-                console.log('here1')
-                return res.status(400).json({ email: 'It was already sent a request from this email. Please check your inbox.' });
-            } else {
+        .then((data) => {
+            let found = 0;
+            data.forEach((document) => {
+                if (bcrypt.compareSync(document.id, token)) {
+                    found = 1;
+                    return res.status(400).json({ email: 'It was already sent a request from this email. Please check your inbox.' });
+                } 
+            })
+
+            if (found === 0) {
                 return db.doc(`/${COLLECTION.ACCOUNT_REQUEST}/${token}`).set(newUserRequest);
             }
         })
@@ -50,6 +54,7 @@ exports.requestAccount = (req, res) => {
             res.status(200).json({ message: 'Request successfully sent.' });
         })
         .catch((err) => {
+            console.log(err)
             return res.status(500).json({ error: 'Something went wrong. Please try again!' });
         });
 };

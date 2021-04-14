@@ -18,6 +18,7 @@ const SignUp = () => {
   const dispatch = useDispatch();
   const { register, handleSubmit, errors } = useForm();
   const { token } = useParams();
+  console.log('heree')
 
   const onSubmit = (formData) => {
     console.log(formData);
