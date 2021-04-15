@@ -1,7 +1,8 @@
-import { CircularProgress } from "@material-ui/core";
+import { Box, Tooltip, CircularProgress, IconButton } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Participant from "./Participant";
+import CallEndIcon from '@material-ui/icons/CallEnd';
 
 const Room = ({ roomName, room, handleLogout }) => {
   const [participants, setParticipants] = useState([]);
@@ -35,21 +36,38 @@ const Room = ({ roomName, room, handleLogout }) => {
 
   return (
     <div className="room">
-      <h2>Room: {roomName}</h2>
-      <button onClick={handleLogout}>Log out</button>
-      <div className="local-participant">
-        {room ? (
-          <Participant
-            key={room.localParticipant.sid}
-            participant={room.localParticipant}
-          />
-        ) : (
-          ""
-        )}
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <div className="local-participant">
+          {room ? (
+            <Participant
+              key={room.localParticipant.sid}
+              participant={room.localParticipant}
+            />
+          ) : (
+            ""
+          )}
+        </div>
+        <div>
+          {!isLoggedIn && isLoadingEmployee ? <CircularProgress /> : 
+            <div className="remote-participants">{remoteParticipants}</div>
+          }
+        </div>
+      </Box>
+      <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+        <Tooltip title="End call" placement="top">
+          <IconButton
+            color="secondary"
+            style={{ marginTop: "3%" }}
+            onClick={handleLogout} 
+          >
+            <CallEndIcon />
+          </IconButton>
+        </Tooltip>
       </div>
-      <h3>Remote Participants</h3>
-      {!isLoggedIn && isLoadingEmployee ? <CircularProgress /> : 
-        <div className="remote-participants">{remoteParticipants}</div>}
     </div>
   );
 };

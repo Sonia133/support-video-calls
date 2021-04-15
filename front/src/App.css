@@ -88,3 +88,14 @@ a, p {
   flex-direction: column;
   align-items: center;
 }
+
+.room {
+  padding: 5%;
+}
+
+video {
+  width: 100%;
+}
+.participant {
+  margin-right: 5%;
+}

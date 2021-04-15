@@ -170,12 +170,15 @@ const Profile = () => {
                     {!!errorUi?.error && (
                         <Typography color="error">{errorUi.error}</Typography>
                     )}
+                    <Button 
+                        style={{ marginBottom: "5%", marginTop: "8%" }} 
+                        onClick={closeProfileDialog} 
+                        variant="contained" 
+                        color="primary"
+                    >
+                        Close
+                    </Button>
                 </DialogContent>
-                <DialogActions>
-                <Button onClick={closeProfileDialog} variant="contained" color="primary">
-                    Close
-                </Button>
-                </DialogActions>
             </Dialog>
         </div>
     )
