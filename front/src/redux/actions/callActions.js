@@ -39,14 +39,14 @@ export const endCall = (companyName, employeeEmail, localParticipant, remotePart
     .then(() => {
       socket.ref("calls")
         .once("value", (data) => {
-          console.log(data.val())
           let clients = Object.values(data.val()).filter((snapshot) => snapshot.isClient === true);
           let clientsCompany = clients.filter((client) => client.companyName === companyName);
           clientsCompany.sort((a, b) => {
             return (a.joinedAt < b.joinedAt) ? -1 : ((a.joinedAt > b.joinedAt) ? 1 : 0); 
           });
-          console.log(clientsCompany[0])
-          dispatch(findEmployee(clientsCompany[0].roomId, clientsCompany[0].companyName));
+          if (clientsCompany[0]) {
+            dispatch(findEmployee(clientsCompany[0].roomId, clientsCompany[0].companyName));
+          }
           return null;
         })
     })
