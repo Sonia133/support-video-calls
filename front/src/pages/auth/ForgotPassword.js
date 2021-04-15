@@ -23,24 +23,35 @@ const ForgotPassword = () => {
     }
 
     return (
-        <Box>
+        <Box style={{height: "100%", display: "flex"}}>
             {loadingUi && (
                 <CircularProgress />
             )}
             {(!loadingUi || loadingUi === undefined) && (
-                <Box>
+                <Box
+                    px={6}
+                    py={4}
+                    className="auth-container"
+                    style={{background: "#fff"}}
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                >
+                    <h2>Forgot your password?</h2>
                     <TextField
                         error={!!errors.email?.message}
                         helperText={errors.email?.message ?? ""}
+                        label="Email"
                         name="email"
                         inputRef={register({ required: "Email is required" })}
                         variant="outlined"
-                        placeholder="Enter email"
+                        InputLabelProps={{shrink: true}}
                     />
                     {!!error?.error && (
                         <Typography color="error">{error.error}</Typography>
                     )}
-                    <Button onClick={handleSubmit(onSubmit)} disabled={loading}>
+                    <Button onClick={handleSubmit(onSubmit)} disabled={loading} variant="contained" color="primary">
                         {loading ? <CircularProgress /> : <Typography>Submit</Typography>}
                     </Button>
                 </Box>

@@ -15,11 +15,16 @@ const UIReducer = (state = initialState, action) => {
         loading: false,
       };
     case ActionTypes.UI.SET_ERRORS:
-    return {
+      return {
+          ...state,
+          error: action.payload,
+          loading: false,
+      };
+    case ActionTypes.UI.CLEAR_ERRORS:
+      return {
         ...state,
-        error: action.payload,
-        loading: false,
-    };
+        error: {}
+      }
     default:
       return state;
   }

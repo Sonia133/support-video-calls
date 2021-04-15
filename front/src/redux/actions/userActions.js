@@ -150,9 +150,10 @@ export const getUserData = () => (dispatch) => {
 };
 
 export const uploadImage = (formData)  => (dispatch) => {
-  dispatch({ type: ActionTypes.USER.LOADING_USER });
+  dispatch({ type: ActionTypes.USER.LOADING_PICTURE });
   axios.post('/updateImage', formData)
       .then(() => {
+          dispatch({ type: ActionTypes.USER.STOP_LOADING_PICTURE });
           dispatch(getUserData());
       })
       .catch((err) => {

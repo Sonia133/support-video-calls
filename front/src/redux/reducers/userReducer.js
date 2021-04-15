@@ -31,12 +31,28 @@ const UserReducer = (state = initialState, action) => {
         ...state,
         loading: false,
       };
+      case ActionTypes.USER.LOADING_PICTURE:
+        return {
+          ...state,
+          loadingPicture: true,
+        };
+      case ActionTypes.USER.STOP_LOADING_PICTURE:
+        return {
+          ...state,
+          loadingPicture: false,
+        };
     case ActionTypes.USER.SET_ERRORS:
       return {
         ...state,
         error: action.payload,
         loading: false,
+        loadingPicture: false
       };
+    case ActionTypes.USER.CLEAR_ERRORS:
+      return {
+        ...state,
+        error: {}
+      }
     default:
       return state;
   }

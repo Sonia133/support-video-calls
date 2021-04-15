@@ -24,29 +24,41 @@ const ChangePassword = () => {
     }
 
     return (
-        <Box>
+        <Box style={{height: "100%", display: "flex"}}>
             {loadingUi && (
                 <CircularProgress />
             )}
             {(!loadingUi || loadingUi === undefined) && (
-                <Box>
+                <Box
+                    px={6}
+                    py={4}
+                    className="auth-container"
+                    style={{background: "#fff"}}
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                >
+                    <h2>Change your password</h2>
                     <TextField
                         error={!!errors.oldPassword?.message}
                         helperText={errors.oldPassword?.message ?? ""}
+                        label="Old password"
                         name="oldPassword"
                         inputRef={register({ required: "Old password is required" })}
                         variant="outlined"
-                        placeholder="Enter old password"
                         type="password"
+                        InputLabelProps={{shrink: true }}
                     />
                     <TextField
                         error={!!errors.newPassword?.message}
                         helperText={errors.newPassword?.message ?? ""}
+                        label="New password"
                         name="newPassword"
                         inputRef={register({ required: "New password is required" })}
                         variant="outlined"
-                        placeholder="Enter new password"
                         type="password"
+                        InputLabelProps={{shrink: true }}
                     />
                     {!!error?.password && (
                         <Typography color="error">{error.password}</Typography>
@@ -54,8 +66,8 @@ const ChangePassword = () => {
                     {!!error?.error && (
                         <Typography color="error">{error.error}</Typography>
                     )}
-                    <Button onClick={handleSubmit(onSubmit)} disabled={loading}>
-                        {loading ? <CircularProgress /> : <Typography>Submit</Typography>}
+                    <Button onClick={handleSubmit(onSubmit)} disabled={loading} variant="contained" color="primary">
+                        {loading ? <CircularProgress /> : <Typography>Change</Typography>}
                     </Button>
                 </Box>
             )}

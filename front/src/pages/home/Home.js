@@ -5,22 +5,20 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import socket from "../../socket";
-import { changeAvailability, logoutUser, sendRegisterRequest, updateSchedule, uploadImage } from "../../redux/actions/userActions";
+import { sendRegisterRequest, updateSchedule, uploadImage } from "../../redux/actions/userActions";
+import Profile from "../../components/Profile/Profile";
 
 const Home = () => {
   const history = useHistory();
   const isLoggedIn = useSelector((state) => state.user.authenticated);
-  const [imageUrl, isEmployee, isCeo, isAdmin, email, companyName, schedule, loading, available, role] = useSelector((state) => [
-    state.user.imageUrl,
+  const [isEmployee, isCeo, isAdmin, email, companyName, schedule, loading] = useSelector((state) => [
     state.user?.role === "employee",
     state.user?.role === "ceo",
     state.user?.admin === "admin",
     state.user?.email,
     state.user?.companyName,
     state.user?.schedule,
-    state.user?.loading,
-    state.user?.available,
-    state.user?.role
+    state.user?.loading
   ]);
   const { loading: loadingUi, error } = useSelector((state) => state.ui);
   let [addEmployee, setAddEmployee] = useState(false);
@@ -76,18 +74,6 @@ const Home = () => {
     }
   };
 
-  const onChangePassword = () => {
-    history.push('/changepassword');
-  }
-
-  const onLogout = () => {
-    dispatch(logoutUser(role));
-  }
-
-  const onChangeAvailability = () => {
-    dispatch(changeAvailability({ available: !available }));
-  }
-
   const onImageChange = (event) => {
     const image = event.target.files[0];
     
@@ -106,11 +92,11 @@ const Home = () => {
     if (!isLoggedIn) {
       history.push("/login");
     }
-  }, [isLoggedIn, isEmployee, schedule, updated, available]);
+  }, [isLoggedIn, isEmployee, schedule, updated]);
 
   return (
     <Box>
-      <div>HOME</div>
+      <Profile />
       {isEmployee && loading && schedule.length === 0 && (
         <CircularProgress />
       )}
@@ -223,16 +209,6 @@ const Home = () => {
           </Button>
         </Box>
       )}
-      {isEmployee && (
-        <Box>
-          {!loading && (
-          <Button onClick={onChangeAvailability}>Go {available === true? "busy" : "available"}</Button>)}
-          {loading && (<CircularProgress/>)}
-          {!!error?.error && (
-            <Typography color="error">{error.error}</Typography>
-          )}
-        </Box>
-      )}
       {isCeo && !addEmployee && (
         <Box>
           <Button onClick={addNewEmployee}>Add employee</Button>
@@ -265,19 +241,6 @@ const Home = () => {
           </Button>
         </Box>
       )}
-      <Box>
-        <img src={imageUrl} alt="profile"/>
-        <input style={{display: 'none'}} type="file" id="imageInput" onChange={onImageChange}></input>
-        <Button onClick={onEditPicture}>
-          <Typography>Update image</Typography>
-        </Button>
-      </Box>
-      <Button onClick={onChangePassword}>
-        <Typography>Change password</Typography>
-      </Button>
-      <Button onClick={onLogout}>
-        <Typography>Log out</Typography>
-      </Button>
     </Box>
   );
 };
