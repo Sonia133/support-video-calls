@@ -1,7 +1,9 @@
 @import "@fontsource/dancing-script";
 
-
 html, body {
+  font-family: sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   height: 100%;
   margin: 0;
 }
@@ -31,7 +33,7 @@ body {
 }
 
 .single {
-  background: #fff;
+  background: whitesmoke;
   flex-direction: column;
   justify-content: center;
   align-items: center;
