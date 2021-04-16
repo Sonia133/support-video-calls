@@ -4,6 +4,9 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import Profile from "../../components/Profile/Profile";
 import { sendRegisterRequest } from "../../redux/actions/userActions";
+import { getCallsPerCompany, getCallsPerEmployee } from "../../redux/actions/callActions";
+import { getCeo } from "../../redux/actions/ceoActions";
+import { getEmployee, getEmployees, getFeedback, deleteEmployee } from "../../redux/actions/employeeActions";
 
 const CeoDashboard = () => {
     const [companyName, loading] = useSelector((state) => [
@@ -30,6 +33,10 @@ const CeoDashboard = () => {
             setAddEmployee(true);
         }
     };
+
+    const getFeedback1 = () => {
+        dispatch(getFeedback('company2', 'employee21suppvc@gmail.com'));
+    }
 
     return (
         <Box>
@@ -69,6 +76,7 @@ const CeoDashboard = () => {
                     </Button>
                 </Box>
             )}
+            <Button onClick={getFeedback1}>Get feedback</Button>
         </Box>
     )
 }

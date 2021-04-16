@@ -6,6 +6,9 @@ import { useHistory } from "react-router";
 import Profile from "../../components/Profile/Profile";
 import socket from "../../socket";
 import Schedule from "../../components/Profile/Schedule";
+import { getCallsPerCompany, getCallsPerEmployee } from "../../redux/actions/callActions";
+import { getCeo } from "../../redux/actions/ceoActions";
+import { getEmployee, getEmployees } from "../../redux/actions/employeeActions";
 
 const EmployeeDashboard = () => {
     const history = useHistory();

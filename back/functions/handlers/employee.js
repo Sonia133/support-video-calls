@@ -47,7 +47,7 @@ exports.getEmployees = (req, res) => {
 
 exports.getEmployee = (req, res) => {
     const companyName = req.params.companyName;
-    const employee = db.collection(`${COLLECTION.EMPLOYEE}/${req.params.employeeEmail}`);
+    const employee = db.doc(`${COLLECTION.EMPLOYEE}/${req.params.employeeEmail}`);
 
     let employeeData;
     if (req.user.role === ROLE.ADMIN) {
@@ -142,10 +142,10 @@ exports.getFeedback = (req, res) => {
     const companyName = req.params.companyName;
     const employeeEmail = req.params.employeeEmail;
 
-    const employee = db.collection(`${COLLECTION.EMPLOYEE}/${employeeEmail}`);
+    const employee = db.doc(`${COLLECTION.EMPLOYEE}/${employeeEmail}`);
     const calls = db.collection(COLLECTION.CALL).where("employeeEmail", "==", employeeEmail);
 
-    let employeeData;
+    let employeeData = {};
     let callsNumber = 0;
     let callsRated = 0;
     let feedbackGrade = 0;
@@ -157,14 +157,15 @@ exports.getFeedback = (req, res) => {
                 return res.status(404).json({ error: 'Employee not found!'} );
             }
     
-            employeeData = doc.data();
-            employeeData.employeeId = doc.id; 
-            employeeData.comments = [];
-
             calls.get()
             .then(data => {
+                employeeData.comments = [];
+                employeeData.callsNumber = 0;
+
                 data.forEach(doc => {
-                    employeeData.comments.push(doc.data().comments);
+                    if (doc.data().comments != '') {
+                        employeeData.comments.push(doc.data().comments);
+                    }                    
                     callsNumber += 1
                     if (doc.data().feedback > 0) {
                         callsRated += 1;
@@ -174,9 +175,9 @@ exports.getFeedback = (req, res) => {
 
                 employeeData.callsNumber = callsNumber;
                 employeeData.feedback = feedbackGrade / callsRated;
-            })
 
-            return res.json(employeeData);
+                return res.json(employeeData);
+            })
         })
         .catch(err => console.error(err));
     } else if (req.user.role === ROLE.CEO) {
@@ -189,23 +190,27 @@ exports.getFeedback = (req, res) => {
                         return res.status(404).json({ error: 'Employee not found!'} );
                     }
             
-                    employeeData = doc.data();
-                    employeeData.employeeId = doc.id; 
-                    employeeData.comments = [];
-
                     calls.get()
                     .then(data => {
+                        employeeData.comments = [];
+                        employeeData.callsNumber = 0;
+
                         data.forEach(doc => {
-                            employeeData.comments.push(doc.data().comments);
+                            if (doc.data().comments != '') {
+                                employeeData.comments.push(doc.data().comments);
+                            }
                             callsNumber += 1
-                            feedbackGrade += doc.data().feedback;
+                            if (doc.data().feedback > 0) {
+                                callsRated += 1;
+                                feedbackGrade += doc.data().feedback;
+                            }
                         })
-
+        
                         employeeData.callsNumber = callsNumber;
-                        employeeData.feedback = feedbackGrade / callsNumber;
-                    })
+                        employeeData.feedback = feedbackGrade / callsRated;
 
-                    return res.json(employeeData);
+                        return res.json(employeeData);
+                    })
                 })
                 .catch(err => console.error(err));
             } else {
