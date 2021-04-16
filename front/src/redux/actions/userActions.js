@@ -136,6 +136,7 @@ export const getUserData = () => (dispatch) => {
   axios
     .get("/user")
     .then(({ data }) => {
+      console.log(data)
       dispatch({ type: ActionTypes.USER.SET_USER, payload: data });
       if (data.role === "employee") {
         socket.ref(`calls/${data.email.replace(".", "-")}`).remove();

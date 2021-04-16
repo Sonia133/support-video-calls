@@ -23,6 +23,10 @@ const ChangePassword = () => {
         dispatch(changePassword(formData, history));
     }
 
+    const onClose = () => {
+        history.push('/');
+    }
+
     return (
         <Box style={{height: "100%", display: "flex"}}>
             {loadingUi && (
@@ -63,6 +67,9 @@ const ChangePassword = () => {
                     )}
                     <Button onClick={handleSubmit(onSubmit)} disabled={loading} variant="contained" color="primary">
                         {loading ? <CircularProgress /> : <Typography>Change</Typography>}
+                    </Button>
+                    <Button style={{ marginTop: "3%" }} onClick={onClose} variant="contained" color="secondary">
+                        <Typography>Close</Typography>
                     </Button>
                 </Box>
             )}

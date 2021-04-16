@@ -4,6 +4,9 @@ import thunk from "redux-thunk";
 import UserReducer from "./reducers/userReducer";
 import CallReducer from "./reducers/callReducer";
 import UIReducer from "./reducers/uiReducer";
+import EmployeeReducer from "./reducers/employeeReducer";
+import CeoReducer from "./reducers/ceoReducer";
+
 
 const initialState = {};
 
@@ -12,7 +15,9 @@ const middleware = [thunk];
 const reducers = combineReducers({
   user: UserReducer,
   call: CallReducer,
-  ui: UIReducer
+  ui: UIReducer,
+  employee: EmployeeReducer,
+  ceo: CeoReducer
 });
 
 const store = createStore(

@@ -11,7 +11,7 @@ exports.getAuthenticatedUser = (req, res) => {
     .then((doc) => {
       if (doc.exists) {
         const role = doc.data().role;
-        if ([COLLECTION.EMPLOYEE, COLLECTION.CEO].includes(role)) {
+        if ([COLLECTION.EMPLOYEE, COLLECTION.CEO, COLLECTION.ADMIN].includes(role)) {
           resUser = doc.data();
           return db.doc(`${role}/${email}`).get();
         } else {

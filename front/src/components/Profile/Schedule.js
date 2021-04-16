@@ -154,8 +154,8 @@ const Schedule = () => {
             >
                 <Typography>Submit schedule</Typography>
             </Button>
-            <Button onClick={onLogout} variant="contained" color="secondary" style={{ marginTop: "6%" }}>
-              <Typography>Logout</Typography>
+            <Button onClick={onLogout} variant="contained" color="secondary" style={{ marginTop: "3%" }}>
+                <Typography>Logout</Typography>
             </Button>
           </Box>
         </div>

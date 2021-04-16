@@ -26,6 +26,24 @@ exports.deleteEmployee = (req, res) => {
         })
 }
 
+exports.getCeo = (req, res) => {
+    const ceoEmail = req.params.ceoEmail;
+
+    db.doc(`${COLLECTION.CEO}/${ceoEmail}`)
+    .get()
+    .then((doc) => {
+        if (!doc.exists) {
+            return res.status(404).json({ error: 'Ceo not found!'} );
+        }
+
+        ceoData = doc.data();
+        ceoData.ceoId = doc.id; 
+        
+        return res.json(ceoData);
+    })
+    .catch(err => console.error(err));
+}
+
 exports.getCeos = (req, res) => {
     db.collection(COLLECTION.CEO)
     .get()

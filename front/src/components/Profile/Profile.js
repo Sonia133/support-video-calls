@@ -3,10 +3,8 @@ import {
     Button, 
     IconButton, 
     Dialog, 
-    DialogActions, 
     DialogContent, 
     DialogContentText, 
-    DialogTitle,
     Popper,
     Grow,
     Paper,
@@ -17,7 +15,8 @@ import {
     Box,
     CircularProgress, 
     Tooltip,
-    Divider
+    Divider,
+    Link
 } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import EventAvailableIcon from '@material-ui/icons/EventAvailable';
@@ -30,6 +29,7 @@ import { ActionTypes } from "../../redux/types";
 const Profile = () => {
     const [open, setOpen] = useState(false);
     const [openMenu, setOpenMenu] = useState(false);
+    const [openSchedule, setOpenSchedule] = useState(false);
     const anchorRef = useRef(null);
     const history = useHistory();
     const dispatch = useDispatch();
@@ -66,6 +66,7 @@ const Profile = () => {
 
     const closeProfileDialog = () => {
         setOpen(false);
+        setOpenSchedule(false);
         dispatch({ type: ActionTypes.UI.CLEAR_ERRORS });
         dispatch({ type: ActionTypes.USER.CLEAR_ERRORS });
     }
@@ -95,6 +96,10 @@ const Profile = () => {
         const fileInput = document.getElementById('imageInput');
         fileInput.click();
     };
+
+    const openScheduleEmployee = () => {
+        setOpenSchedule(!openSchedule);
+    }
 
     return (
         <div style={{marginBottom:"20px"}}>
@@ -141,7 +146,7 @@ const Profile = () => {
                         </div>
                     )}
                     {loadingPicture && (
-                        <div style={{ width: "40%", height: "40%"}}>
+                        <div style={{ width: "40%", height: "40%", display: "flex", justifyContent: "center", marginBottom: "3%" }}>
                             <CircularProgress/>
                         </div>
                     )}
@@ -149,19 +154,31 @@ const Profile = () => {
                         <Divider variant="middle"/>
                         <div className="dialog-text">
                             <Typography>{firstname + " " + lastname}</Typography>
-                            <Typography>{role + " @ " + companyName}</Typography>
+                            {role !== 'admin' ?(<Typography>{role + " @ " + companyName}</Typography>)
+                                : (<Typography>{"Admin @ SupportVideoCalls"}</Typography>)
+                            }
                         </div>
                     </DialogContentText>
                     {isEmployee && (
-                        <Box>
-                        {!loading && (
-                            <Tooltip title={available === true? "Go busy" : "Go available"} placement="bottom">
-                                <IconButton onClick={onChangeAvailability}>
-                                    {!available ? (<EventBusyIcon />) : (<EventAvailableIcon />)}
-                                </IconButton>
-                            </Tooltip>
-                        )}
-                        {loading && (<CircularProgress/>)}
+                        <Box style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                            {!loading && (
+                                <Tooltip title={available === true? "Go busy" : "Go available"} placement="right">
+                                    <IconButton onClick={onChangeAvailability}>
+                                        {!available ? (<EventBusyIcon />) : (<EventAvailableIcon />)}
+                                    </IconButton>
+                                </Tooltip>
+                            )}
+                            {loading && (<CircularProgress/>)}
+                            <Link onClick={openScheduleEmployee}>{openSchedule ? "Hide" : "See"} schedule</Link>
+                            {openSchedule && (
+                                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", lineHeight: "0.3"}}>
+                                    <p>Monday: {schedule[0]}</p>
+                                    <p>Tuesday: {schedule[1]}</p>
+                                    <p>Wednesday: {schedule[2]}</p>
+                                    <p>Thursday: {schedule[3]}</p>
+                                    <p>Friday: {schedule[4]}</p>
+                                </div>
+                            )}
                         </Box>
                     )}
                     {!!error?.error && (
@@ -171,7 +188,7 @@ const Profile = () => {
                         <Typography color="error">{errorUi.error}</Typography>
                     )}
                     <Button 
-                        style={{ marginBottom: "5%", marginTop: "8%" }} 
+                        style={{ marginBottom: "5%", marginTop: "5%" }} 
                         onClick={closeProfileDialog} 
                         variant="contained" 
                         color="primary"
