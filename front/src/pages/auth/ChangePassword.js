@@ -32,12 +32,7 @@ const ChangePassword = () => {
                 <Box
                     px={6}
                     py={4}
-                    className="auth-container"
-                    style={{background: "#fff"}}
-                    display="flex"
-                    flexDirection="column"
-                    justifyContent="center"
-                    alignItems="center"
+                    className="auth-container single"
                 >
                     <h2>Change your password</h2>
                     <TextField

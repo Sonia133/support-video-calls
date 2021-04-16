@@ -31,12 +31,7 @@ const Feedback = () => {
                 <Box
                     px={6}
                     py={4}
-                    className="auth-container"
-                    style={{background: "#fff"}}
-                    display="flex"
-                    flexDirection="column"
-                    justifyContent="center"
-                    alignItems="center"
+                    className="auth-container single"
                 >
                     <Typography>Thank you for your time! Feedback sent successfully!</Typography>
                 </Box>

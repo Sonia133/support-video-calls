@@ -5,24 +5,25 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import socket from "../../socket";
-import { sendRegisterRequest, updateSchedule, uploadImage } from "../../redux/actions/userActions";
+import { sendRegisterRequest } from "../../redux/actions/userActions";
 import Profile from "../../components/Profile/Profile";
+import Schedule from "../../components/Profile/Schedule";
 
 const Home = () => {
   const history = useHistory();
   const isLoggedIn = useSelector((state) => state.user.authenticated);
-  const [isEmployee, isCeo, isAdmin, email, companyName, schedule, loading] = useSelector((state) => [
+  const [isEmployee, isCeo, isAdmin, email, companyName, schedule, loading, boarded] = useSelector((state) => [
     state.user?.role === "employee",
     state.user?.role === "ceo",
     state.user?.admin === "admin",
     state.user?.email,
     state.user?.companyName,
     state.user?.schedule,
-    state.user?.loading
+    state.user?.loading,
+    state.user?.boarded
   ]);
   const { loading: loadingUi, error } = useSelector((state) => state.ui);
   let [addEmployee, setAddEmployee] = useState(false);
-  let [updated, setUpdated] = useState(false);
   const { register, handleSubmit, errors } = useForm();
   const dispatch = useDispatch();
 
@@ -40,26 +41,8 @@ const Home = () => {
     }
   }, [isEmployee]);
 
-  const updateScheduleEmployee = () => {
-    setUpdated(true);
-  }
-
   const addNewEmployee = () => {
     setAddEmployee(true);
-  }
-
-  const onSubmitSchedule = (formData) => {
-    let scheduleToSend = [];
-    for (let i = 0; i < 5; i ++) {
-      scheduleToSend[i] = `${formData[2*i+1]}-${formData[2*i+2]}`;
-    }
-
-    dispatch(updateSchedule({ schedule: scheduleToSend }));
-    if (!!error) {
-      setUpdated(false);
-    } else {
-      setUpdated(true);
-    }
   }
 
   const onSubmitEmployee = (formData) => {
@@ -74,140 +57,22 @@ const Home = () => {
     }
   };
 
-  const onImageChange = (event) => {
-    const image = event.target.files[0];
-    
-    const formData = new FormData();
-    formData.append('image', image, image.name);
-
-    dispatch(uploadImage(formData));
-  };
-
-  const onEditPicture = () => {
-    const fileInput = document.getElementById('imageInput');
-    fileInput.click();
-  };
-
   useEffect(() => {
     if (!isLoggedIn) {
       history.push("/login");
     }
-  }, [isLoggedIn, isEmployee, schedule, updated]);
+  }, [isLoggedIn, isEmployee, schedule]);
 
   return (
-    <Box>
-      <Profile />
-      {isEmployee && loading && schedule.length === 0 && (
+    <Box style={{height: "100%"}}>
+      {loading &&  (
         <CircularProgress />
       )}
-      {isEmployee && schedule.length === 0 && !updated && (
-        <Box>
-          <Button onClick={updateScheduleEmployee}>Update schedule</Button>
-          {!!error?.error && (
-            <Typography color="error">{error.error}</Typography>
-          )}
-        </Box>
+      {isEmployee && !boarded && (
+        <Schedule />
       )}
-      {isEmployee && schedule.length === 0 && updated && (
-        <Box
-          my={4}
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <Typography>Monday</Typography>
-          <TextField
-              error={!!errors['1']?.message}
-              helperText={errors['1']?.message ?? ""}
-              name="1"
-              inputRef={register({ required: "Starting hour on monday is required" })}
-              variant="outlined"
-              type="number"
-          />
-          <TextField
-              error={!!errors['2']?.message}
-              helperText={errors['2']?.message ?? ""}
-              name="2"
-              inputRef={register({ required: "Ending hour on monday is required" })}
-              variant="outlined"
-              type="number"
-          />
-          <Typography>Tuesday</Typography>
-          <TextField
-              error={!!errors['3']?.message}
-              helperText={errors['3']?.message ?? ""}
-              name="3"
-              inputRef={register({ required: "Starting hour on tuesday is required" })}
-              variant="outlined"
-              type="number"
-          />
-          <TextField
-              error={!!errors['4']?.message}
-              helperText={errors['4']?.message ?? ""}
-              name="4"
-              inputRef={register({ required: "Ending hour on tuesday is required" })}
-              variant="outlined"
-              type="number"
-          />
-          <Typography>Wednesday</Typography>
-          <TextField
-              error={!!errors['5']?.message}
-              helperText={errors['5']?.message ?? ""}
-              name="5"
-              inputRef={register({ required: "Starting hour on wednesday is required" })}
-              variant="outlined"
-              type="number"
-          />
-          <TextField
-              error={!!errors['6']?.message}
-              helperText={errors['6']?.message ?? ""}
-              name="6"
-              inputRef={register({ required: "Ending hour on wednesday is required" })}
-              variant="outlined"
-              type="number"
-          />
-          <Typography>Thursday</Typography>
-          <TextField
-              error={!!errors['7']?.message}
-              helperText={errors['7']?.message ?? ""}
-              name="7"
-              inputRef={register({ required: "Starting hour on thursday is required" })}
-              variant="outlined"
-              type="number"
-          />
-          <TextField
-              error={!!errors['8']?.message}
-              helperText={errors['8']?.message ?? ""}
-              name="8"
-              inputRef={register({ required: "Ending hour on thursday is required" })}
-              variant="outlined"
-              type="number"
-          />
-          <Typography>Friday</Typography>
-          <TextField
-              error={!!errors['9']?.message}
-              helperText={errors['9']?.message ?? ""}
-              name="9"
-              inputRef={register({ required: "Starting hour on friday is required" })}
-              variant="outlined"
-              type="number"
-          />
-          <TextField
-              error={!!errors['10']?.message}
-              helperText={errors['10']?.message ?? ""}
-              name="10"
-              inputRef={register({ required: "Ending hour on friday is required" })}
-              variant="outlined"
-              type="number"
-          />
-          {!!error?.error && (
-              <Typography color="error">{error.error}</Typography>
-          )}
-          <Button onClick={handleSubmit(onSubmitSchedule)} disabled={loadingUi}>
-              <Typography>Submit schedule</Typography>
-          </Button>
-        </Box>
+      {(boarded || !isEmployee) && !loading && (
+        <Profile />
       )}
       {isCeo && !addEmployee && (
         <Box>

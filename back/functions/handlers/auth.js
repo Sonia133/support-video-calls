@@ -137,6 +137,7 @@ exports.signup = (req, res) => {
                 companyName: companyName,
                 schedule: [], 
                 available: false,
+                boarded: false,
                 currentCallId: '',
                 employeeId: userId
             }

@@ -8,6 +8,7 @@ const authToken = configTwilio.twilio.authToken;
 const client = require('twilio')(accountSid, authToken);
 
 var Twilio = require('twilio');
+const { truncate } = require("fs");
 const clientDisconnect = new Twilio(configTwilio.twilio.apiKey, configTwilio.twilio.apiSecret, {accountSid: accountSid});
 
 exports.getCalls = (req, res) => {
@@ -161,6 +162,7 @@ exports.findEmployee = (req, res) => {
   db.collection(COLLECTION.EMPLOYEE)
     .where("companyName", "==", companyName)
     .where("available", "==", true)
+    .where("boarded", "==", true)
     .get()
     .then((data) => {
       let promises = [];

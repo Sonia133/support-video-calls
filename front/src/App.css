@@ -1,7 +1,7 @@
+@import "@fontsource/dancing-script";
+
+
 html, body {
-  font-family: sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   height: 100%;
   margin: 0;
 }
@@ -30,6 +30,13 @@ body {
   border-radius: 2%;
 }
 
+.single {
+  background: #fff;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .auth-box {
   background-color: whitesmoke;
   display: flex;
@@ -49,6 +56,8 @@ body {
 
 h2 {
   margin-bottom: 50px;
+  text-transform: uppercase;
+  font-family: "Dancing Script" !important;
 }
 
 a, p {
@@ -96,6 +105,7 @@ a, p {
 video {
   width: 100%;
 }
+
 .participant {
   margin-right: 5%;
 }
