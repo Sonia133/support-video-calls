@@ -25,6 +25,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { logoutUser, uploadImage, changeAvailability } from "../../redux/actions/userActions";
 import { ActionTypes } from "../../redux/types";
+import Rating from "@material-ui/lab/Rating";
 
 const Profile = () => {
     const [open, setOpen] = useState(false);

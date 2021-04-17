@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useParams } from "react-router";
 import socket from "../../socket/index.js";
 import { useDispatch, useSelector } from "react-redux";
-import { findEmployee, endCall } from "../../redux/actions/callActions.js";
+import { endCall, findEmployee } from "../../redux/actions/callActions.js";
 import { CircularProgress } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 
@@ -61,7 +61,6 @@ const VideoChat = () => {
           socket
           .ref(`calls/${username.replace(".", "-")}/hasEnded`)
           .on("value", (snapshot) => {
-            console.log(snapshot.val())
             if (snapshot.val() === true || snapshot.val() === null) {
               if(!isEmployee) {
                 history.push(`/endcall/${roomName}`);

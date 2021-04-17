@@ -161,26 +161,41 @@ exports.findEmployee = (req, res) => {
 
   db.collection(COLLECTION.EMPLOYEE)
     .where("companyName", "==", companyName)
-    .where("available", "==", true)
-    .where("boarded", "==", true)
+    // .where("available", "==", true)
+    // .where("boarded", "==", true)
     .get()
     .then((data) => {
+      let endingHours = false;
       let promises = [];
         
       data.forEach((doc) => {
+        if (doc.data().schedule.length < day) {
+          console.log('day')
+          return res.status(404).json({ hours: "We are sorry, but our hours are done for today. Please come back tomorrow. Have a good day!" });
+        }
+
         let schedule = doc.data().schedule[day - 1].split("-");
         if (schedule[0] <= hour && hour <= schedule[1]) {
-          employees.push(doc.data());
+          console.log('why')
+          endingHours = true;
+          if (doc.data().available === true && doc.data().boarded == true) {
+            employees.push(doc.data());
 
-          promises.push(
-            db
-              .collection(COLLECTION.CALL)
-              .where("employeeEmail", "==", doc.data().email)
-              .orderBy("createdAt")
-              .get()
-          );
+            promises.push(
+              db
+                .collection(COLLECTION.CALL)
+                .where("employeeEmail", "==", doc.data().email)
+                .orderBy("createdAt")
+                .get()
+            );
+          }
         }
       });
+
+      if (endingHours === false) {
+        return res.status(404).json({ hours: "We are sorry, but our hours are done for today! Please come back tomorrow. Have a good day!" });
+      }
+
       return Promise.all(promises);
     })
     .then((responses) => {
@@ -196,6 +211,7 @@ exports.findEmployee = (req, res) => {
           });
         }
       });
+
       if (employees.length == 0) {
         return res.status(404).json({ message: "Employee not found" });
       }

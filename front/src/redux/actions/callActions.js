@@ -76,7 +76,6 @@ export const sendFeedback = (formData) => (dispatch) => {
 }
 
 export const getCalls = () => (dispatch) => {
-  console.log('here')
   dispatch({ type: ActionTypes.CALL.LOADING_CALLS });
   axios.get('/calls')
   .then(({ data }) => {
