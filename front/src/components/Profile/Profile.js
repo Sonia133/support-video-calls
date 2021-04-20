@@ -25,7 +25,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { logoutUser, uploadImage, changeAvailability } from "../../redux/actions/userActions";
 import { ActionTypes } from "../../redux/types";
-import Rating from "@material-ui/lab/Rating";
 
 const Profile = () => {
     const [open, setOpen] = useState(false);
@@ -104,14 +103,16 @@ const Profile = () => {
 
     return (
         <div>
-            <IconButton
-                ref={anchorRef}
-                aria-controls={open ? 'menu-list-grow' : undefined}
-                aria-haspopup="true"
-                onClick={handleToggleMenu}
-            >
-                <AccountCircleIcon fontSize="large" style={{ color: "whitesmoke" }}></AccountCircleIcon>
-            </IconButton>
+            <Tooltip title="Profile" placement="top">
+                <IconButton
+                    ref={anchorRef}
+                    aria-controls={open ? 'menu-list-grow' : undefined}
+                    aria-haspopup="true"
+                    onClick={handleToggleMenu}
+                >
+                    <AccountCircleIcon fontSize="large" style={{ color: "whitesmoke" }}></AccountCircleIcon>
+                </IconButton>
+            </Tooltip>
             <Popper open={openMenu} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
             {({ TransitionProps, placement }) => (
                 <Grow

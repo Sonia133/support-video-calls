@@ -111,3 +111,18 @@ video {
 .participant {
   margin-right: 5%;
 }
+
+.big-chart {
+  height: 40%;
+  margin-bottom: 2%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.small-chart {
+  width: 30%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

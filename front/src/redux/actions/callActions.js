@@ -1,6 +1,7 @@
 import socket from "../../socket";
 import axios from "../axios";
 import { ActionTypes } from "../types";
+import { groupCalls } from "../../util/functions/groupCalls";
 
 export const findEmployee = (roomName, companyName) => (dispatch) => {
   dispatch({ type: ActionTypes.CALL.LOADING_EMPLOYEE });
@@ -79,7 +80,7 @@ export const getCalls = () => (dispatch) => {
   dispatch({ type: ActionTypes.CALL.LOADING_CALLS });
   axios.get('/calls')
   .then(({ data }) => {
-    dispatch({ type: ActionTypes.CALL.SET_CALLS, payload: data});
+    dispatch({ type: ActionTypes.CALL.SET_CALLS, payload: groupCalls(data)});
   })
   .catch((err) => {
     console.log(err);
@@ -94,7 +95,7 @@ export const getCallsPerCompany = (companyName) => (dispatch) => {
   dispatch({ type: ActionTypes.CALL.LOADING_CALLS });
   axios.get(`/calls/company/${companyName}`)
   .then(({ data }) => {
-    dispatch({ type: ActionTypes.CALL.SET_CALLS, payload: data});
+    dispatch({ type: ActionTypes.CALL.SET_CALLS, payload: groupCalls(data)});
   })
   .catch((err) => {
     console.log(err);
@@ -109,7 +110,7 @@ export const getCallsPerEmployee = (companyName, employeeEmail) => (dispatch) =>
   dispatch({ type: ActionTypes.CALL.LOADING_CALLS });
   axios.get(`/calls/employee/${companyName}/${employeeEmail}`)
   .then(({ data }) => {
-    dispatch({ type: ActionTypes.CALL.SET_CALLS, payload: data});
+    dispatch({ type: ActionTypes.CALL.SET_CALLS, payload: groupCalls(data)});
   })
   .catch((err) => {
     console.log(err);
