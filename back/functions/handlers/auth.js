@@ -14,7 +14,7 @@ exports.requestAccount = (req, res) => {
         companyName: req.body.companyName
     };
 
-    const token = bcrypt.hashSync(req.body.email, 10);
+    let token = bcrypt.hashSync(req.body.email, 10);
 
     const { valid, errors } = validateEmail(newUserRequest.email);
     if (!valid) return res.status(400).json(errors);
@@ -36,13 +36,14 @@ exports.requestAccount = (req, res) => {
         .then((data) => {
             let found = 0;
             data.forEach((document) => {
-                if (bcrypt.compareSync(document.id, token)) {
+                if (document.data().email === newUserRequest.email) {
                     found = 1;
                     return res.status(400).json({ email: 'It was already sent a request from this email. Please check your inbox.' });
                 } 
             })
 
             if (found === 0) {
+                token = token.split("/").join("");
                 return db.doc(`/${COLLECTION.ACCOUNT_REQUEST}/${token}`).set(newUserRequest);
             }
         })

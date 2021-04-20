@@ -13,6 +13,7 @@ import GetStarted from "./pages/auth/signup/GetStarted";
 import Home from "./pages/home/Home";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ChangePassword from "./pages/auth/ChangePassword";
+import AddEmployee from "./pages/auth/AddEmployee";
 
 function App() {
   let [token, setToken] = useState(localStorage.FBIdToken);
@@ -41,6 +42,7 @@ function App() {
           <Route exact path="/login" component={Login} />
           <Route exact path="/forgotpassword" component={ForgotPassword} />
           <Route exact path="/changepassword" component={ChangePassword} />
+          <Route exact path="/addemployee" component={AddEmployee} />
           <Route exact path="/invite/:token" component={SignUp} />
           <Route exact path="/getstarted" component={GetStarted} />
           <Route exact path="/call/:companyName" component={VideoChat} />

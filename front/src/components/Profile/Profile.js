@@ -103,14 +103,14 @@ const Profile = () => {
     }
 
     return (
-        <div style={{marginBottom:"20px"}}>
+        <div>
             <IconButton
                 ref={anchorRef}
                 aria-controls={open ? 'menu-list-grow' : undefined}
                 aria-haspopup="true"
                 onClick={handleToggleMenu}
             >
-                <AccountCircleIcon></AccountCircleIcon>
+                <AccountCircleIcon fontSize="large" style={{ color: "whitesmoke" }}></AccountCircleIcon>
             </IconButton>
             <Popper open={openMenu} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
             {({ TransitionProps, placement }) => (

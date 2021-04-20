@@ -13,7 +13,8 @@ import { signup, validateTokenEnroll } from "../../../redux/actions/userActions"
 
 const SignUp = () => {
   const history = useHistory();
-  const { loading, error } = useSelector((state) => state.ui);
+  const { loading } = useSelector((state) => state.ui);
+  const { error } = useSelector((state) => state.user);
   const validatedToken = useSelector((state) => state.user.token);
   const dispatch = useDispatch();
   const { register, handleSubmit, errors } = useForm();

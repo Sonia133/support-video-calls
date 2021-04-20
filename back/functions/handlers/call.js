@@ -170,13 +170,11 @@ exports.findEmployee = (req, res) => {
         
       data.forEach((doc) => {
         if (doc.data().schedule.length < day) {
-          console.log('day')
           return res.status(404).json({ hours: "We are sorry, but our hours are done for today. Please come back tomorrow. Have a good day!" });
         }
 
         let schedule = doc.data().schedule[day - 1].split("-");
         if (schedule[0] <= hour && hour <= schedule[1]) {
-          console.log('why')
           endingHours = true;
           if (doc.data().available === true && doc.data().boarded == true) {
             employees.push(doc.data());

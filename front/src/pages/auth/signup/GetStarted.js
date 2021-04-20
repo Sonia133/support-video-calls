@@ -8,6 +8,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router";
 import { sendRegisterRequest } from "../../../redux/actions/userActions";
 
 const GetStarted = () => {
@@ -16,12 +17,13 @@ const GetStarted = () => {
     const { loading, error } = useSelector((state) => state.ui);
     let [enrolled, setEnrolled] = useState(false);
     let [submitted, setSubmitted] = useState(false);
+    const history = useHistory();
 
     const onSubmit = (formData) => {
         setSubmitted(true);
 
         formData.role = "ceo";
-        dispatch(sendRegisterRequest(formData));
+        dispatch(sendRegisterRequest(formData, history));
     };
 
     useEffect(() => {

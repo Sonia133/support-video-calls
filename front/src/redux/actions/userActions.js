@@ -36,11 +36,14 @@ export const signup = (userData, token, history) => (dispatch) => {
   });
 }
 
-export const sendRegisterRequest = (userData) => (dispatch) => {
+export const sendRegisterRequest = (userData, history) => (dispatch) => {
   dispatch({ type: ActionTypes.UI.LOADING_UI });
   axios.post("/requestAccount", userData)
   .then(() => {
     dispatch({ type: ActionTypes.UI.STOP_LOADING_UI });
+    if (userData.role === 'employee') {
+      history.push('/');
+    }
   })
   .catch((err) => {
     console.log(err);
