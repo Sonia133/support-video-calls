@@ -12,7 +12,6 @@ const CallChart = (props) => {
         days.push(day.format('ll'));
         yAxis.push(calls[day.format('L')]);
     }
-    console.log(yAxis)
     
     const data = (canvas) => {
         var ctx = canvas.getContext("2d");

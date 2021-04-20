@@ -2,13 +2,14 @@ const { db } = require("../util/functions/admin");
 const { COLLECTION, ROLE } = require("../util/constants/constant");
 const { chooseEmployee } = require("../util/functions/chooseEmployee");
 
+var moment = require('moment');
+
 const configTwilio = require('../util/constants/configTwilio'); 
 const accountSid = configTwilio.twilio.accountSid;
 const authToken = configTwilio.twilio.authToken;
 const client = require('twilio')(accountSid, authToken);
 
 var Twilio = require('twilio');
-const { truncate } = require("fs");
 const clientDisconnect = new Twilio(configTwilio.twilio.apiKey, configTwilio.twilio.apiSecret, {accountSid: accountSid});
 
 exports.getCalls = (req, res) => {
@@ -309,4 +310,187 @@ exports.addFeedback = (req, res) => {
         .status(500)
         .json({ error: "Something went wrong. Please try again!" });
   });
+}
+
+exports.getFeedbackPerEmployee = (req, res) => {
+  const companyName = req.params.companyName;
+  const employeeEmail = req.params.employeeEmail;
+
+  const calls = db.collection(COLLECTION.CALL).where("employeeEmail", "==", employeeEmail);
+
+  let employeeData = {};
+
+  if (req.user.role === ROLE.ADMIN) {
+      employee.get()
+      .then(doc => {
+          if (!doc.exists) {
+              return res.status(404).json({ error: 'Employee not found!'} );
+          }
+  
+          return calls.get();
+      })
+      .then(data => {
+        data.forEach(doc => {
+          if (doc.data().feedback > 0) {
+            let day = moment(new Date(doc.data().createdAt._seconds * 1000)).format('L');
+
+            if (!employeeData.hasOwnProperty(day)) {
+              employeeData[day] = {
+                callsNumber: 0,
+                callsFeedback: 0
+              };
+            }
+            employeeData[day].callsNumber += 1;
+            employeeData[day].callsFeedback = doc.data().feedback;
+          }
+        })
+
+          return res.json(employeeData);
+        })
+      .catch(err => console.error(err));
+  } else if (req.user.role === ROLE.CEO) {
+      db.doc(`/${req.user.role}/${req.user.email}`).get()
+      .then(doc => {
+          if (doc.data().companyName === companyName) {
+              employee.get()
+              .then(doc => {
+                  if (!doc.exists) {
+                      return res.status(404).json({ error: 'Employee not found!'} );
+                  }
+          
+                  return calls.get();
+              })
+              .then(data => {
+                data.forEach(doc => {
+                  if (doc.data().feedback > 0) {
+                    let day = moment(new Date(doc.data().createdAt._seconds * 1000)).format('L');
+    
+                    if (!employeeData.hasOwnProperty(day)) {
+                      employeeData[day] = {
+                        callsNumber: 0,
+                        callsFeedback: 0
+                      };
+                    }
+                    employeeData[day].callsNumber += 1;
+                    employeeData[day].callsFeedback = doc.data().feedback;
+                  }
+                })
+    
+                return res.json(employeeData);
+              })
+            .catch(err => console.error(err));
+          } else {
+              return res.status(403).json({ error: 'Unauthorized'});
+          }
+      })
+  } else if (req.user.role === ROLE.EMPLOYEE && req.user.email === employeeEmail) {
+      calls.get()
+      .then(data => {
+        data.forEach(doc => {
+          if (doc.data().feedback > 0) {
+            let day = moment(new Date(doc.data().createdAt._seconds * 1000)).format('L');
+
+            if (!employeeData.hasOwnProperty(day)) {
+              employeeData[day] = {
+                callsNumber: 0,
+                callsFeedback: 0
+              };
+            }
+            employeeData[day].callsNumber += 1;
+            employeeData[day].callsFeedback = doc.data().feedback;
+          }
+        })
+
+        return res.json(employeeData);
+      })
+    .catch(err => console.error(err));
+  } else {
+      return res.status(403).json({ error: 'Unauthorized'});
+  }
+}
+
+exports.getFeedbackPerCompany = (req, res) => {
+  const companyName = req.params.companyName;
+
+  const calls = db.collection(COLLECTION.CALL).where("companyName", "==", companyName);
+
+  let companyData = {};
+
+  if (req.user.role === ROLE.ADMIN) {
+      calls.get()
+      .then(data => {
+        data.forEach(doc => {
+          if (doc.data().feedback > 0) {
+            let day = moment(new Date(doc.data().createdAt._seconds * 1000)).format('L');
+
+            if (!companyData.hasOwnProperty(day)) {
+              companyData[day] = {
+                callsNumber: 0,
+                callsFeedback: 0
+              };
+            }
+            companyData[day].callsNumber += 1;
+            companyData[day].callsFeedback = doc.data().feedback;
+          }
+        })
+
+        return res.json(companyData);
+      })
+      .catch(err => console.error(err));
+  } else if (req.user.role === ROLE.CEO) {
+      db.doc(`/${req.user.role}/${req.user.email}`).get()
+      .then(doc => {
+          if (doc.data().companyName === companyName) {
+              calls.get()
+              .then(data => {
+                  data.forEach(doc => {
+                      if (doc.data().feedback > 0) {
+                        let day = moment(new Date(doc.data().createdAt._seconds * 1000)).format('L');
+
+                        if (!companyData.hasOwnProperty(day)) {
+                          companyData[day] = {
+                            callsNumber: 0,
+                            callsFeedback: 0
+                          };
+                        }
+                        companyData[day].callsNumber += 1;
+                        companyData[day].callsFeedback = doc.data().feedback;
+                      }
+                  })
+
+                  return res.json(companyData);
+              })
+              .catch(err => console.error(err));
+          } else {
+              return res.status(403).json({ error: 'Unauthorized'});
+          }
+      })
+  } 
+}
+
+exports.getFeedback = (req, res) => {
+  const calls = db.collection(COLLECTION.CALL);
+
+  let allData = {};
+
+  calls.get()
+  .then(data => {
+    data.forEach(doc => {
+      if (doc.data().feedback > 0) {
+        let day = moment(new Date(doc.data().createdAt._seconds * 1000)).format('L');
+
+        if (!allData.hasOwnProperty(day)) {
+          allData[day] = {
+            callsNumber: 0,
+            callsFeedback: 0
+          };
+        }
+        allData[day].callsNumber += 1;
+        allData[day].callsFeedback = doc.data().feedback;
+      }
+    })
+
+    return res.json(allData);
+  })
+  .catch(err => console.error(err));
 }

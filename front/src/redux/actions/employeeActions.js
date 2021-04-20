@@ -1,21 +1,6 @@
 import axios from "../axios";
 import { ActionTypes } from "../types";
 
-export const getFeedback = (companyName, employeeEmail) => (dispatch) => {
-    dispatch({ type: ActionTypes.EMPLOYEE.LOADING_FEEDBACK });
-    axios.get(`/employee/feedback/${companyName}/${employeeEmail}`)
-      .then(({ data }) => {
-        dispatch({ type: ActionTypes.EMPLOYEE.SET_FEEDBACK, payload: data });
-      })
-      .catch((err) => {
-        console.log(err);
-        dispatch({
-          type: ActionTypes.EMPLOYEE.SET_ERRORS_FEEDBACK,
-          payload: err.response?.data,
-        });
-      });
-}
-
 export const getEmployees = (companyName) => (dispatch) =>{
     dispatch({ type: ActionTypes.EMPLOYEE.LOADING });
     axios.get(`/employees/${companyName}`)

@@ -2,13 +2,16 @@ import moment from "moment";
 import React from "react";
 import { Bar } from 'react-chartjs-2';
 
-const FeedbackChart = () => {
+const FeedbackChart = (props) => {
+    const feedback = props.feedback;
     const days = [];
+    const yAxis = [];
 
     for (let i = 6; i >= 0; i--) {
-        days.push(moment(new Date()).subtract(i, 'days').format('ll'));
+        let day = moment(new Date()).subtract(i, 'days');
+        days.push(day.format('ll'));
+        yAxis.push(feedback[day.format('L')]);
     }
-    
     const chartColor = '#FFFFFF';
 
     const data = (canvas) => {
@@ -35,7 +38,7 @@ const FeedbackChart = () => {
                 fill: true,
                 backgroundColor: gradientFill,
                 borderWidth: 2,
-                data: [542, 180, 430, 550, 530, 253, 380]
+                data: yAxis
             }]
         }
     };

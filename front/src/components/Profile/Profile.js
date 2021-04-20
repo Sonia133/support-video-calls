@@ -157,7 +157,7 @@ const Profile = () => {
                         <div className="dialog-text">
                             <Typography>{firstname + " " + lastname}</Typography>
                             {role !== 'admin' ?(<Typography>{role + " @ " + companyName}</Typography>)
-                                : (<Typography>{"Admin @ SupportVideoCalls"}</Typography>)
+                                : (<Typography>{"admin @ SupportVideoCalls"}</Typography>)
                             }
                         </div>
                     </DialogContentText>

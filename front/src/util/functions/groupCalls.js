@@ -1,13 +1,11 @@
 import moment from "moment";
 
 export const groupCalls = (calls) => {
-    const days = [];
     let groupedCalls = {};
 
     for (let i = 0; i < 7; i ++) {
         let day = moment(new Date()).subtract(i, 'days').format('L');
         groupedCalls[day] = 0;
-        days.push(day);
     }
 
 

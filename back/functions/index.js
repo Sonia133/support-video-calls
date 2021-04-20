@@ -8,11 +8,19 @@ const {
     login, requestAccount, validateToken, signup, changePassword, forgotPassword
 } = require('./handlers/auth');
 const { getAuthenticatedUser, uploadImage } = require('./handlers/authenticatedUser');
-const { updateSchedule, getEmployee, getEmployees, getFeedback, setAvailability } = require('./handlers/employee');
+const { updateSchedule, getEmployee, getEmployees, setAvailability } = require('./handlers/employee');
 const { deleteEmployee, getCeos, getCeo } = require('./handlers/ceo');
 const { addAdmin, deleteCeo } = require('./handlers/admin');
 const { 
-    getCalls, getCallsPerEmployee, getCallsPerCompany, addCallDetails, findEmployee, addFeedback
+    getCalls, 
+    getCallsPerEmployee, 
+    getCallsPerCompany, 
+    addCallDetails, 
+    findEmployee, 
+    addFeedback, 
+    getFeedbackPerEmployee,
+    getFeedbackPerCompany,
+    getFeedback
 } = require('./handlers/call');
 const { videoToken } = require('./handlers/video');
 
@@ -50,7 +58,6 @@ app.post('/updateImage', FBUserAuth, uploadImage);
 app.get('/user', FBUserAuth, getAuthenticatedUser);
 app.get('/employees/:companyName', FBUserAuth, getEmployees);
 app.get('/employee/:companyName/:employeeEmail', FBUserAuth, getEmployee);
-app.get('/employee/feedback/:companyName/:employeeEmail', FBUserAuth, getFeedback);
 
 // call routes
 app.get('/calls', FBAdminAuth, getCalls);
@@ -59,6 +66,9 @@ app.get('/calls/employee/:companyName/:employeeEmail', FBUserAuth, getCallsPerEm
 app.post('/call/start/:companyName', findEmployee);
 app.post('/call/end', addCallDetails);
 app.post('/call/feedback', addFeedback);
+app.get('/employee/feedback/:companyName/:employeeEmail', FBUserAuth, getFeedbackPerEmployee);
+app.get('/ceo/feedback/:companyName', FBUserAuth, getFeedbackPerCompany);
+app.get('/ceos/feedback', FBAdminAuth, getFeedback);
 
 // initiate video calls routes
 app.post('/video/token', videoToken);

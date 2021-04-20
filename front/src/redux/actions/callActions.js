@@ -2,6 +2,7 @@ import socket from "../../socket";
 import axios from "../axios";
 import { ActionTypes } from "../types";
 import { groupCalls } from "../../util/functions/groupCalls";
+import { groupFeedback } from "../../util/functions/groupFeedback";
 
 export const findEmployee = (roomName, companyName) => (dispatch) => {
   dispatch({ type: ActionTypes.CALL.LOADING_EMPLOYEE });
@@ -92,6 +93,7 @@ export const getCalls = () => (dispatch) => {
 }
 
 export const getCallsPerCompany = (companyName) => (dispatch) => {
+  console.log('here')
   dispatch({ type: ActionTypes.CALL.LOADING_CALLS });
   axios.get(`/calls/company/${companyName}`)
   .then(({ data }) => {
@@ -119,4 +121,49 @@ export const getCallsPerEmployee = (companyName, employeeEmail) => (dispatch) =>
       payload: err.response?.data,
     });
   });
+}
+
+export const getFeedback = () => (dispatch) => {
+  dispatch({ type: ActionTypes.CALL.LOADING_FEEDBACK });
+  axios.get('/ceos/feedback')
+  .then(({ data }) => {
+    dispatch({ type: ActionTypes.CALL.SET_FEEDBACK, payload: groupFeedback(data)});
+  })
+  .catch((err) => {
+    console.log(err);
+    dispatch({
+      type: ActionTypes.CALL.SET_ERRORS_CALLS,
+      payload: err.response?.data,
+    });
+  });
+}
+
+export const getFeedbackPerCompany = (companyName) => (dispatch) => {
+  dispatch({ type: ActionTypes.CALL.LOADING_FEEDBACK });
+  axios.get(`/ceo/feedback/${companyName}`)
+  .then(({ data }) => {
+    dispatch({ type: ActionTypes.CALL.SET_FEEDBACK, payload: groupFeedback(data)});
+  })
+  .catch((err) => {
+    console.log(err);
+    dispatch({
+      type: ActionTypes.CALL.SET_ERRORS_CALLS,
+      payload: err.response?.data,
+    });
+  });
+}
+
+export const getFeedbackPerEmployee = (companyName, employeeEmail) => (dispatch) => {
+  dispatch({ type: ActionTypes.CALL.LOADING_FEEDBACK });
+  axios.get(`/employee/feedback/${companyName}/${employeeEmail}`)
+    .then(({ data }) => {
+      dispatch({ type: ActionTypes.CALL.SET_FEEDBACK, payload: groupFeedback(data) });
+    })
+    .catch((err) => {
+      console.log(err);
+      dispatch({
+        type: ActionTypes.CALL.SET_ERRORS_FEEDBACK,
+        payload: err.response?.data,
+      });
+    });
 }
