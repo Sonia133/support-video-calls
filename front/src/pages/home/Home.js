@@ -90,16 +90,16 @@ const Home = () => {
           </Box>
           <Box style={{ height: "40%", display: "flex", justifyContent: "space-between" }}>
             <Box className="small-chart">
-              {(loadingFeedback || loadingFeedback === undefined) && (<CircularProgress />)}
-              {(!loadingFeedback && loadingFeedback !== undefined) && (<FeedbackChart feedback={feedback}/>)}
-            </Box>
-            <Box className="small-chart table">
               <h4>Comments</h4>
               {(loadingCalls || loadingCalls === undefined) && (<CircularProgress />)}
               {(!loadingCalls && loadingCalls !== undefined) && (<CommentsTable comments={comments}/>)}    
             </Box>
+            <Box className="small-chart" style={{ marginTop: "2%" }}>
+              {(loadingFeedback || loadingFeedback === undefined) && (<CircularProgress />)}
+              {(!loadingFeedback && loadingFeedback !== undefined) && (<FeedbackChart feedback={feedback}/>)}
+            </Box>
             {isAdmin && (
-              <Box className="small-chart table">
+              <Box className="small-chart">
                 <h4>Staff</h4>
                 {((loadingCeos || loadingEmployees) || (loadingCeos === undefined || loadingEmployees === undefined))
                           && (<CircularProgress />)}
@@ -108,7 +108,7 @@ const Home = () => {
               </Box>
             )}
             {!isAdmin && (
-              <Box className="small-chart table">
+              <Box className="small-chart">
                 <h4>Staff</h4>
                 {(loadingEmployees || loadingEmployees === undefined)
                           && (<CircularProgress />)}

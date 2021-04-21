@@ -137,3 +137,36 @@ h4 {
   font-family: "Architects Daughter";
   font-weight: 400 !important;
 }
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(196, 211, 237); 
+}
+ 
+::-webkit-scrollbar-thumb {
+  background: rgb(157, 182, 225); 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(118, 153, 213); 
+}
+
+.MuiTableCell-head {
+  background-color: rgb(116, 152, 216)  !important;
+}
+
+.MuiTableRow-root {
+  background-color: rgb(176, 197, 232)  !important;
+}
+
+.staff-profile .MuiTableRow-root:hover {
+  background-color: rgba(176, 197, 232, 0.6)  !important;
+  cursor: pointer;
+}
+
+.MuiTablePagination-toolbar {
+  background-color: rgb(196, 211, 237)  !important;
+}

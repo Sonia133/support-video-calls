@@ -19,7 +19,7 @@ const CommentsTable = (props) => {
 
     return (
         <TableContainer component={Paper}>
-            <Table aria-label="simple table">
+            <Table stickyHeader aria-label="sticky table">
                 <TableHead>
                     <TableRow>
                         <TableCell>Comment</TableCell>
@@ -28,7 +28,7 @@ const CommentsTable = (props) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {comments.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((comment, index) => (
+                    {comments.map((comment, index) => (
                         <TableRow key={index}>
                             <TableCell component="th" scope="row">
                                 {comment[0]}
@@ -39,14 +39,6 @@ const CommentsTable = (props) => {
                     ))}
                 </TableBody>
             </Table>
-            <TablePagination
-                rowsPerPageOptions={[rowsPerPage]}
-                component="div"
-                count={comments.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onChangePage={handleChangePage}
-            />
         </TableContainer>
     );
 };

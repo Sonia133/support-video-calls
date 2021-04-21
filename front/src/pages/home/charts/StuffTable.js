@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -8,6 +8,9 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import TablePagination from '@material-ui/core/TablePagination';
+import StaticProfile from "../../../components/Profile/StaticProfile";
+import { Button, Dialog } from "@material-ui/core";
+import { ActionTypes } from "../../../redux/types";
 
 const StuffTable = () => {
     const { employees } = useSelector((state) => state.employee);
@@ -16,10 +19,26 @@ const StuffTable = () => {
     const [staff, setStaff] = useState([]);
     const rowsPerPage = 3;
     const [page, setPage] = useState(0);
+    const [open, setOpen] = useState(false);
+    const [user, setUser] = useState();
+    const dispatch = useDispatch();
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
+
+    const clickStaff = (staffMember) => {
+      setUser(staffMember);
+      console.log('hei')
+      setOpen(true);
+    };
+
+    const closeProfileDialog = () => {
+      setOpen(false);
+      setUser(undefined);
+      dispatch({ type: ActionTypes.UI.CLEAR_ERRORS });
+      dispatch({ type: ActionTypes.USER.CLEAR_ERRORS });
+    }
 
     useEffect(() => {
       if (role === "admin") {
@@ -30,36 +49,47 @@ const StuffTable = () => {
     }, [employees, ceos]);
 
     return (
-        <TableContainer component={Paper}>
-            <Table aria-label="simple table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Name</TableCell>
-                        <TableCell align="right">Role</TableCell>
-                        <TableCell align="right">Company</TableCell>
+      <TableContainer component={Paper}>
+          <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                  <TableRow>
+                      <TableCell>Name</TableCell>
+                      <TableCell align="right">Role</TableCell>
+                      <TableCell align="right">Company</TableCell>
+                  </TableRow>
+              </TableHead>
+              <TableBody className="staff-profile">
+                  {staff.map((staffMember, index) => (
+                    <TableRow key={index} onClick={() => clickStaff(staffMember)}>
+                        <TableCell component="th" scope="row">
+                            {staffMember.firstname + " " + staffMember.lastname}
+                        </TableCell>
+                        <TableCell align="right">{staffMember.employeeId === undefined ? "ceo" : "employee"}</TableCell>
+                        <TableCell align="right">{staffMember.companyName}</TableCell>
                     </TableRow>
-                </TableHead>
-                <TableBody>
-                    {staff.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((staffMember, index) => (
-                        <TableRow key={index}>
-                            <TableCell component="th" scope="row">
-                                {staffMember.firstname + " " + staffMember.lastname}
-                            </TableCell>
-                            <TableCell align="right">{staffMember.employeeId === undefined ? "ceo" : "employee"}</TableCell>
-                            <TableCell align="right">{staffMember.companyName}</TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-            <TablePagination
-                rowsPerPageOptions={[rowsPerPage]}
-                component="div"
-                count={employees.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onChangePage={handleChangePage}
-            />
-        </TableContainer>
+                  ))}
+              </TableBody>
+          </Table>
+          {user !== undefined && (<Dialog
+              open={open}
+              keepMounted
+              onClose={closeProfileDialog}
+              aria-labelledby="alert-dialog-slide-title"
+              aria-describedby="alert-dialog-slide-description"
+          >
+            <StaticProfile user={user} />
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <Button 
+                style={{ marginBottom: "5%", marginTop: "5%" }} 
+                onClick={closeProfileDialog} 
+                variant="contained" 
+                color="primary"
+              >
+              Close
+            </Button>
+          </div>
+        </Dialog>)}
+      </TableContainer>
     );
 };
 

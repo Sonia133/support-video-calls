@@ -204,7 +204,6 @@ exports.changePassword = (req, res) => {
     console.log(req.user.email)
     admin.auth().getUserByEmail(req.user.email)
     .then((user) => {
-        console.log(user)
         return admin.auth().updateUser(user.uid, {
             password: changePasswordRequest.newPassword
         })        
