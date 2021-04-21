@@ -295,11 +295,26 @@ exports.addCallDetails = (req, res) => {
 };
 
 exports.addFeedback = (req, res) => {
-  const { roomName, feedback, comments } = req.body;
+  const { roomName, feedback, comments, call } = req.body;
 
-  db.doc(`/${COLLECTION.CALL}/${roomName}`).update({
-    feedback,
-    comments
+  db.doc(`/${COLLECTION.CALL}/${roomName}`).get()
+  .then((doc) => {
+    if (doc.exists) {
+      return db.doc(`/${COLLECTION.CALL}/${roomName}`).update({
+        feedback,
+        comments
+      });
+    } else {
+      return db.doc(`/${COLLECTION.CALL}/${roomName}`)
+      .set({
+        employeeEmail: "",
+        createdAt: new Date(),
+        companyName: call.companyName,
+        duration: -1,
+        feedback,
+        comments
+      })
+    }
   })
   .then(() => {
     res.status(200).json({ message: 'Feedback sent successfully!' });
@@ -494,3 +509,4 @@ exports.getFeedback = (req, res) => {
   })
   .catch(err => console.error(err));
 }
+

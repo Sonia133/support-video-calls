@@ -17,12 +17,17 @@ import {
   getFeedbackPerCompany,
   getFeedbackPerEmployee
 } from "../../redux/actions/callActions";
+import { getEmployees, getAllEmployees } from "../../redux/actions/employeeActions";
+import CommentsTable from "./charts/CommentsTable";
+import { getCeos } from "../../redux/actions/ceoActions";
 
 const Home = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.user.authenticated);
-  const { loadingCalls, loadingFeedback, calls, feedback } = useSelector((state) => state.call);
+  const { loadingCalls, loadingFeedback, calls, feedback, comments } = useSelector((state) => state.call);
+  const { loading: loadingEmployees } = useSelector((state) => state.employee);
+  const { loading: loadingCeos } = useSelector((state) => state.ceo);
   const [isEmployee, isCeo, isAdmin, firstname, companyName, email, loading] = useSelector((state) => [
     state.user?.role === "employee",
     state.user?.role === "ceo",
@@ -41,12 +46,16 @@ const Home = () => {
     if (isEmployee) {
       dispatch(getCallsPerEmployee(companyName, email));
       dispatch(getFeedbackPerEmployee(companyName, email))
+      dispatch(getEmployees(companyName));
     } else if (isAdmin) {
       dispatch(getCalls());
       dispatch(getFeedback());
+      dispatch(getAllEmployees());
+      dispatch(getCeos());
     } else if (isCeo) {
       dispatch(getCallsPerCompany(companyName));
       dispatch(getFeedbackPerCompany(companyName))
+      dispatch(getEmployees(companyName));
     }
 
   }, [isLoggedIn, isEmployee, isCeo, isAdmin]);
@@ -84,12 +93,29 @@ const Home = () => {
               {(loadingFeedback || loadingFeedback === undefined) && (<CircularProgress />)}
               {(!loadingFeedback && loadingFeedback !== undefined) && (<FeedbackChart feedback={feedback}/>)}
             </Box>
-            <Box className="small-chart">
-              {(loadingFeedback || loadingFeedback === undefined) && (<CircularProgress />)}
-              {(!loadingFeedback && loadingFeedback !== undefined) && (<FeedbackChart feedback={feedback}/>)}            </Box>
-            <Box className="small-chart">
-              {(loadingFeedback || loadingFeedback === undefined) && (<CircularProgress />)}
-              {(!loadingFeedback && loadingFeedback !== undefined) && (<FeedbackChart feedback={feedback}/>)}            </Box>
+            <Box className="small-chart table">
+              <h4>Comments</h4>
+              {(loadingCalls || loadingCalls === undefined) && (<CircularProgress />)}
+              {(!loadingCalls && loadingCalls !== undefined) && (<CommentsTable comments={comments}/>)}    
+            </Box>
+            {isAdmin && (
+              <Box className="small-chart table">
+                <h4>Staff</h4>
+                {((loadingCeos || loadingEmployees) || (loadingCeos === undefined || loadingEmployees === undefined))
+                          && (<CircularProgress />)}
+                {((!loadingCeos && !loadingEmployees) && (loadingCeos !== undefined && loadingEmployees !== undefined))
+                        && (<StuffTable />)}
+              </Box>
+            )}
+            {!isAdmin && (
+              <Box className="small-chart table">
+                <h4>Staff</h4>
+                {(loadingEmployees || loadingEmployees === undefined)
+                          && (<CircularProgress />)}
+                {(!loadingEmployees && loadingEmployees !== undefined)
+                        && (<StuffTable />)}
+              </Box>
+            )}
           </Box>
         </Box>
       )}

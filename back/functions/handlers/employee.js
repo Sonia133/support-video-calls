@@ -137,3 +137,19 @@ exports.setAvailability = (req, res) => {
         return res.status(500).json({ error: 'Something went wrong. Please try again!' });
     })
 }
+
+exports.getAllEmployees = (req, res) => {
+    db.collection(COLLECTION.EMPLOYEE)
+      .get()
+      .then((data) => {
+        let employees = [];
+        data.forEach((document) => {
+          employees.push({
+            ...document.data(),
+            employeeId: document.id,
+          });
+        });
+        return res.json(employees);
+      })
+      .catch((err) => console.error(err));
+};

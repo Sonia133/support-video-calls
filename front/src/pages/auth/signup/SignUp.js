@@ -4,6 +4,7 @@ import {
   CircularProgress,
   TextField,
   Typography,
+  Grow
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -44,75 +45,77 @@ const SignUp = () => {
     } else if (validatedToken !== undefined){
       setRender(
         <div style={{height: "100%", display: "flex"}}>
-          <Box
-            className="auth-container"
-          >
-            <Box 
-              className="alternative-auth-box"
-              p={6}
-            >
-              <h1 style={{color: "#fff"}}>Welcome Back!</h1>
-              <p style={{color: "#fff", textAlign: "center"}}>To keep connected with us please login with your personal info.</p>
-                <Button onClick={goLogin} variant="contained">
-                  <Typography>Sign in</Typography>
-                </Button>
-            </Box>
+          <Grow in>
             <Box
-              className="auth-box"
-              p={6}
-              style={{borderRadius: "0 2% 2% 0"}}
-              display="flex"
-              flexDirection="column"
-              justifyContent="center"
-              alignItems="center"
+              className="auth-container"
             >
-              <h2>Sign up</h2>
-              <TextField
-                error={!!errors.firstname?.message}
-                helperText={errors.firstname?.message ?? ""}
-                label="First name"
-                name="firstname"
-                inputRef={register({ required: "First name is required" })}
-                variant="outlined"
-                InputLabelProps={{shrink: true }}
-              />
-              <TextField
-                error={!!errors.lastname?.message}
-                helperText={errors.lastname?.message ?? ""}
-                label="Last name"
-                name="lastname"
-                inputRef={register({ required: "Last name is required" })}
-                variant="outlined"
-                InputLabelProps={{shrink: true }}
-              />
-              <TextField
-                error={!!errors.password?.message}
-                helperText={errors.password?.message ?? ""}
-                label="Password"
-                name="password"
-                inputRef={register({ required: "Password is required" })}
-                variant="outlined"
-                type="password"
-                InputLabelProps={{shrink: true }}
-              />
-              <TextField
-                error={!!errors.confirmPassword?.message}
-                helperText={errors.confirmPassword?.message ?? ""}
-                label="Confirm password"
-                name="confirmPassword"
-                inputRef={register({
-                  required: "Confirming your password is required"
-                })}
-                variant="outlined"
-                type="password"
-                InputLabelProps={{shrink: true }}
-              />
-              {!!error?.error && <Typography color="error">{error.error}</Typography>}
-              <Button onClick={handleSubmit(onSubmit)} disabled={loading} variant="contained" color="primary">
-                {loading ? <CircularProgress /> : <Typography>Sign up</Typography>}
-              </Button>
+              <Box 
+                className="alternative-auth-box"
+                p={6}
+              >
+                <h1 style={{color: "#fff"}}>Welcome Back!</h1>
+                <p style={{color: "#fff", textAlign: "center"}}>To keep connected with us please login with your personal info.</p>
+                  <Button onClick={goLogin} variant="contained">
+                    <Typography>Sign in</Typography>
+                  </Button>
+              </Box>
+              <Box
+                className="auth-box"
+                p={6}
+                style={{borderRadius: "0 2% 2% 0"}}
+                display="flex"
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <h2>Sign up</h2>
+                <TextField
+                  error={!!errors.firstname?.message}
+                  helperText={errors.firstname?.message ?? ""}
+                  label="First name"
+                  name="firstname"
+                  inputRef={register({ required: "First name is required" })}
+                  variant="outlined"
+                  InputLabelProps={{shrink: true }}
+                />
+                <TextField
+                  error={!!errors.lastname?.message}
+                  helperText={errors.lastname?.message ?? ""}
+                  label="Last name"
+                  name="lastname"
+                  inputRef={register({ required: "Last name is required" })}
+                  variant="outlined"
+                  InputLabelProps={{shrink: true }}
+                />
+                <TextField
+                  error={!!errors.password?.message}
+                  helperText={errors.password?.message ?? ""}
+                  label="Password"
+                  name="password"
+                  inputRef={register({ required: "Password is required" })}
+                  variant="outlined"
+                  type="password"
+                  InputLabelProps={{shrink: true }}
+                />
+                <TextField
+                  error={!!errors.confirmPassword?.message}
+                  helperText={errors.confirmPassword?.message ?? ""}
+                  label="Confirm password"
+                  name="confirmPassword"
+                  inputRef={register({
+                    required: "Confirming your password is required"
+                  })}
+                  variant="outlined"
+                  type="password"
+                  InputLabelProps={{shrink: true }}
+                />
+                {!!error?.error && <Typography color="error">{error.error}</Typography>}
+                <Button onClick={handleSubmit(onSubmit)} disabled={loading} variant="contained" color="primary">
+                  {loading ? <CircularProgress /> : <Typography>Sign up</Typography>}
+                </Button>
+              </Box>
             </Box>
-          </Box>
+          </Grow>
         </div>
         );    
       } else if (!!error?.inexistent) {

@@ -63,7 +63,7 @@ const VideoChat = () => {
           .on("value", (snapshot) => {
             if (snapshot.val() === true || snapshot.val() === null) {
               if(!isEmployee) {
-                history.push(`/endcall/${roomName}`);
+                history.push(`/endcall/${companyName}/${roomName}`);
               }
             }
           });
@@ -110,7 +110,6 @@ const VideoChat = () => {
             socket.ref(`calls/${username.replace(".", "-")}`).remove();
             
             if (remoteParticipant) {
-              console.log(remoteParticipant)
               dispatch(endCall(companyName, remoteParticipant, localParticipant, remoteParticipant));
             } else {
               return null;

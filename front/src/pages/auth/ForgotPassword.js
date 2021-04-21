@@ -4,6 +4,7 @@ import {
     CircularProgress,
     TextField,
     Typography,
+    Grow
   } from "@material-ui/core";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -28,28 +29,30 @@ const ForgotPassword = () => {
                 <CircularProgress />
             )}
             {(!loadingUi || loadingUi === undefined) && (
-                <Box
-                    px={6}
-                    py={4}
-                    className="auth-container single"
-                >
-                    <h2>Forgot your password?</h2>
-                    <TextField
-                        error={!!errors.email?.message}
-                        helperText={errors.email?.message ?? ""}
-                        label="Email"
-                        name="email"
-                        inputRef={register({ required: "Email is required" })}
-                        variant="outlined"
-                        InputLabelProps={{shrink: true}}
-                    />
-                    {!!error?.error && (
-                        <Typography color="error">{error.error}</Typography>
-                    )}
-                    <Button onClick={handleSubmit(onSubmit)} disabled={loading} variant="contained" color="primary">
-                        {loading ? <CircularProgress /> : <Typography>Submit</Typography>}
-                    </Button>
-                </Box>
+                <Grow in>
+                    <Box
+                        px={6}
+                        py={4}
+                        className="auth-container single"
+                    >
+                        <h2>Forgot your password?</h2>
+                        <TextField
+                            error={!!errors.email?.message}
+                            helperText={errors.email?.message ?? ""}
+                            label="Email"
+                            name="email"
+                            inputRef={register({ required: "Email is required" })}
+                            variant="outlined"
+                            InputLabelProps={{shrink: true}}
+                        />
+                        {!!error?.error && (
+                            <Typography color="error">{error.error}</Typography>
+                        )}
+                        <Button onClick={handleSubmit(onSubmit)} disabled={loading} variant="contained" color="primary">
+                            {loading ? <CircularProgress /> : <Typography>Submit</Typography>}
+                        </Button>
+                    </Box>
+                </Grow>
             )}
         </Box>
     )

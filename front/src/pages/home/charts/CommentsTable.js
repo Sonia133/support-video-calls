@@ -1,8 +1,53 @@
-import React from "react";
+import React, { useState } from "react";
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import TablePagination from '@material-ui/core/TablePagination';
 
-const CommentsTable = () => {
+const CommentsTable = (props) => {
+    const comments = props.comments;
+    const rowsPerPage = 3;
+    const [page, setPage] = useState(0);
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
     return (
-        <p>Hello</p>
+        <TableContainer component={Paper}>
+            <Table aria-label="simple table">
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Comment</TableCell>
+                        <TableCell align="right">Employee</TableCell>
+                        <TableCell align="right">Company</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {comments.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((comment, index) => (
+                        <TableRow key={index}>
+                            <TableCell component="th" scope="row">
+                                {comment[0]}
+                            </TableCell>
+                            <TableCell align="right">{comment[1]}</TableCell>
+                            <TableCell align="right">{comment[2]}</TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+            <TablePagination
+                rowsPerPageOptions={[rowsPerPage]}
+                component="div"
+                count={comments.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onChangePage={handleChangePage}
+            />
+        </TableContainer>
     );
 };
 

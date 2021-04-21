@@ -1,10 +1,28 @@
 import axios from "../axios";
 import { ActionTypes } from "../types";
 
+export const getAllEmployees = () => (dispatch) => {
+  dispatch({ type: ActionTypes.EMPLOYEE.LOADING });
+  axios.get('/employees')
+  .then(({ data }) => {
+    dispatch({ type: ActionTypes.EMPLOYEE.SET_EMPLOYEES, payload: data});
+  })
+  .catch((err) => {
+    console.log(err);
+    dispatch({
+      type: ActionTypes.EMPLOYEE.SET_ERRORS,
+      payload: err.response?.data,
+    });
+  });
+}
+
+
 export const getEmployees = (companyName) => (dispatch) =>{
+    console.log('here')
     dispatch({ type: ActionTypes.EMPLOYEE.LOADING });
     axios.get(`/employees/${companyName}`)
     .then(({ data }) => {
+      console.log(data)
         dispatch({ type: ActionTypes.EMPLOYEE.SET_EMPLOYEES, payload: data});
     })
     .catch((err) => {

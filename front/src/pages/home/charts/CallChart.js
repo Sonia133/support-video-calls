@@ -1,6 +1,7 @@
 import moment from "moment";
 import React from "react";
 import { Line } from 'react-chartjs-2';
+import "@fontsource/architects-daughter";
 
 const CallChart = (props) => {
     const calls = props.calls;
@@ -51,18 +52,21 @@ const CallChart = (props) => {
         },
         legend: {
             labels: {
-               fontColor: 'whitesmoke'
+               fontColor: 'whitesmoke',
+               fontFamily: "Architects Daughter"
             }
         },
         scales: {
             yAxes: [{
                 ticks: {
-                    fontColor: 'whitesmoke'
+                    fontColor: 'whitesmoke',
+                    fontFamily: "Architects Daughter"
                 },
             }],
             xAxes: [{
                 ticks: {
-                    fontColor: 'whitesmoke'
+                    fontColor: 'whitesmoke',
+                    fontFamily: "Architects Daughter"
                 },
             }]
         },

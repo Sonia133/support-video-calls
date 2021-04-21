@@ -7,7 +7,7 @@ import Rating from '@material-ui/lab/Rating';
 import { sendFeedback } from "../../redux/actions/callActions";
 
 const Feedback = () => {
-    const { roomName } = useParams();
+    const { roomName, companyName } = useParams();
     const dispatch = useDispatch();
     const { register, handleSubmit, errors } = useForm();
     const [sent, setSent] = useState(false);
@@ -21,6 +21,11 @@ const Feedback = () => {
             formData.comments = '';
         }
         formData.roomName = roomName;
+
+        formData.call = {
+            companyName
+        }
+
         setSent(true);
         dispatch(sendFeedback(formData));
     }

@@ -8,7 +8,7 @@ const {
     login, requestAccount, validateToken, signup, changePassword, forgotPassword
 } = require('./handlers/auth');
 const { getAuthenticatedUser, uploadImage } = require('./handlers/authenticatedUser');
-const { updateSchedule, getEmployee, getEmployees, setAvailability } = require('./handlers/employee');
+const { updateSchedule, getEmployee, getEmployees, getAllEmployees, setAvailability } = require('./handlers/employee');
 const { deleteEmployee, getCeos, getCeo } = require('./handlers/ceo');
 const { addAdmin, deleteCeo } = require('./handlers/admin');
 const { 
@@ -56,6 +56,7 @@ app.get('/ceo/:ceoEmail', FBAdminAuth, getCeo);
 // user auth -> common functionality
 app.post('/updateImage', FBUserAuth, uploadImage);
 app.get('/user', FBUserAuth, getAuthenticatedUser);
+app.get('/employees', FBAdminAuth, getAllEmployees);
 app.get('/employees/:companyName', FBUserAuth, getEmployees);
 app.get('/employee/:companyName/:employeeEmail', FBUserAuth, getEmployee);
 

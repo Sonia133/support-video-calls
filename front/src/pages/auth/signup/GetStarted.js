@@ -3,7 +3,8 @@ import {
     Button,
     CircularProgress,
     TextField,
-    Typography
+    Typography,
+    Grow
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -58,44 +59,46 @@ const GetStarted = () => {
     else {
         render = (
             <div style={{height: "100%", display: "flex"}}>
-                <Box
-                    px={6}
-                    py={4}
-                    className="auth-container"
-                    style={{background: "#fff"}}
-                    display="flex"
-                    flexDirection="column"
-                    justifyContent="center"
-                    alignItems="center"
-                >
-                    <h2>Register your company</h2>
-                    <TextField
-                        error={!!errors.email?.message}
-                        helperText={errors.email?.message ?? ""}
-                        label="Email"
-                        name="email"
-                        inputRef={register({ required: "Email is required" })}
-                        variant="outlined"
-                        InputLabelProps={{shrink: true }}
-                    />
-                    <TextField
-                        error={!!errors.companyName?.message}
-                        helperText={errors.companyName?.message ?? ""}
-                        label="Company"
-                        name="companyName"
-                        inputRef={register({ required: "Company name is required" })}
-                        variant="outlined"
-                        InputLabelProps={{shrink: true }}
-                    />
-                    {!!error?.error && (
-                        <Typography color="error">{error.error}</Typography>
-                    )}
-                    {!!error?.email && <Typography color="error">{error.email}</Typography>}
-                    <Button onClick={handleSubmit(onSubmit)} disabled={loading} variant="contained" color="primary">
-                        {loading ? <CircularProgress /> : <Typography>Get started</Typography>}
-                    </Button>
-                    <p>Back to <a href="/login"> login</a>?</p>
-                </Box>
+                <Grow in>
+                    <Box
+                        px={6}
+                        py={4}
+                        className="auth-container"
+                        style={{background: "#fff"}}
+                        display="flex"
+                        flexDirection="column"
+                        justifyContent="center"
+                        alignItems="center"
+                    >
+                        <h2>Register your company</h2>
+                        <TextField
+                            error={!!errors.email?.message}
+                            helperText={errors.email?.message ?? ""}
+                            label="Email"
+                            name="email"
+                            inputRef={register({ required: "Email is required" })}
+                            variant="outlined"
+                            InputLabelProps={{shrink: true }}
+                        />
+                        <TextField
+                            error={!!errors.companyName?.message}
+                            helperText={errors.companyName?.message ?? ""}
+                            label="Company"
+                            name="companyName"
+                            inputRef={register({ required: "Company name is required" })}
+                            variant="outlined"
+                            InputLabelProps={{shrink: true }}
+                        />
+                        {!!error?.error && (
+                            <Typography color="error">{error.error}</Typography>
+                        )}
+                        {!!error?.email && <Typography color="error">{error.email}</Typography>}
+                        <Button onClick={handleSubmit(onSubmit)} disabled={loading} variant="contained" color="primary">
+                            {loading ? <CircularProgress /> : <Typography>Get started</Typography>}
+                        </Button>
+                        <p>Back to <a href="/login"> login</a>?</p>
+                    </Box>
+                </Grow>
             </div>
         );
     }

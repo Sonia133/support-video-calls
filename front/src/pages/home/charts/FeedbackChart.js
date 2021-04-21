@@ -1,6 +1,7 @@
 import moment from "moment";
 import React from "react";
 import { Bar } from 'react-chartjs-2';
+import "@fontsource/architects-daughter";
 
 const FeedbackChart = (props) => {
     const feedback = props.feedback;
@@ -55,18 +56,21 @@ const FeedbackChart = (props) => {
         },
         legend: {
             labels: {
-               fontColor: 'whitesmoke'
+               fontColor: 'whitesmoke',
+               fontFamily: "Architects Daughter"
             }
         },
         scales: {
             yAxes: [{
                 ticks: {
-                    fontColor: 'whitesmoke'
+                    fontColor: 'whitesmoke',
+                    fontFamily: "Architects Daughter"
                 },
             }],
             xAxes: [{
                 ticks: {
-                    fontColor: 'whitesmoke'
+                    fontColor: 'whitesmoke',
+                    fontFamily: "Architects Daughter"
                 },
             }]
         },

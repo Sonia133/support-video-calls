@@ -123,6 +123,17 @@ video {
 .small-chart {
   width: 30%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.MuiListSubheader-root, .MuiListItemText-root, .MuiListItemText-secondary {
+  color: whitesmoke !important;
+}
+
+h4 {
+  color: whitesmoke;
+  font-family: "Architects Daughter";
+  font-weight: 400 !important;
 }

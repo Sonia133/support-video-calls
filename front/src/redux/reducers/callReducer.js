@@ -12,7 +12,8 @@ const CallReducer = (state = initialState, action) => {
     case ActionTypes.CALL.SET_CALLS:
       return {
         ...state,
-        calls: action.payload,
+        calls: action.payload[1],
+        comments: action.payload[0],
         loadingCalls: false
       };
     case ActionTypes.CALL.LOADING_EMPLOYEE:

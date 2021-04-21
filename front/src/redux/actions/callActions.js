@@ -93,7 +93,6 @@ export const getCalls = () => (dispatch) => {
 }
 
 export const getCallsPerCompany = (companyName) => (dispatch) => {
-  console.log('here')
   dispatch({ type: ActionTypes.CALL.LOADING_CALLS });
   axios.get(`/calls/company/${companyName}`)
   .then(({ data }) => {
