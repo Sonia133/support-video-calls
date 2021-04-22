@@ -10,7 +10,8 @@ const Room = ({ roomName, room, handleLogout }) => {
     [state.user?.authenticated, state.call?.loading]
   );
   const { error } = useSelector((state) => state.call);
-
+  const [audio, setAudio] = useState(true);
+  const [video, setVideo] = useState(true);
 
   useEffect(() => {
     const participantConnected = (participant) => {
@@ -31,6 +32,34 @@ const Room = ({ roomName, room, handleLogout }) => {
       room.off("participantDisconnected", participantDisconnected);
     };
   }, [room]);
+
+  const stopAudio = () => {
+    setAudio(false);
+    room.localParticipant.audioTracks.forEach(track => {
+      track.track.disable();
+    });
+  }
+
+  const onAudio = () => {
+    setAudio(true);
+    room.localParticipant.audioTracks.forEach(track => {
+      track.track.enable();
+    });
+  }
+
+  const stopVideo = () => {
+    setVideo(false);
+    room.localParticipant.videoTracks.forEach(track => {
+      track.track.disable();
+    });
+  }
+
+  const onVideo = () => {
+    setVideo(true);
+    room.localParticipant.videoTracks.forEach(track => {
+      track.track.enable();
+    });
+  }
 
   const remoteParticipants = participants.map((participant) => (
     <Participant key={participant.sid} participant={participant} />
@@ -64,7 +93,7 @@ const Room = ({ roomName, room, handleLogout }) => {
           }
         </div>
       </Box>
-      <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+      <div style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
         <Tooltip title="End call" placement="top">
           <IconButton
             color="secondary"
@@ -74,6 +103,34 @@ const Room = ({ roomName, room, handleLogout }) => {
             <CallEndIcon />
           </IconButton>
         </Tooltip>
+        {audio && (
+          <Tooltip title="Mute" placement="top">
+            <IconButton onClick={stopAudio} style={{ marginTop: "3%" }}>
+              <i className="fas fa-volume-up" />
+            </IconButton>
+          </Tooltip>
+        )}
+        {!audio && (
+          <Tooltip title="Unmute" placement="top">
+            <IconButton onClick={onAudio} style={{ marginTop: "3%" }}>
+              <i className='fas fa-volume-mute'></i>
+            </IconButton>
+          </Tooltip>
+        )}
+        {video && (
+          <Tooltip title="Hide video" placement="top">
+            <IconButton onClick={stopVideo} style={{ marginTop: "3%" }}>
+              <i className='fas fa-video'></i>
+            </IconButton>
+          </Tooltip>
+        )}
+        {!video && (
+          <Tooltip title="Show video" placement="top" style={{ marginTop: "3%" }}>
+            <IconButton onClick={onVideo}>
+              <i className='fas fa-video-slash'></i>
+            </IconButton>
+          </Tooltip>
+        )}
       </div>
     </div>
   );

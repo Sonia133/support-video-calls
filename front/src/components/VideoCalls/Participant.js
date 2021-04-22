@@ -1,3 +1,4 @@
+import { IconButton, Tooltip } from "@material-ui/core";
 import React, { useState, useEffect, useRef } from "react";
 
 const Participant = ({ participant }) => {
