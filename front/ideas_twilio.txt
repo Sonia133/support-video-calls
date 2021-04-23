@@ -1,5 +1,0 @@
-home or twilio if busy ( if employee )
-in videochat -> if not auth => after lobby call find an employee + send room id in request
-		if authenticated => remove lobby: enter room and identity(first name + last name ) from axios query (find an employee)
-                
-?? how to send room id: create currentCallId prop in fb for employee, on find an employee query, set it

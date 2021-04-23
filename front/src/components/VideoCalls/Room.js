@@ -12,6 +12,7 @@ const Room = ({ roomName, room, handleLogout }) => {
   const { error } = useSelector((state) => state.call);
   const [audio, setAudio] = useState(true);
   const [video, setVideo] = useState(true);
+  const [shareScreen, setShareScreen] = useState(false);
 
   useEffect(() => {
     const participantConnected = (participant) => {
@@ -61,9 +62,18 @@ const Room = ({ roomName, room, handleLogout }) => {
     });
   }
 
+  const onScreen = () => {
+    setShareScreen(true);
+  }
+
+  const stopScreen = () => {
+    setShareScreen(false);
+  }
+
   const remoteParticipants = participants.map((participant) => (
-    <Participant key={participant.sid} participant={participant} />
+    <Participant key={participant.sid} participant={participant} shareScreen={false}/>
   ));
+
 
   return (
     <div className="room">
@@ -77,6 +87,7 @@ const Room = ({ roomName, room, handleLogout }) => {
             <Participant
               key={room.localParticipant.sid}
               participant={room.localParticipant}
+              shareScreen={shareScreen}
             />
           ) : (
             ""
@@ -128,6 +139,20 @@ const Room = ({ roomName, room, handleLogout }) => {
           <Tooltip title="Show video" placement="top" style={{ marginTop: "3%" }}>
             <IconButton onClick={onVideo}>
               <i className='fas fa-video-slash'></i>
+            </IconButton>
+          </Tooltip>
+        )}
+        {shareScreen && (
+          <Tooltip title="Hide screen" placement="top" style={{ marginTop: "3%" }}>
+            <IconButton onClick={stopScreen}>
+            <i className="material-icons">screen_share</i>
+            </IconButton>
+          </Tooltip>
+        )}
+        {!shareScreen && (
+          <Tooltip title="Show screen" placement="top" style={{ marginTop: "3%" }}>
+            <IconButton onClick={onScreen}>
+            <i className="material-icons">screen_share</i>
             </IconButton>
           </Tooltip>
         )}
