@@ -81,7 +81,6 @@ const VideoChat = () => {
   const handleLogout = useCallback(() => {
     setRoom((prevRoom) => {
       if (prevRoom) {
-        console.log(prevRoom)
         const localParticipant = prevRoom.localParticipant.identity;
 
         let hasRemoteParticipant = false;
@@ -138,7 +137,7 @@ const VideoChat = () => {
             .then((room) => {
               setConnecting(false);
               setRoom(room);
-              console.log(room)
+              
               var iterator_obj = room.participants.entries();
               const remoteParticipant = iterator_obj.next().value[1].identity;
 

@@ -8,7 +8,6 @@ const Participant = ({ participant, shareScreen }) => {
 
   const videoRef = useRef();
   const audioRef = useRef();
-  const screenRef = useRef();
 
   const trackpubsToTracks = (trackMap) =>
     Array.from(trackMap.values())
@@ -23,7 +22,7 @@ const Participant = ({ participant, shareScreen }) => {
     
     const screenTrack = new LocalVideoTrack(stream.getTracks()[0]);
     
-    screenTrack.attach(screenRef.current);
+    screenTrack.attach(videoRef.current);
     participant.publishTrack(screenTrack);
 
     participant.tracks.forEach(function(trackPublication) {
@@ -97,7 +96,6 @@ const Participant = ({ participant, shareScreen }) => {
   }, [participant]);
 
   useEffect(() => {
-    console.log(videoTracks)
     const videoTrack = videoTracks[0];
     if (videoTrack) {
       videoTrack.attach(videoRef.current);
@@ -119,8 +117,7 @@ const Participant = ({ participant, shareScreen }) => {
 
   return (
     <div className="participant">
-      {!shareScreen && (<video ref={videoRef} autoPlay={true}/>)}
-      {shareScreen && (<video ref={screenRef} autoPlay={true} />)}
+      <video ref={videoRef} autoPlay={true}/>
       <audio ref={audioRef} autoPlay={true} muted={true} />
     </div>
   );

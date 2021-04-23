@@ -62,12 +62,8 @@ const Room = ({ roomName, room, handleLogout }) => {
     });
   }
 
-  const onScreen = () => {
-    setShareScreen(true);
-  }
-
-  const stopScreen = () => {
-    setShareScreen(false);
+  const toggleScreen = () => {
+    setShareScreen(!shareScreen);
   }
 
   const remoteParticipants = participants.map((participant) => (
@@ -142,20 +138,11 @@ const Room = ({ roomName, room, handleLogout }) => {
             </IconButton>
           </Tooltip>
         )}
-        {shareScreen && (
-          <Tooltip title="Hide screen" placement="top" style={{ marginTop: "3%" }}>
-            <IconButton onClick={stopScreen}>
-            <i className="material-icons">screen_share</i>
-            </IconButton>
-          </Tooltip>
-        )}
-        {!shareScreen && (
-          <Tooltip title="Show screen" placement="top" style={{ marginTop: "3%" }}>
-            <IconButton onClick={onScreen}>
-            <i className="material-icons">screen_share</i>
-            </IconButton>
-          </Tooltip>
-        )}
+        <Tooltip title="Toggle screen" placement="top" style={{ marginTop: "3%" }}>
+          <IconButton onClick={toggleScreen}>
+          <i className="material-icons">screen_share</i>
+          </IconButton>
+        </Tooltip>
       </div>
     </div>
   );

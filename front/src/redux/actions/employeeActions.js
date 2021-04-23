@@ -18,11 +18,9 @@ export const getAllEmployees = () => (dispatch) => {
 
 
 export const getEmployees = (companyName) => (dispatch) =>{
-    console.log('here')
     dispatch({ type: ActionTypes.EMPLOYEE.LOADING });
     axios.get(`/employees/${companyName}`)
     .then(({ data }) => {
-      console.log(data)
         dispatch({ type: ActionTypes.EMPLOYEE.SET_EMPLOYEES, payload: data});
     })
     .catch((err) => {
