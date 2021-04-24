@@ -41,7 +41,10 @@ exports.getCeo = (req, res) => {
         
         return res.json(ceoData);
     })
-    .catch(err => console.error(err));
+    .catch((err) => {
+        console.log(err.code)
+        return res.status(500).json({ error: err.code });
+    });
 }
 
 exports.getCeos = (req, res) => {
@@ -57,5 +60,8 @@ exports.getCeos = (req, res) => {
         });
         return res.json(ceos);
     })
-    .catch(err => console.error(err));
+    .catch((err) => {
+        console.log(err.code)
+        return res.status(500).json({ error: err.code });
+    });
 }

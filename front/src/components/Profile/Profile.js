@@ -36,7 +36,17 @@ const Profile = () => {
 
     const { role, available, loading, imageUrl, loadingPicture, error, companyName, firstname, lastname } = useSelector((state) => state.user)
     const [ isEmployee, schedule ] = useSelector((state) => [state.user.role === 'employee', state.user?.schedule]);
-    const { error: errorUi } = useSelector((state) => state.ui);
+    
+    const [showError, setShowError] = useState("");
+
+    useEffect(() => {
+        if (error) {
+            for(let key in error) {
+                setShowError(error[key]);
+                break;
+            }
+        }
+    }, [error])
 
     const handleToggleMenu = () => {
         setOpenMenu((prevOpen) => !prevOpen);
@@ -67,7 +77,6 @@ const Profile = () => {
     const closeProfileDialog = () => {
         setOpen(false);
         setOpenSchedule(false);
-        dispatch({ type: ActionTypes.UI.CLEAR_ERRORS });
         dispatch({ type: ActionTypes.USER.CLEAR_ERRORS });
     }
 
@@ -183,11 +192,8 @@ const Profile = () => {
                             )}
                         </Box>
                     )}
-                    {!!error?.error && (
-                        <Typography color="error">{error.error}</Typography>
-                    )}
-                    {!!errorUi?.error && (
-                        <Typography color="error">{errorUi.error}</Typography>
+                    {showError !== "" && (
+                        <Typography color="error">{showError}</Typography>
                     )}
                     <Button 
                         style={{ marginBottom: "5%", marginTop: "5%" }} 

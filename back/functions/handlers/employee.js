@@ -21,7 +21,10 @@ exports.getEmployees = (req, res) => {
             });
             return res.json(employees);
         })
-        .catch(err => console.error(err));
+        .catch((err) => {
+            console.log(err.code)
+            return res.status(500).json({ error: err.code });
+        });
     } else if (req.user.role === ROLE.CEO || req.user.role === ROLE.EMPLOYEE) {
         db.doc(`/${req.user.role}/${req.user.email}`).get()
         .then(doc => {
@@ -37,7 +40,10 @@ exports.getEmployees = (req, res) => {
                     });
                     return res.json(employees);
                 })
-                .catch(err => console.error(err));
+                .catch((err) => {
+                    console.log(err.code)
+                    return res.status(500).json({ error: err.code });
+                });
             } else {
                 return res.status(403).json({ error: 'Unauthorized'});
             }
@@ -62,7 +68,10 @@ exports.getEmployee = (req, res) => {
             
             return res.json(employeeData);
         })
-        .catch(err => console.error(err));
+        .catch((err) => {
+            console.log(err.code)
+            return res.status(500).json({ error: err.code });
+        });
     } else if (req.user.role === ROLE.CEO || req.user.role === ROLE.EMPLOYEE) {
         db.doc(`/${req.user.role}/${req.user.email}`).get()
         .then(doc => {
@@ -78,7 +87,10 @@ exports.getEmployee = (req, res) => {
 
                     return res.json(employeeData);
                 })
-                .catch(err => console.error(err));
+                .catch((err) => {
+                    console.log(err.code)
+                    return res.status(500).json({ error: err.code });
+                });
             } else {
                 return res.status(403).json({ error: 'Unauthorized'});
             }
@@ -87,14 +99,21 @@ exports.getEmployee = (req, res) => {
 }
 
 exports.updateSchedule = (req, res) => {
-    const { valid, errors } = validateSchedule(req.body.schedule);
-    if (!valid) return res.status(400).json(errors);
-
+    let schedule = req.body.schedule;
+    const { valid, errors } = validateSchedule(schedule);
+    if (!valid) {
+        return res.status(400).json(errors);
+    } else {
+        for (let i = 0; i < schedule.length; i++) {
+            schedule[i] = schedule[i].replace("+", "-");
+        }
+    }
+    
     let ceoId, link;
 
     db.doc(`/${COLLECTION.EMPLOYEE}/${req.user.email}`)
     .update({
-        schedule: req.body.schedule,
+        schedule,
         boarded: true
     })
     .then(() => {
@@ -119,7 +138,7 @@ exports.updateSchedule = (req, res) => {
     })
     .catch(err => {
         console.error(err);
-        return res.status(500).json({ error: 'Something went wrong. Please try again!' });
+        return res.status(500).json({ error: err.code });
     })
 }
 
@@ -134,7 +153,7 @@ exports.setAvailability = (req, res) => {
     })
     .catch(err => {
         console.error(err);
-        return res.status(500).json({ error: 'Something went wrong. Please try again!' });
+        return res.status(500).json({ error: err.code });
     })
 }
 
@@ -151,5 +170,8 @@ exports.getAllEmployees = (req, res) => {
         });
         return res.json(employees);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.log(err.code)
+        return res.status(500).json({ error: err.code });
+      });
 };

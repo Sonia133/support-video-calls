@@ -19,6 +19,16 @@ const GetStarted = () => {
     let [enrolled, setEnrolled] = useState(false);
     let [submitted, setSubmitted] = useState(false);
     const history = useHistory();
+    const [showError, setShowError] = useState("");
+
+    useEffect(() => {
+        if (error) {
+            for(let key in error) {
+                setShowError(error[key]);
+                break;
+            }
+        }
+    }, [error])
 
     const onSubmit = (formData) => {
         setSubmitted(true);
@@ -89,10 +99,9 @@ const GetStarted = () => {
                             variant="outlined"
                             InputLabelProps={{shrink: true }}
                         />
-                        {!!error?.error && (
-                            <Typography color="error">{error.error}</Typography>
+                        {showError !== "" && (
+                            <Typography color="error">{showError}</Typography>
                         )}
-                        {!!error?.email && <Typography color="error">{error.email}</Typography>}
                         <Button onClick={handleSubmit(onSubmit)} disabled={loading} variant="contained" color="primary">
                             {loading ? <CircularProgress /> : <Typography>Get started</Typography>}
                         </Button>

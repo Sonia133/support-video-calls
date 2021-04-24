@@ -6,7 +6,7 @@ import {
     Typography,
     Grow
 } from "@material-ui/core";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
@@ -18,6 +18,24 @@ const AddEmployee = () => {
     const history = useHistory();
     const { error, companyName } = useSelector((state) => state.user)
     const { loading, error: errorUi } = useSelector((state) => state.ui);
+
+    const [showError, setShowError] = useState("");
+
+    useEffect(() => {
+        if (error) {
+            for(let key in error) {
+                setShowError(error[key]);
+                break;
+            }
+        } else {
+            if (errorUi) {
+                for(let key in errorUi) {
+                    setShowError(errorUi[key]);
+                    break;
+                }
+            }
+        }
+    }, [error, errorUi]);
 
     const onSubmitEmployee = (formData) => {
         formData.role = "employee";
@@ -48,10 +66,9 @@ const AddEmployee = () => {
                         variant="outlined"
                         InputLabelProps={{shrink: true }}
                     />
-                    {!!error?.error && (
-                        <Typography color="error">{error.error}</Typography>
+                    {showError !== "" && (
+                        <Typography color="error">{showError}</Typography>
                     )}
-                    {!!errorUi?.email && <Typography color="error">{errorUi.email}</Typography>}
                     <Button onClick={handleSubmit(onSubmitEmployee)} disabled={loading} variant="contained" color="primary">
                         {loading ? <CircularProgress /> : <Typography>Submit employee</Typography>}
                     </Button>

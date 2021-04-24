@@ -14,6 +14,17 @@ const Room = ({ roomName, room, handleLogout }) => {
   const [video, setVideo] = useState(true);
   const [shareScreen, setShareScreen] = useState(false);
 
+  const [showError, setShowError] = useState("");
+
+  useEffect(() => {
+      if (error) {
+          for(let key in error) {
+              setShowError(error[key]);
+              break;
+          }
+      }
+  }, [error])
+
   useEffect(() => {
     const participantConnected = (participant) => {
       setParticipants((prevParticipants) => [...prevParticipants, participant]);
@@ -90,9 +101,9 @@ const Room = ({ roomName, room, handleLogout }) => {
           )}
         </div>
         <div>
-          {error?.hours && (
+          {showError !== "" && (
             <Box style={{ backgroundColor: "whitesmoke", borderRadius: "2%", padding: "2%", textAlign: "center" }}>
-              <Typography>{error.hours}</Typography>
+              <Typography>{showError}</Typography>
             </Box>
           )}
           {!isLoggedIn && isLoadingEmployee ? <CircularProgress /> : 

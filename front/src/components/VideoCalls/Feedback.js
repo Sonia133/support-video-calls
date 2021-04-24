@@ -1,5 +1,5 @@
 import { Box, Button, CircularProgress, TextField, Typography } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
@@ -14,6 +14,17 @@ const Feedback = () => {
     const [value, setValue] = useState(0);
     const [hover, setHover] = useState(0);
     const { error, loading } = useSelector((state) => state.ui);
+
+    const [showError, setShowError] = useState("");
+
+    useEffect(() => {
+        if (error) {
+            for(let key in error) {
+                setShowError(error[key]);
+                break;
+            }
+        }
+    }, [error])
 
     const onSubmit = (formData) => {
         formData.feedback = value;
@@ -73,8 +84,8 @@ const Feedback = () => {
                         variant="outlined"
                         InputLabelProps={{ shrink: true }}
                     />
-                    {!!error?.error && (
-                        <Typography color="error">{error.error}</Typography>
+                    {showError !== "" && (
+                        <Typography color="error">{showError}</Typography>
                     )}
                     <Button onClick={handleSubmit(onSubmit)} disabled={loading} variant="contained" color="primary">
                         {loading ? <CircularProgress /> : <Typography>Send feedback</Typography>}

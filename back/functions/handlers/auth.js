@@ -25,7 +25,7 @@ exports.requestAccount = (req, res) => {
             data.forEach((document) => {
                 if (document.data().email === newUserRequest.email) {
                     found = 1;
-                    return res.status(400).json({ email: 'You have already signed up.' });
+                    return res.status(400).json({ error: 'You have already signed up.' });
                 } 
             })
 
@@ -38,7 +38,7 @@ exports.requestAccount = (req, res) => {
             data.forEach((document) => {
                 if (document.data().email === newUserRequest.email) {
                     found = 1;
-                    return res.status(400).json({ email: 'It was already sent a request from this email. Please check your inbox.' });
+                    return res.status(400).json({ error: 'It was already sent a request from this email. Please check your inbox.' });
                 } 
             })
 
@@ -67,7 +67,7 @@ exports.validateToken = (req, res) => {
     .get()
     .then(doc => {
         if (!doc.exists) {
-            return res.status(404).json({ inexistent: 'Page not found!'} );
+            return res.status(404).json({ error: 'Page not found!'} );
         } else {
             return res.status(201).json({ token });
         }
@@ -160,7 +160,8 @@ exports.signup = (req, res) => {
     })
     .catch(err => {
         console.log(err)
-        return res.status(500).json({ error: 'Something went wrong. Please try again!' });
+        console.log(err.code)
+        return res.status(500).json({ error: err.code });
     })
 }
 
@@ -182,6 +183,7 @@ exports.login = (req, res) => {
         })
         .catch(err => {
             console.error(err);
+            console.log(err.code)
             if (err.code === "auth/user-not-found") {
                 return res.status(403).json({ error: 'This email does not exist.'})
             }
@@ -210,9 +212,11 @@ exports.changePassword = (req, res) => {
     })
     .then(() => {
         res.status(200).json({ message: 'Password successfully changed.' });
-    }).catch((err) => {
+    })
+    .catch((err) => {
         console.log(err)
-        return res.status(500).json({ error: err });
+        console.log(err.code)
+        return res.status(500).json({ error: err.code });
     });
 }
 
@@ -228,6 +232,7 @@ exports.forgotPassword = (req, res) => {
         res.status(200).json({ message: 'Email for password update successfully changed.' });
     })
     .catch((err) => {
+        console.log(err.code)
         if (err.code === "auth/invalid-email") {
             return res.status(403).json({ error: 'Invalid email.'})
         }

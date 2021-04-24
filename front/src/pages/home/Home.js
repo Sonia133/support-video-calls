@@ -1,4 +1,4 @@
-import { Box, CircularProgress } from "@material-ui/core";
+import { Box, CircularProgress, Typography } from "@material-ui/core";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -25,17 +25,19 @@ const Home = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.user.authenticated);
-  const { loadingCalls, loadingFeedback, calls, feedback, comments } = useSelector((state) => state.call);
-  const { loading: loadingEmployees } = useSelector((state) => state.employee);
-  const { loading: loadingCeos } = useSelector((state) => state.ceo);
-  const [isEmployee, isCeo, isAdmin, firstname, companyName, email, loading] = useSelector((state) => [
+  const { loadingCalls, loadingFeedback, calls, feedback, comments, error: errorCall } = useSelector((state) => state.call);
+  const { loading: loadingEmployees, error: errorEmployee } = useSelector((state) => state.employee);
+  const { loading: loadingCeos, error: errorCeo } = useSelector((state) => state.ceo);
+  const [isEmployee, isCeo, isAdmin, firstname, companyName, email, loading, error, boarded] = useSelector((state) => [
     state.user?.role === "employee",
     state.user?.role === "ceo",
     state.user?.role === "admin",
     state.user?.firstname,
     state.user?.companyName,
     state.user?.email,
-    state.user?.loading
+    state.user?.loading,
+    state.user?.error,
+    state.user?.boarded
   ]);
 
   useEffect(() => {
@@ -62,6 +64,7 @@ const Home = () => {
 
   return (
     <div style={{ height: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+      {!!error?.error && <Typography color="error">{error.error}</Typography>}
       {loading && (
         <CircularProgress />
       )}
@@ -84,39 +87,50 @@ const Home = () => {
               <EmployeeHeader />
             )}
           </Box>
-          <Box className="big-chart">
-          {(loadingCalls || loadingCalls === undefined) && (<CircularProgress />)}
-          {(!loadingCalls && loadingCalls !== undefined) && (<CallChart calls={calls}/>)}
-          </Box>
-          <Box style={{ height: "40%", display: "flex", justifyContent: "space-between" }}>
-            <Box className="small-chart">
-              <h4>Comments</h4>
+          {(boarded || boarded === undefined) && (
+            <Box className="big-chart">
               {(loadingCalls || loadingCalls === undefined) && (<CircularProgress />)}
-              {(!loadingCalls && loadingCalls !== undefined) && (<CommentsTable comments={comments}/>)}    
+              {(!loadingCalls && loadingCalls !== undefined) && (<CallChart calls={calls}/>)}
+              {!!errorCall?.error && <Typography color="error">{errorCall.error}</Typography>}
             </Box>
-            <Box className="small-chart" style={{ marginTop: "2%" }}>
-              {(loadingFeedback || loadingFeedback === undefined) && (<CircularProgress />)}
-              {(!loadingFeedback && loadingFeedback !== undefined) && (<FeedbackChart feedback={feedback}/>)}
+          )}
+          {(boarded || boarded === undefined) && (
+            <Box style={{ height: "40%", display: "flex", justifyContent: "space-between" }}>
+              <Box className="small-chart">
+                <h4>Comments</h4>
+                {(loadingCalls || loadingCalls === undefined) && (<CircularProgress />)}
+                {(!loadingCalls && loadingCalls !== undefined) && (<CommentsTable comments={comments}/>)}
+                {!!errorCall?.error && <Typography color="error">{errorCall.error}</Typography>}    
+              </Box>
+              <Box className="small-chart" style={{ marginTop: "2%" }}>
+                {(loadingFeedback || loadingFeedback === undefined) && (<CircularProgress />)}
+                {(!loadingFeedback && loadingFeedback !== undefined) && (<FeedbackChart feedback={feedback}/>)}
+                {!!errorCall?.error && <Typography color="error">{errorCall.error}</Typography>}
+              </Box>
+              {isAdmin && (
+                <Box className="small-chart">
+                  <h4>Staff</h4>
+                  {((loadingCeos || loadingEmployees) || (loadingCeos === undefined || loadingEmployees === undefined))
+                            && (<CircularProgress />)}
+                  {((!loadingCeos && !loadingEmployees) && (loadingCeos !== undefined && loadingEmployees !== undefined))
+                          && (<StuffTable />)}
+                  {!!errorEmployee?.error && <Typography color="error">{errorEmployee.error}</Typography>}
+                  {!!errorCeo?.error && <Typography color="error">{errorCeo.error}</Typography>}
+                </Box>
+              )}
+              {!isAdmin && (
+                <Box className="small-chart">
+                  <h4>Staff</h4>
+                  {(loadingEmployees || loadingEmployees === undefined)
+                            && (<CircularProgress />)}
+                  {(!loadingEmployees && loadingEmployees !== undefined)
+                          && (<StuffTable />)}
+                  {!!errorEmployee?.error && <Typography color="error">{errorEmployee.error}</Typography>}
+                  {!!errorCeo?.error && <Typography color="error">{errorCeo.error}</Typography>}
+                </Box>
+              )}
             </Box>
-            {isAdmin && (
-              <Box className="small-chart">
-                <h4>Staff</h4>
-                {((loadingCeos || loadingEmployees) || (loadingCeos === undefined || loadingEmployees === undefined))
-                          && (<CircularProgress />)}
-                {((!loadingCeos && !loadingEmployees) && (loadingCeos !== undefined && loadingEmployees !== undefined))
-                        && (<StuffTable />)}
-              </Box>
-            )}
-            {!isAdmin && (
-              <Box className="small-chart">
-                <h4>Staff</h4>
-                {(loadingEmployees || loadingEmployees === undefined)
-                          && (<CircularProgress />)}
-                {(!loadingEmployees && loadingEmployees !== undefined)
-                        && (<StuffTable />)}
-              </Box>
-            )}
-          </Box>
+          )}
         </Box>
       )}
     </div>

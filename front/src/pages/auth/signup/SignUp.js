@@ -14,13 +14,30 @@ import { signup, validateTokenEnroll } from "../../../redux/actions/userActions"
 
 const SignUp = () => {
   const history = useHistory();
-  const { loading } = useSelector((state) => state.ui);
+  const { loading, error: errorUi } = useSelector((state) => state.ui);
   const { error } = useSelector((state) => state.user);
   const validatedToken = useSelector((state) => state.user.token);
   const dispatch = useDispatch();
   const { register, handleSubmit, errors } = useForm();
   const { token } = useParams();
-  console.log('heree')
+  
+  const [showError, setShowError] = useState("");
+
+  useEffect(() => {
+    if (error) {
+        for(let key in error) {
+            setShowError(error[key]);
+            break;
+        }
+    } else {
+      if (errorUi) {
+        for(let key in errorUi) {
+          setShowError(errorUi[key]);
+          break;
+        }
+      }
+    }
+  }, [error, errorUi]);
 
   const onSubmit = (formData) => {
     console.log(formData);
@@ -109,7 +126,7 @@ const SignUp = () => {
                   type="password"
                   InputLabelProps={{shrink: true }}
                 />
-                {!!error?.error && <Typography color="error">{error.error}</Typography>}
+                {showError !== "" && <Typography color="error">{showError}</Typography>}
                 <Button onClick={handleSubmit(onSubmit)} disabled={loading} variant="contained" color="primary">
                   {loading ? <CircularProgress /> : <Typography>Sign up</Typography>}
                 </Button>

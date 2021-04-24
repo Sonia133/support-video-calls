@@ -26,7 +26,10 @@ exports.getCalls = (req, res) => {
       });
       return res.json(calls);
     })
-    .catch((err) => console.error(err));
+    .catch((err) => {
+      console.log(err.code)
+      return res.status(500).json({ error: err.code });
+  });
 };
 
 exports.getCallsPerCompany = (req, res) => {
@@ -50,7 +53,10 @@ exports.getCallsPerCompany = (req, res) => {
         });
         return res.json(calls);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.log(err.code)
+        return res.status(500).json({ error: err.code });
+      });
   } else if (req.user.role === ROLE.CEO) {
     db.doc(`/${COLLECTION.CEO}/${req.user.email}`)
       .get()
@@ -68,7 +74,10 @@ exports.getCallsPerCompany = (req, res) => {
               });
               return res.json(calls);
             })
-            .catch((err) => console.error(err));
+            .catch((err) => {
+              console.log(err.code)
+              return res.status(500).json({ error: err.code });
+            });
         } else {
           return res.status(403).json({ error: "Unauthorized" });
         }
@@ -162,8 +171,6 @@ exports.findEmployee = (req, res) => {
 
   db.collection(COLLECTION.EMPLOYEE)
     .where("companyName", "==", companyName)
-    // .where("available", "==", true)
-    // .where("boarded", "==", true)
     .get()
     .then((data) => {
       let endingHours = false;
@@ -171,7 +178,7 @@ exports.findEmployee = (req, res) => {
         
       data.forEach((doc) => {
         if (doc.data().schedule.length < day) {
-          return res.status(404).json({ hours: "We are sorry, but our hours are done for today. Please come back tomorrow. Have a good day!" });
+          return res.status(404).json({ error: "We are sorry, but our hours are done for today. Please come back tomorrow. Have a good day!" });
         }
 
         let schedule = doc.data().schedule[day - 1].split("-");
@@ -192,7 +199,7 @@ exports.findEmployee = (req, res) => {
       });
 
       if (endingHours === false) {
-        return res.status(404).json({ hours: "We are sorry, but our hours are done for today! Please come back tomorrow. Have a good day!" });
+        return res.status(404).json({ error: "We are sorry, but our hours are done for today! Please come back tomorrow. Have a good day!" });
       }
 
       return Promise.all(promises);
@@ -212,7 +219,7 @@ exports.findEmployee = (req, res) => {
       });
 
       if (employees.length == 0) {
-        return res.status(404).json({ message: "Employee not found" });
+        return res.status(404).json({ error: "Employee not found" });
       }
 
       chosenEmployee = chooseEmployee(employees);
@@ -226,7 +233,10 @@ exports.findEmployee = (req, res) => {
     .then(() => {
       return res.status(200).json(chosenEmployee);
     })
-    .catch((err) => console.error(err));
+    .catch((err) => {
+      console.log(err.code)
+      return res.status(500).json({ error: err.code });
+    });
 };
 
 exports.addCallDetails = (req, res) => {
@@ -286,10 +296,8 @@ exports.addCallDetails = (req, res) => {
       return res.status(200).json({ message: "Call updated successfully." });
     })
     .catch((err) => {
-      console.error(err);
-      return res
-        .status(500)
-        .json({ error: "Something went wrong. Please try again!" });
+      console.log(err.code)
+      return res.status(500).json({ error: err.code });
     });
   });
 };
@@ -320,10 +328,8 @@ exports.addFeedback = (req, res) => {
     res.status(200).json({ message: 'Feedback sent successfully!' });
   })
   .catch((err) => {
-    console.error(err);
-      return res
-        .status(500)
-        .json({ error: "Something went wrong. Please try again!" });
+    console.log(err.code)
+    return res.status(500).json({ error: err.code });
   });
 }
 
@@ -362,7 +368,10 @@ exports.getFeedbackPerEmployee = (req, res) => {
 
           return res.json(employeeData);
         })
-      .catch(err => console.error(err));
+        .catch((err) => {
+          console.log(err.code)
+          return res.status(500).json({ error: err.code });
+        });
   } else if (req.user.role === ROLE.CEO) {
       db.doc(`/${req.user.role}/${req.user.email}`).get()
       .then(doc => {
@@ -393,7 +402,10 @@ exports.getFeedbackPerEmployee = (req, res) => {
     
                 return res.json(employeeData);
               })
-            .catch(err => console.error(err));
+              .catch((err) => {
+                console.log(err.code)
+                return res.status(500).json({ error: err.code });
+              });
           } else {
               return res.status(403).json({ error: 'Unauthorized'});
           }
@@ -418,7 +430,10 @@ exports.getFeedbackPerEmployee = (req, res) => {
 
         return res.json(employeeData);
       })
-    .catch(err => console.error(err));
+      .catch((err) => {
+        console.log(err.code)
+        return res.status(500).json({ error: err.code });
+      });
   } else {
       return res.status(403).json({ error: 'Unauthorized'});
   }
@@ -451,7 +466,10 @@ exports.getFeedbackPerCompany = (req, res) => {
 
         return res.json(companyData);
       })
-      .catch(err => console.error(err));
+      .catch((err) => {
+        console.log(err.code)
+        return res.status(500).json({ error: err.code });
+      });
   } else if (req.user.role === ROLE.CEO) {
       db.doc(`/${req.user.role}/${req.user.email}`).get()
       .then(doc => {
@@ -475,7 +493,10 @@ exports.getFeedbackPerCompany = (req, res) => {
 
                   return res.json(companyData);
               })
-              .catch(err => console.error(err));
+              .catch((err) => {
+                console.log(err.code)
+                return res.status(500).json({ error: err.code });
+              });
           } else {
               return res.status(403).json({ error: 'Unauthorized'});
           }
@@ -507,6 +528,9 @@ exports.getFeedback = (req, res) => {
 
     return res.json(allData);
   })
-  .catch(err => console.error(err));
+  .catch((err) => {
+    console.log(err.code)
+    return res.status(500).json({ error: err.code });
+  });
 }
 

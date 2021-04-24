@@ -6,7 +6,7 @@ import {
     TextField,
     Typography
 } from "@material-ui/core";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
@@ -18,6 +18,17 @@ const Login = () => {
   const dispatch = useDispatch();
   const { register, handleSubmit, errors } = useForm();
 
+  const [showError, setShowError] = useState("");
+
+  useEffect(() => {
+    if (error) {
+        for(let key in error) {
+            setShowError(error[key]);
+            break;
+        }
+    }
+  }, [error]);
+  
   useEffect(() => {
     if (authenticated) {
       history.push("/");
@@ -68,8 +79,8 @@ const Login = () => {
               type="password"
               InputLabelProps={{shrink: true }}
             />
-            {!!error?.error && (
-              <Typography color="error">{error.error}</Typography>
+            {showError !== "" && (
+                <Typography color="error">{showError}</Typography>
             )}
             <a href="/forgotpassword">Forgot your password?</a>
             <Button onClick={handleSubmit(onSubmit)} disabled={loading} variant="contained" color="primary">

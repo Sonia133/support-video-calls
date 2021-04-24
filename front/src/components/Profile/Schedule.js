@@ -1,5 +1,5 @@
 import { Box, Typography, Button, TextField } from "@material-ui/core";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser, updateSchedule } from "../../redux/actions/userActions";
@@ -10,6 +10,17 @@ const Schedule = () => {
     const { role, error } = useSelector((state) => state.user);
     const { loading } = useSelector((state) => state.ui);
 
+    const [showError, setShowError] = useState("");
+
+    useEffect(() => {
+        if (error) {
+            for(let key in error) {
+                setShowError(error[key]);
+                break;
+            }
+        }
+    }, [error])
+
     const onLogout = () => {
         dispatch(logoutUser(role));
     }
@@ -17,11 +28,9 @@ const Schedule = () => {
     const onSubmitSchedule = (formData) => {
         let scheduleToSend = [];
         for (let i = 0; i < 5; i ++) {
-            scheduleToSend[i] = `${formData[2*i+1]}-${formData[2*i+2]}`;
+            scheduleToSend[i] = `${formData[2*i+1]}+${formData[2*i+2]}`;
         }
-        if (!!error) {
-            dispatch(updateSchedule({ schedule: scheduleToSend }));
-        }
+        dispatch(updateSchedule({ schedule: scheduleToSend }));
     }
 
     return (
@@ -142,8 +151,8 @@ const Schedule = () => {
                 type="number"
               />
             </div>
-            {!!error?.error && (
-              <Typography color="error">{error.error}</Typography>
+            {showError !== "" && (
+                <Typography color="error">{showError}</Typography>
             )}
             <Button 
               onClick={handleSubmit(onSubmitSchedule)} 

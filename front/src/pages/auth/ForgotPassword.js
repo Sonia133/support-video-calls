@@ -6,7 +6,7 @@ import {
     Typography,
     Grow
   } from "@material-ui/core";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
@@ -18,6 +18,17 @@ const ForgotPassword = () => {
     const history = useHistory();
     const { error, loading } = useSelector((state) => state.user)
     const { loading: loadingUi } = useSelector((state) => state.ui);
+
+    const [showError, setShowError] = useState("");
+
+    useEffect(() => {
+        if (error) {
+            for(let key in error) {
+                setShowError(error[key]);
+                break;
+            }
+        }
+    }, [error]);
 
     const onSubmit = (formData) => {
         dispatch(forgotPassword(formData, history));
@@ -45,8 +56,8 @@ const ForgotPassword = () => {
                             variant="outlined"
                             InputLabelProps={{shrink: true}}
                         />
-                        {!!error?.error && (
-                            <Typography color="error">{error.error}</Typography>
+                        {showError !== "" && (
+                            <Typography color="error">{showError}</Typography>
                         )}
                         <Button onClick={handleSubmit(onSubmit)} disabled={loading} variant="contained" color="primary">
                             {loading ? <CircularProgress /> : <Typography>Submit</Typography>}

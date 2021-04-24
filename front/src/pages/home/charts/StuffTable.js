@@ -7,7 +7,6 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import TablePagination from '@material-ui/core/TablePagination';
 import StaticProfile from "../../../components/Profile/StaticProfile";
 import { Button, Dialog } from "@material-ui/core";
 import { ActionTypes } from "../../../redux/types";
@@ -17,26 +16,19 @@ const StuffTable = () => {
     const { ceos } = useSelector((state) => state.ceo);
     const { role } = useSelector((state) => state.user);
     const [staff, setStaff] = useState([]);
-    const rowsPerPage = 3;
-    const [page, setPage] = useState(0);
     const [open, setOpen] = useState(false);
     const [user, setUser] = useState();
     const dispatch = useDispatch();
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
 
     const clickStaff = (staffMember) => {
       setUser(staffMember);
-      console.log('hei')
       setOpen(true);
     };
 
     const closeProfileDialog = () => {
       setOpen(false);
       setUser(undefined);
-      dispatch({ type: ActionTypes.UI.CLEAR_ERRORS });
       dispatch({ type: ActionTypes.USER.CLEAR_ERRORS });
     }
 
