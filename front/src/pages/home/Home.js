@@ -69,9 +69,9 @@ const Home = () => {
         <CircularProgress />
       )}
       {!loading && (
-        <Box style={{ width: '90%', height: "90%", display: "flex", flexDirection: "column", justifyContent: "center", padding: "4%" }}>
+        <Box style={{ width: '93%', height: "90%", display: "flex", flexDirection: "column", justifyContent: "center" }}>
           <Box
-            style={{ height: "20%" }}
+            style={{ height: "12%" }}
             display="flex"
             alignItems="center"
             justifyContent="space-around"
@@ -95,7 +95,7 @@ const Home = () => {
             </Box>
           )}
           {(boarded || boarded === undefined) && (
-            <Box style={{ height: "40%", display: "flex", justifyContent: "space-between" }}>
+            <Box style={{ height: "43%", display: "flex", justifyContent: "space-between" }}>
               <Box className="small-chart">
                 <h4>Comments</h4>
                 {(loadingCalls || loadingCalls === undefined) && (<CircularProgress />)}
