@@ -246,7 +246,6 @@ exports.addCallDetails = (req, res) => {
   localParticipant = req.body.localParticipant;
 
   let roomName;
-
   let duration, createdAt;
 
   db.doc(`${COLLECTION.EMPLOYEE}/${employeeEmail}`).get()
@@ -305,9 +304,14 @@ exports.addCallDetails = (req, res) => {
 exports.addFeedback = (req, res) => {
   const { roomName, feedback, comments, call } = req.body;
 
+  let ratedCalls, feedbackEmployee;
+  let employeeEmail = "";
+
   db.doc(`/${COLLECTION.CALL}/${roomName}`).get()
   .then((doc) => {
     if (doc.exists) {
+      employeeEmail = doc.data().employeeEmail;
+
       return db.doc(`/${COLLECTION.CALL}/${roomName}`).update({
         feedback,
         comments
@@ -322,6 +326,30 @@ exports.addFeedback = (req, res) => {
         feedback,
         comments
       })
+    }
+  })
+  .then(() => {
+    return db.doc(`${COLLECTION.EMPLOYEE}/${employeeEmail}`).get()
+  })
+  .then((doc) => {
+    if (doc.exists) {
+      ratedCalls = doc.data().ratedCalls;
+      feedbackEmployee = doc.data().feedback;
+
+      if (feedback > 0) {
+        feedbackEmployee = ((feedbackEmployee * ratedCalls) + feedback) / (ratedCalls + 1);
+        ratedCalls += 1;
+      }
+
+      return db.doc(`${COLLECTION.EMPLOYEE}/${employeeEmail}`).update({
+        available: true,
+        currentCallId: '',
+        feedback: feedbackEmployee,
+        ratedCalls
+      });
+      
+    } else {
+      res.status(200).json({ message: 'Feedback sent successfully!' });
     }
   })
   .then(() => {

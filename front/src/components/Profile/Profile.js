@@ -35,7 +35,11 @@ const Profile = () => {
     const dispatch = useDispatch();
 
     const { role, available, loading, imageUrl, loadingPicture, error, companyName, firstname, lastname } = useSelector((state) => state.user)
-    const [ isEmployee, schedule ] = useSelector((state) => [state.user.role === 'employee', state.user?.schedule]);
+    const [ isEmployee, schedule, feedback ] = useSelector((state) => [
+        state.user.role === 'employee',
+        state.user?.schedule,
+        state.user?.feedback
+    ]);
     
     const [showError, setShowError] = useState("");
 
@@ -168,6 +172,12 @@ const Profile = () => {
                             {role !== 'admin' ?(<Typography>{role + " @ " + companyName}</Typography>)
                                 : (<Typography>{"admin @ SupportVideoCalls"}</Typography>)
                             }
+                            {role === 'employee' && feedback === 0 && (
+                                <Typography>No feedback yet.</Typography>
+                            )}
+                            {role === 'employee' && feedback !== 0 && (
+                                <Typography>Feedback: {feedback}</Typography>
+                            )}
                         </div>
                     </DialogContentText>
                     {isEmployee && (

@@ -11,7 +11,7 @@ const FeedbackChart = (props) => {
     for (let i = 6; i >= 0; i--) {
         let day = moment(new Date()).subtract(i, 'days');
         days.push(day.format('ll'));
-        yAxis.push(feedback[day.format('L')]);
+        yAxis.push(feedback[day.format('L')].toFixed(2));
     }
     const chartColor = '#FFFFFF';
 

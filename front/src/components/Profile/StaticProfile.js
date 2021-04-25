@@ -26,14 +26,18 @@ const StaticProfile = (props) => {
     return (
         <DialogContent>
             {loadPicture === "none" && <CircularProgress style={{ marginBottom: "5%" }}/>}
-            <img src={user.imageUrl} alt="profile" className="profile-image" style={{ display: loadPicture }}/>
+            <img src={user.imageUrl} alt="profile" className="static-profile-image" style={{ display: loadPicture }}/>
             <DialogContentText style={{ width: "100%" }}>
                 <Divider variant="middle"/>
                 <div className="dialog-text">
                     <Typography>{user.firstname + " " + user.lastname}</Typography>
-                    {user.role !== 'admin' ?(<Typography>{role + " @ " + user.companyName}</Typography>)
-                        : (<Typography>{"admin @ SupportVideoCalls"}</Typography>)
-                    }
+                    <Typography>{role + " @ " + user.companyName}</Typography>
+                    {role === 'employee' && user.feedback === 0 && (
+                        <Typography>No feedback yet.</Typography>
+                    )}
+                    {role === 'employee' && user.feedback !== 0 && (
+                        <Typography>Feedback: {user.feedback.toFixed(2)}</Typography>
+                    )}
                 </div>
             </DialogContentText>
             {(role === 'employee' && user.schedule.length !== 0) && (

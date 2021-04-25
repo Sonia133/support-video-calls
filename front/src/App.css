@@ -71,7 +71,7 @@ a, p {
   margin-bottom: 15px !important;
 }
 
-.profile-image {
+.profile-image, .static-profile-image {
   width: 40%;
   height: 40%;
   display: block;
