@@ -128,9 +128,9 @@ video {
   align-items: center;
 }
 
-.MuiListSubheader-root, .MuiListItemText-root, .MuiListItemText-secondary {
+/* .MuiListSubheader-root, .MuiListItemText-root, .MuiListItemText-secondary {
   color: whitesmoke !important;
-}
+} */
 
 h4 {
   color: whitesmoke;
@@ -169,4 +169,23 @@ h4 {
 
 .MuiTablePagination-toolbar {
   background-color: rgb(196, 211, 237)  !important;
+}
+
+.MuiDrawer-paper {
+  width: 20%;
+  align-items: flex-start;
+  padding: 1%;
+  justify-content: space-between;
+}
+
+.MuiList-root {
+  padding: 0 !important;
+}
+
+li:first-child {
+  padding-top: 0;
+}
+
+li:last-child {
+  padding-bottom: 0;
 }

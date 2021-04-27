@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Participant from "./Participant";
 import CallEndIcon from '@material-ui/icons/CallEnd';
+import ChatCorner from "./ChatCorner";
 
 const Room = ({ roomName, room, handleLogout }) => {
   const [participants, setParticipants] = useState([]);
@@ -89,6 +90,7 @@ const Room = ({ roomName, room, handleLogout }) => {
         justifyContent="center"
         alignItems="center"
       >
+        <ChatCorner identity={room.localParticipant.identity} roomname={roomName}/>
         <div className="local-participant">
           {room ? (
             <Participant

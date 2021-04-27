@@ -9,6 +9,7 @@ import AdminHeader from "./headers/AdminHeader";
 import CallChart from './charts/CallChart';
 import FeedbackChart from './charts/FeedbackChart';
 import StuffTable from './charts/StuffTable';
+import ChatCorner from "../../components/VideoCalls/ChatCorner";
 import { 
   getCalls,
   getCallsPerCompany,
