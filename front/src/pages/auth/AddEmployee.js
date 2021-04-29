@@ -33,6 +33,8 @@ const AddEmployee = () => {
                     setShowError(errorUi[key]);
                     break;
                 }
+            } else {
+                setShowError("");
             }
         }
     }, [error, errorUi]);

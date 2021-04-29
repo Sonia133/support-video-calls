@@ -49,6 +49,8 @@ const Profile = () => {
                 setShowError(error[key]);
                 break;
             }
+        } else {
+            setShowError("");
         }
     }, [error])
 

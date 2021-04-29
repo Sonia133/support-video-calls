@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import Participant from "./Participant";
 import CallEndIcon from '@material-ui/icons/CallEnd';
 import ChatCorner from "./ChatCorner";
+import Game from "./Game";
 
 const Room = ({ roomName, room, handleLogout }) => {
   const [participants, setParticipants] = useState([]);
@@ -14,16 +15,12 @@ const Room = ({ roomName, room, handleLogout }) => {
   const [audio, setAudio] = useState(true);
   const [video, setVideo] = useState(true);
   const [shareScreen, setShareScreen] = useState(false);
-
-  const [showError, setShowError] = useState("");
+  const [eodError, setEodError] = useState("");
 
   useEffect(() => {
-      if (error) {
-          for(let key in error) {
-              setShowError(error[key]);
-              break;
-          }
-      }
+    if (error && error.hours) {
+      setEodError(error.hours);
+    }
   }, [error])
 
   useEffect(() => {
@@ -103,14 +100,9 @@ const Room = ({ roomName, room, handleLogout }) => {
           )}
         </div>
         <div>
-          {showError !== "" && (
-            <Box style={{ backgroundColor: "whitesmoke", borderRadius: "2%", padding: "2%", textAlign: "center" }}>
-              <Typography>{showError}</Typography>
-            </Box>
-          )}
-          {!isLoggedIn && isLoadingEmployee ? <CircularProgress /> : 
-            <div className="remote-participants">{remoteParticipants}</div>
-          }
+          {eodError !== "" && (<p>{eodError}</p>)}
+          {participants.length === 0 && (<Game />)}
+          <div className="remote-participants">{remoteParticipants}</div>
         </div>
       </Box>
       <div style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>

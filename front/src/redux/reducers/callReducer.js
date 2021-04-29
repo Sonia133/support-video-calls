@@ -24,6 +24,7 @@ const CallReducer = (state = initialState, action) => {
     case ActionTypes.CALL.SET_EMPLOYEE:
       return {
         loading: false,
+        error: null,
         ...action.payload,
       };
     case ActionTypes.CALL.LOADING_FEEDBACK:
@@ -49,12 +50,27 @@ const CallReducer = (state = initialState, action) => {
         errorCalls: action.payload,
         loadingCalls: false,
       };
-      case ActionTypes.CALL.SET_ERRORS_FEEDBACK:
-        return {
-          ...state,
-          errorFeedback: action.payload,
-          loadingFeedback: false,
-        };
+    case ActionTypes.CALL.SET_ERRORS_FEEDBACK:
+      return {
+        ...state,
+        errorFeedback: action.payload,
+        loadingFeedback: false,
+      };
+    case ActionTypes.CALL.CLEAR_ERRORS:
+      return {
+        ...state,
+        error: null
+      };
+    case ActionTypes.CALL.CLEAR_ERRORS_CALLS:
+      return {
+        ...state,
+        errorCalls: null
+      };
+    case ActionTypes.CALL.CLEAR_ERRORS_FEEDBACK:
+      return {
+        ...state,
+        errorFeedback: null
+      };
     case ActionTypes.CALL.END_CALL:
       return initialState;
     default:

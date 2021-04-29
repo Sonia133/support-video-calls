@@ -23,6 +23,8 @@ const Feedback = () => {
                 setShowError(error[key]);
                 break;
             }
+        } else {
+            setShowError("");
         }
     }, [error])
 

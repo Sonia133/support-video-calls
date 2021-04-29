@@ -26,7 +26,7 @@ const Home = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.user.authenticated);
-  const { loadingCalls, loadingFeedback, calls, feedback, comments, error: errorCall } = useSelector((state) => state.call);
+  const { loadingCalls, loadingFeedback, calls, feedback, comments, errorCalls, errorFeedback } = useSelector((state) => state.call);
   const { loading: loadingEmployees, error: errorEmployee } = useSelector((state) => state.employee);
   const { loading: loadingCeos, error: errorCeo } = useSelector((state) => state.ceo);
   const [isEmployee, isCeo, isAdmin, firstname, companyName, email, loading, error, boarded] = useSelector((state) => [
@@ -92,7 +92,7 @@ const Home = () => {
             <Box className="big-chart">
               {(loadingCalls || loadingCalls === undefined) && (<CircularProgress />)}
               {(!loadingCalls && loadingCalls !== undefined) && (<CallChart calls={calls}/>)}
-              {!!errorCall?.error && <Typography color="error">{errorCall.error}</Typography>}
+              {!!errorCalls?.error && <Typography color="error">{errorCalls.error}</Typography>}
             </Box>
           )}
           {(boarded || boarded === undefined) && (
@@ -101,12 +101,12 @@ const Home = () => {
                 <h4>Comments</h4>
                 {(loadingCalls || loadingCalls === undefined) && (<CircularProgress />)}
                 {(!loadingCalls && loadingCalls !== undefined) && (<CommentsTable comments={comments}/>)}
-                {!!errorCall?.error && <Typography color="error">{errorCall.error}</Typography>}    
+                {!!errorCalls?.error && <Typography color="error">{errorCalls.error}</Typography>}    
               </Box>
               <Box className="small-chart" style={{ marginTop: "2%" }}>
                 {(loadingFeedback || loadingFeedback === undefined) && (<CircularProgress />)}
                 {(!loadingFeedback && loadingFeedback !== undefined) && (<FeedbackChart feedback={feedback}/>)}
-                {!!errorCall?.error && <Typography color="error">{errorCall.error}</Typography>}
+                {!!errorFeedback?.error && <Typography color="error">{errorFeedback.error}</Typography>}
               </Box>
               {isAdmin && (
                 <Box className="small-chart">

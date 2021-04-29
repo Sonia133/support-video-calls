@@ -51,7 +51,7 @@ const UserReducer = (state = initialState, action) => {
     case ActionTypes.USER.CLEAR_ERRORS:
       return {
         ...state,
-        error: {}
+        error: null
       }
     default:
       return state;

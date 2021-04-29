@@ -82,6 +82,7 @@ export const getCalls = () => (dispatch) => {
   axios.get('/calls')
   .then(({ data }) => {
     dispatch({ type: ActionTypes.CALL.SET_CALLS, payload: groupCalls(data)});
+    dispatch({ type: ActionTypes.CALL.CLEAR_ERRORS_CALLS})
   })
   .catch((err) => {
     console.log(err);
@@ -97,6 +98,7 @@ export const getCallsPerCompany = (companyName) => (dispatch) => {
   axios.get(`/calls/company/${companyName}`)
   .then(({ data }) => {
     dispatch({ type: ActionTypes.CALL.SET_CALLS, payload: groupCalls(data)});
+    dispatch({ type: ActionTypes.CALL.CLEAR_ERRORS_CALLS})
   })
   .catch((err) => {
     console.log(err);
@@ -112,6 +114,7 @@ export const getCallsPerEmployee = (companyName, employeeEmail) => (dispatch) =>
   axios.get(`/calls/employee/${companyName}/${employeeEmail}`)
   .then(({ data }) => {
     dispatch({ type: ActionTypes.CALL.SET_CALLS, payload: groupCalls(data)});
+    dispatch({ type: ActionTypes.CALL.CLEAR_ERRORS_CALLS})
   })
   .catch((err) => {
     console.log(err);
@@ -127,11 +130,12 @@ export const getFeedback = () => (dispatch) => {
   axios.get('/ceos/feedback')
   .then(({ data }) => {
     dispatch({ type: ActionTypes.CALL.SET_FEEDBACK, payload: groupFeedback(data)});
+    dispatch({ type: ActionTypes.CALL.CLEAR_ERRORS_FEEDBACK});
   })
   .catch((err) => {
     console.log(err);
     dispatch({
-      type: ActionTypes.CALL.SET_ERRORS_CALLS,
+      type: ActionTypes.CALL.SET_ERRORS_FEEDBACK,
       payload: err.response?.data,
     });
   });
@@ -142,11 +146,12 @@ export const getFeedbackPerCompany = (companyName) => (dispatch) => {
   axios.get(`/ceo/feedback/${companyName}`)
   .then(({ data }) => {
     dispatch({ type: ActionTypes.CALL.SET_FEEDBACK, payload: groupFeedback(data)});
+    dispatch({ type: ActionTypes.CALL.CLEAR_ERRORS_FEEDBACK})
   })
   .catch((err) => {
     console.log(err);
     dispatch({
-      type: ActionTypes.CALL.SET_ERRORS_CALLS,
+      type: ActionTypes.CALL.SET_ERRORS_FEEDBACK,
       payload: err.response?.data,
     });
   });
@@ -157,6 +162,7 @@ export const getFeedbackPerEmployee = (companyName, employeeEmail) => (dispatch)
   axios.get(`/employee/feedback/${companyName}/${employeeEmail}`)
     .then(({ data }) => {
       dispatch({ type: ActionTypes.CALL.SET_FEEDBACK, payload: groupFeedback(data) });
+      dispatch({ type: ActionTypes.CALL.CLEAR_ERRORS_FEEDBACK})
     })
     .catch((err) => {
       console.log(err);

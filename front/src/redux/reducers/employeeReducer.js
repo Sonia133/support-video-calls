@@ -32,6 +32,11 @@ const CallReducer = (state = initialState, action) => {
         error: action.payload,
         loading: false,
       };
+    case ActionTypes.EMPLOYEE.CLEAR_ERRORS:
+      return {
+        ...state,
+        error: null
+      };
     default:
       return state;
   }

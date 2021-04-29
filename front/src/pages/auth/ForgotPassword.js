@@ -27,6 +27,8 @@ const ForgotPassword = () => {
                 setShowError(error[key]);
                 break;
             }
+        } else {
+            setShowError("");
         }
     }, [error]);
 

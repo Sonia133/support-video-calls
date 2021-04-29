@@ -23,7 +23,7 @@ const UIReducer = (state = initialState, action) => {
     case ActionTypes.UI.CLEAR_ERRORS:
       return {
         ...state,
-        error: {}
+        error: null
       }
     default:
       return state;

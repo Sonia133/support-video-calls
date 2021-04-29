@@ -18,6 +18,8 @@ const Schedule = () => {
                 setShowError(error[key]);
                 break;
             }
+        } else {
+          setShowError("");
         }
     }, [error])
 

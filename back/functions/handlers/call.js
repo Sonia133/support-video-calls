@@ -178,7 +178,7 @@ exports.findEmployee = (req, res) => {
         
       data.forEach((doc) => {
         if (doc.data().schedule.length < day) {
-          return res.status(404).json({ error: "We are sorry, but our hours are done for today. Please come back tomorrow. Have a good day!" });
+          return res.status(404).json({ hours: "We are sorry, but our hours are done for today. Please come back tomorrow. Have a good day!" });
         }
 
         let schedule = doc.data().schedule[day - 1].split("-");
@@ -199,7 +199,7 @@ exports.findEmployee = (req, res) => {
       });
 
       if (endingHours === false) {
-        return res.status(404).json({ error: "We are sorry, but our hours are done for today! Please come back tomorrow. Have a good day!" });
+        return res.status(404).json({ hours: "We are sorry, but our hours are done for today! Please come back tomorrow. Have a good day!" });
       }
 
       return Promise.all(promises);

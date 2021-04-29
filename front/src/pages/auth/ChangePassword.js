@@ -32,6 +32,8 @@ const ChangePassword = () => {
                 setShowError(error[key]);
                 break;
             }
+        } else {
+            setShowError("");
         }
     }, [error]);
 
