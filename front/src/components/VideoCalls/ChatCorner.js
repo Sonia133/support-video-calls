@@ -11,7 +11,7 @@ import {
   ListItemSecondaryAction,
   Tooltip
 } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
+import ChatIcon from '@material-ui/icons/Chat';
 import SendIcon from '@material-ui/icons/Send';
 import socket from "../../socket/index.js";
 import { v4 as uuidv4 } from "uuid";
@@ -73,7 +73,7 @@ const ChatCorner = ({ identity, roomname }) => {
         <Box>
           <Tooltip title="Open chat" placement="top">
             <IconButton onClick={handleDrawerOpen}>
-              <MenuIcon style={{ color: "whitesmoke" }}/>
+              <ChatIcon style={{ color: "whitesmoke" }}/>
             </IconButton>
           </Tooltip>
           <Drawer
@@ -81,16 +81,16 @@ const ChatCorner = ({ identity, roomname }) => {
             open={open}
           >
             <Tooltip title="Close chat" placement="top">
-              <IconButton onClick={handleDrawerOpen} style={{ overflowY: "hidden" }}>
-                <MenuIcon />
+              <IconButton onClick={handleDrawerOpen}>
+                <ChatIcon />
               </IconButton>
             </Tooltip>
-            <div>
-              <List style={{ overflowY: "auto", width: "100%" }} ref={list}>
+            <div style={{ width: "100%" }}>
+              <List style={{ width: "100%", overflowY: "auto" }} ref={list} className="chat">
                 {chatMessages}
               </List>
               <OutlinedInput
-                style={{ marginTop: "2%", width: "100%" }}
+                style={{ marginTop: "2%", width: "100%", overflowY: "hidden" }}
                 value={value}
                 onChange={(event) => setValue(event.target.value)}
                 endAdornment={

@@ -176,7 +176,7 @@ const Profile = () => {
                                 <Typography>No feedback yet.</Typography>
                             )}
                             {role === 'employee' && feedback !== 0 && (
-                                <Typography>Feedback: {feedback}</Typography>
+                                <Typography>Feedback: {feedback.toFixed(2)}</Typography>
                             )}
                         </div>
                     </DialogContentText>

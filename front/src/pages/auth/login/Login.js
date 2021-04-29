@@ -1,11 +1,15 @@
 import {
-    Box,
-    Button,
-    CircularProgress,
-    Grow,
-    TextField,
-    Typography
+  Box,
+  Button,
+  CircularProgress,
+  Grow,
+  TextField,
+  Typography,
+  InputAdornment,
+  IconButton
 } from "@material-ui/core";
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,7 +21,7 @@ const Login = () => {
   const { loading, error, authenticated, role, schedule } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const { register, handleSubmit, errors } = useForm();
-
+  const [showPassword, setShowPassword] = useState(false);
   const [showError, setShowError] = useState("");
 
   useEffect(() => {
@@ -38,6 +42,10 @@ const Login = () => {
       dispatch(changeAvailability({ available: true }));
     }
   }, [authenticated, role]);
+
+  const onToggleVisibility  = () => {
+    setShowPassword(!showPassword);
+  }
 
   const onSubmit = (formData) => {
     dispatch(loginUser(formData));
@@ -76,7 +84,17 @@ const Login = () => {
               inputRef={register({ required: "Password is required" })}
               variant="outlined"
               placeholder="Enter password"
-              type="password"
+              InputProps={{
+                endAdornment: 
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={onToggleVisibility}
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+              }}
+              type={showPassword ? 'text' : 'password'}
               InputLabelProps={{shrink: true }}
             />
             {showError !== "" && (

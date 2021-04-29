@@ -69,6 +69,7 @@ a, p {
 
 .MuiTextField-root {
   margin-bottom: 15px !important;
+  width: 100%;
 }
 
 .profile-image, .static-profile-image {
@@ -178,14 +179,14 @@ h4 {
   justify-content: space-between;
 }
 
-.MuiList-root {
+.chat .MuiList-root {
   padding: 0 !important;
 }
 
-li:first-child {
+.chat li:first-child {
   padding-top: 0;
 }
 
-li:last-child {
+.chat li:last-child {
   padding-bottom: 0;
 }

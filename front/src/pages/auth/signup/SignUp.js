@@ -4,8 +4,12 @@ import {
   CircularProgress,
   TextField,
   Typography,
-  Grow
+  Grow,
+  InputAdornment,
+  IconButton
 } from "@material-ui/core";
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,7 +24,9 @@ const SignUp = () => {
   const dispatch = useDispatch();
   const { register, handleSubmit, errors } = useForm();
   const { token } = useParams();
-  
+  const [showPassword1, setShowPassword1] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
+
   const [showError, setShowError] = useState("");
 
   useEffect(() => {
@@ -38,6 +44,13 @@ const SignUp = () => {
       }
     }
   }, [error, errorUi]);
+
+  const onToggleVisibility1  = () => {
+    setShowPassword1(!showPassword1);
+  }
+  const onToggleVisibility2  = () => {
+    setShowPassword2(!showPassword2);
+  }
 
   const onSubmit = (formData) => {
     console.log(formData);
@@ -111,7 +124,17 @@ const SignUp = () => {
                   name="password"
                   inputRef={register({ required: "Password is required" })}
                   variant="outlined"
-                  type="password"
+                  type={showPassword1 ? 'text' : 'password'}
+                  InputProps={{
+                    endAdornment: 
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={onToggleVisibility1}
+                        >
+                          {showPassword1 ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                  }}
                   InputLabelProps={{shrink: true }}
                 />
                 <TextField
@@ -122,8 +145,18 @@ const SignUp = () => {
                   inputRef={register({
                     required: "Confirming your password is required"
                   })}
+                  InputProps={{
+                    endAdornment: 
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={onToggleVisibility2}
+                        >
+                          {showPassword2 ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                  }}
                   variant="outlined"
-                  type="password"
+                  type={showPassword2 ? 'text' : 'password'}
                   InputLabelProps={{shrink: true }}
                 />
                 {showError !== "" && <Typography color="error">{showError}</Typography>}
