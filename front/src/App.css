@@ -73,14 +73,15 @@ a, p {
 }
 
 .profile-image, .static-profile-image {
-  width: 40%;
-  height: 40%;
+  width: 30%;
+  height: 30%;
   display: block;
   border-radius: 50%;
   border: groove;
   position: relative;
   box-shadow: 0 15px 35px rgba(50,50,93,.1),0 5px 15px rgba(0,0,0,.07);
-  margin-bottom: 8%;
+  margin-bottom: 6%;
+  margin-top: 2%;
 }
 
 .profile-image:hover {

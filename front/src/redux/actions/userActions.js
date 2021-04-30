@@ -121,10 +121,10 @@ export const updateSchedule = (schedule) => (dispatch) => {
 }
 
 export const changeAvailability = (userData) => (dispatch) => {
-  dispatch({ type: ActionTypes.USER.LOADING_USER });
+  dispatch({ type: ActionTypes.USER.LOADING_AVAILABILITY });
   axios.post('/employee/changeAvailability', userData)
   .then(() => {
-    dispatch(getUserData());
+    dispatch(getUserAvailability());
   })
   .catch((err) => {
     console.log(err);
@@ -166,12 +166,50 @@ export const getUserData = () => (dispatch) => {
     .catch((err) => console.log(err));
 };
 
+export const getUserImage = () => (dispatch) => {
+  axios
+    .get("/user")
+    .then(({ data }) => {
+      dispatch({ type: ActionTypes.USER.SET_IMAGE, payload: data.imageUrl });
+    })
+    .catch((err) => console.log(err));
+};
+
+export const getUserAvailability = () => (dispatch) => {
+  axios
+    .get("/user")
+    .then(({ data }) => {
+      dispatch({ type: ActionTypes.USER.SET_AVAILABILITY, payload: data.available });
+      if (data.role === "employee") {
+        socket.ref(`calls/${data.email.replace(".", "-")}`).remove();
+        socket.ref(`calls/${data.email.replace(".", "-")}`).set({
+          roomId: "",
+          joinedAt: new Date().toISOString(),
+          isClient: false
+        });
+
+        socket.ref("calls")
+          .once("value", (snapshot) => {
+            let clients = Object.values(snapshot.val()).filter((snapshot) => snapshot.isClient === true);
+            let clientsCompany = clients.filter((client) => client.companyName === data.companyName);
+            clientsCompany.sort((a, b) => {
+              return (a.joinedAt < b.joinedAt) ? -1 : ((a.joinedAt > b.joinedAt) ? 1 : 0); 
+            });
+            if (clientsCompany[0]) {
+              dispatch(findEmployee(clientsCompany[0].roomId, clientsCompany[0].companyName));
+            }
+            return null;
+          })
+      }
+    })
+    .catch((err) => console.log(err));
+};
+
 export const uploadImage = (formData)  => (dispatch) => {
   dispatch({ type: ActionTypes.USER.LOADING_PICTURE });
   axios.post('/updateImage', formData)
-      .then(() => {
-          dispatch({ type: ActionTypes.USER.STOP_LOADING_PICTURE });
-          dispatch(getUserData());
+      .then(({data}) => {
+          dispatch(getUserImage());
       })
       .catch((err) => {
         console.log(err);

@@ -21,6 +21,18 @@ const UserReducer = (state = initialState, action) => {
         loading: false,
         ...action.payload,
       };
+    case ActionTypes.USER.SET_IMAGE:
+      return {
+        ...state,
+        imageUrl: action.payload,
+        loadingPicture: false,
+      };
+    case ActionTypes.USER.SET_AVAILABILITY:
+      return {
+        ...state,
+        available: action.payload,
+        loadingAvailability: false,
+      };
     case ActionTypes.USER.LOADING_USER:
       return {
         ...state,
@@ -35,6 +47,11 @@ const UserReducer = (state = initialState, action) => {
         return {
           ...state,
           loadingPicture: true,
+        };
+      case ActionTypes.USER.LOADING_AVAILABILITY:
+        return {
+          ...state,
+          loadingAvailability: true,
         };
       case ActionTypes.USER.STOP_LOADING_PICTURE:
         return {

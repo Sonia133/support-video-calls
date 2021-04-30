@@ -34,7 +34,7 @@ const Profile = () => {
     const history = useHistory();
     const dispatch = useDispatch();
 
-    const { role, available, loading, imageUrl, loadingPicture, error, companyName, firstname, lastname } = useSelector((state) => state.user)
+    const { role, available, loading, imageUrl, loadingPicture, loadingAvailability, error, companyName, firstname, lastname } = useSelector((state) => state.user)
     const [ isEmployee, schedule, feedback ] = useSelector((state) => [
         state.user.role === 'employee',
         state.user?.schedule,
@@ -184,14 +184,14 @@ const Profile = () => {
                     </DialogContentText>
                     {isEmployee && (
                         <Box style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                            {!loading && (
+                            {!loadingAvailability && (
                                 <Tooltip title={available === true? "Go busy" : "Go available"} placement="right">
                                     <IconButton onClick={onChangeAvailability}>
                                         {!available ? (<EventBusyIcon />) : (<EventAvailableIcon />)}
                                     </IconButton>
                                 </Tooltip>
                             )}
-                            {loading && (<CircularProgress/>)}
+                            {loadingAvailability && (<CircularProgress/>)}
                             <Link onClick={openScheduleEmployee}>{openSchedule ? "Hide" : "See"} schedule</Link>
                             {openSchedule && (
                                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", lineHeight: "0.3"}}>

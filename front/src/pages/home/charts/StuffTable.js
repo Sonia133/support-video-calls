@@ -62,25 +62,27 @@ const StuffTable = () => {
                 ))}
             </TableBody>
         </Table>
-        {user !== undefined && (<Dialog
+        {user !== undefined && (
+          <Dialog
             open={open}
             keepMounted
             onClose={closeProfileDialog}
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
-        >
-          <StaticProfile user={user} />
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <Button 
-              style={{ marginBottom: "5%", marginTop: "5%" }} 
-              onClick={closeProfileDialog} 
-              variant="contained" 
-              color="primary"
-            >
-            Close
-          </Button>
-        </div>
-      </Dialog>)}
+          >
+            <StaticProfile user={user} />
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <Button 
+                style={{ marginBottom: "5%", marginTop: "5%" }} 
+                onClick={closeProfileDialog} 
+                variant="contained" 
+                color="primary"
+              >
+                Close
+              </Button>
+            </div>
+          </Dialog>
+        )}
     </TableContainer>
   );
 };
