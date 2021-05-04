@@ -10,16 +10,25 @@ import Paper from '@material-ui/core/Paper';
 import StaticProfile from "../../../components/Profile/StaticProfile";
 import { Button, Dialog } from "@material-ui/core";
 import { ActionTypes } from "../../../redux/types";
+import { deleteEmployee } from "../../../redux/actions/employeeActions";
+import { deleteCeo } from "../../../redux/actions/ceoActions";
 
-const StuffTable = () => {
-    const { employees } = useSelector((state) => state.employee);
-    const { ceos } = useSelector((state) => state.ceo);
-    const { role } = useSelector((state) => state.user);
-    const [staff, setStaff] = useState([]);
-    const [open, setOpen] = useState(false);
-    const [user, setUser] = useState();
-    const dispatch = useDispatch();
+const StaffTable = () => {
+  const { employees } = useSelector((state) => state.employee);
+  const { ceos } = useSelector((state) => state.ceo);
+  const { role } = useSelector((state) => state.user);
+  const [staff, setStaff] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [user, setUser] = useState();
+  const dispatch = useDispatch();
 
+  const getStaff = () => {
+    if (role === "admin") {
+      setStaff(employees.concat(ceos));
+    } else {
+      setStaff(employees);
+    }
+  }
 
   const clickStaff = (staffMember) => {
     setUser(staffMember);
@@ -32,12 +41,18 @@ const StuffTable = () => {
     dispatch({ type: ActionTypes.USER.CLEAR_ERRORS });
   }
 
-  useEffect(() => {
-    if (role === "admin") {
-      setStaff(employees.concat(ceos));
-    } else {
-      setStaff(employees);
+  const onDeleteStaff = (role, email) => {
+    if (role === "employee") {
+      dispatch(deleteEmployee(email));
+    } else if (role === "ceo") {
+      dispatch(deleteCeo(email));
     }
+
+    closeProfileDialog();
+  }
+
+  useEffect(() => {
+    getStaff();
   }, [employees, ceos]);
 
   return (
@@ -70,10 +85,10 @@ const StuffTable = () => {
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
           >
-            <StaticProfile user={user} />
+            <StaticProfile user={user} deleteStaff={onDeleteStaff}/>
             <div style={{ display: "flex", justifyContent: "center" }}>
               <Button 
-                style={{ marginBottom: "5%", marginTop: "5%" }} 
+                style={{ marginBottom: "5%", marginTop: "1%" }} 
                 onClick={closeProfileDialog} 
                 variant="contained" 
                 color="primary"
@@ -87,4 +102,4 @@ const StuffTable = () => {
   );
 };
 
-export default StuffTable;
+export default StaffTable;

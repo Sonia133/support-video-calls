@@ -2,12 +2,12 @@ import { ActionTypes } from "../types";
 
 const initialState = {};
 
-const CallReducer = (state = initialState, action) => {
+const CeoReducer = (state = initialState, action) => {
   switch (action.type) {
     case ActionTypes.CEO.LOADING:
         return {
-            ...state,
-            loading: true,
+          ...state,
+          loading: true,
         };
     case ActionTypes.CEO.SET_CEOS:
       return {
@@ -17,11 +17,11 @@ const CallReducer = (state = initialState, action) => {
       };
     case ActionTypes.CEO.SET_CEO:
         return {
-            ...state,
-            loading: false,
-            ceo: action.payload,
+          ...state,
+          loading: false,
+          ceo: action.payload,
         };
-    case ActionTypes.EMPLOYEE.DELETE_CEO:
+    case ActionTypes.CEO.DELETE_CEO:
       return {
         ...state,
         ceos: state.ceos.filter((ceo) => ceo.email !== action.payload)
@@ -42,4 +42,4 @@ const CallReducer = (state = initialState, action) => {
   }
 };
 
-export default CallReducer;
+export default CeoReducer;

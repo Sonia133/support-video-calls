@@ -33,8 +33,12 @@ export const getCeo = (ceoEmail) => (dispatch) =>{
 
 export const deleteCeo = (ceoEmail) => (dispatch) => {
     axios.delete(`/ceo/${ceoEmail}`)
-    .then(() => {
-        dispatch({ type: ActionTypes.CEO.DELETE_CEO, payload: ceoEmail });
+    .then(({data}) => {
+      dispatch({ type: ActionTypes.CEO.DELETE_CEO, payload: ceoEmail });
+      data.employeeEmails.forEach((email) => {
+        console.log(email)
+        dispatch({ type: ActionTypes.EMPLOYEE.DELETE_EMPLOYEE, payload: email })
+      })
     })
     .catch((err) => {
         console.log(err);

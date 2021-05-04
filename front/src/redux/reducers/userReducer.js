@@ -26,6 +26,7 @@ const UserReducer = (state = initialState, action) => {
         ...state,
         imageUrl: action.payload,
         loadingPicture: false,
+        error: null
       };
     case ActionTypes.USER.SET_AVAILABILITY:
       return {

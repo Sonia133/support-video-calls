@@ -1,4 +1,4 @@
-const { db, firebase } = require('../util/functions/admin');
+const { db, firebase, admin } = require('../util/functions/admin');
 const { COLLECTION, MAILER, ROLE } = require('../util/constants/constant');
 const config = require('../util/constants/config');
 
@@ -41,6 +41,7 @@ exports.addAdmin = () => {
 exports.deleteCeo = (req, res) => {
     const document = db.doc(`/${COLLECTION.CEO}/${req.params.ceoEmail}`);
     let companyName;
+    let employeeEmails = [];
 
     document.get()
         .then(doc => {
@@ -59,6 +60,7 @@ exports.deleteCeo = (req, res) => {
                 .get()
                 .then(data => {
                     data.forEach(doc => {
+                        employeeEmails.push(doc.data().email);
                         batch.delete(db.doc(`/${COLLECTION.EMPLOYEE}/${doc.data().email}`));
                     })
     
@@ -66,7 +68,10 @@ exports.deleteCeo = (req, res) => {
                 })
         })
         .then(() => {
-            res.json({ message: 'Ceo deleted successfully!' })
+            return admin.auth().deleteUsers([...employeeEmails, ceoEmail]);
+        })
+        .then(() => {
+            res.json({ employeeEmails })
         })
         .catch(err => {
             console.error(err);

@@ -42,6 +42,7 @@ export const sendRegisterRequest = (userData, history) => (dispatch) => {
   axios.post("/requestAccount", userData)
   .then(() => {
     dispatch({ type: ActionTypes.UI.STOP_LOADING_UI });
+    dispatch({ type: ActionTypes.UI.CLEAR_ERRORS })
     if (userData.role === 'employee') {
       history.push('/');
     }
@@ -208,7 +209,22 @@ export const getUserAvailability = () => (dispatch) => {
 export const uploadImage = (formData)  => (dispatch) => {
   dispatch({ type: ActionTypes.USER.LOADING_PICTURE });
   axios.post('/updateImage', formData)
-      .then(({data}) => {
+      .then(() => {
+          dispatch(getUserImage());
+      })
+      .catch((err) => {
+        console.log(err);
+        dispatch({
+          type: ActionTypes.USER.SET_ERRORS,
+          payload: err.response?.data,
+        });
+      });
+}
+
+export const deleteProfilePicture = ()  => (dispatch) => {
+  dispatch({ type: ActionTypes.USER.LOADING_PICTURE });
+  axios.post('/deleteProfilePicture')
+      .then(() => {
           dispatch(getUserImage());
       })
       .catch((err) => {

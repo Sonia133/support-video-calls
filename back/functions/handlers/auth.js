@@ -67,7 +67,7 @@ exports.validateToken = (req, res) => {
     .get()
     .then(doc => {
         if (!doc.exists) {
-            return res.status(404).json({ error: 'Page not found!'} );
+            return res.status(404).json({ inexistent: 'Page not found!'} );
         } else {
             return res.status(201).json({ token });
         }
@@ -140,7 +140,9 @@ exports.signup = (req, res) => {
                 available: false,
                 boarded: false,
                 currentCallId: '',
-                employeeId: userId
+                employeeId: userId,
+                ratedCalls: 0,
+                feedback: 0
             }
         }
 

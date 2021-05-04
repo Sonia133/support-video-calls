@@ -18,8 +18,8 @@ import { signup, validateTokenEnroll } from "../../../redux/actions/userActions"
 
 const SignUp = () => {
   const history = useHistory();
-  const { loading, error: errorUi } = useSelector((state) => state.ui);
-  const { error } = useSelector((state) => state.user);
+  const { loading: loadingUi, error: errorUi } = useSelector((state) => state.ui);
+  const { loading, error } = useSelector((state) => state.user);
   const validatedToken = useSelector((state) => state.user.token);
   const dispatch = useDispatch();
   const { register, handleSubmit, errors } = useForm();
@@ -47,15 +47,14 @@ const SignUp = () => {
     }
   }, [error, errorUi]);
 
-  const onToggleVisibility1  = () => {
+  const onToggleVisibility1 = () => {
     setShowPassword1(!showPassword1);
   }
-  const onToggleVisibility2  = () => {
+  const onToggleVisibility2 = () => {
     setShowPassword2(!showPassword2);
   }
 
   const onSubmit = (formData) => {
-    console.log(formData);
     dispatch(signup(formData, token, history));
   };
 
@@ -72,7 +71,8 @@ const SignUp = () => {
   }, []);
 
   useEffect(() => {
-    if (validatedToken === undefined && loading) {
+    console.log(loading)
+    if (validatedToken === undefined && loadingUi) {
       setRender(<CircularProgress /> );
     } else if (validatedToken !== undefined){
       setRender(
@@ -126,17 +126,17 @@ const SignUp = () => {
                   name="password"
                   inputRef={register({ required: "Password is required" })}
                   variant="outlined"
-                  type={showPassword1 ? 'text' : 'password'}
                   InputProps={{
                     endAdornment: 
                       <InputAdornment position="end">
                         <IconButton
-                          onClick={onToggleVisibility1}
+                          onClick={() => onToggleVisibility1()}
                         >
                           {showPassword1 ? <Visibility /> : <VisibilityOff />}
                         </IconButton>
                       </InputAdornment>
                   }}
+                  type={showPassword1 ? 'text' : 'password'}
                   InputLabelProps={{shrink: true }}
                 />
                 <TextField
@@ -169,11 +169,11 @@ const SignUp = () => {
             </Box>
           </Grow>
         </div>
-        );    
-      } else if (!!error?.inexistent) {
-        setRender(<p style={{color: "#fff"}}>Error 404! Page not found!</p>);
-      }
-  }, [error, loading, validatedToken])
+      );    
+    } else if (!!errorUi?.inexistent) {
+      setRender(<p style={{color: "#fff", marginLeft: "2%" }}>Error 404! Page not found!</p>);
+    }
+  }, [error, errors, errorUi, loading, loadingUi, validatedToken, showPassword1, showPassword2, showError])
 
   return render;
 };

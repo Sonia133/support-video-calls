@@ -47,7 +47,7 @@ const GetStarted = () => {
                 setEnrolled(true);
             }
         }
-    }, [loading])
+    }, [loading, error])
 
     let render;
     if (enrolled) {

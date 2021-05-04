@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { 
     DialogContent, 
     DialogContentText,
@@ -6,12 +7,14 @@ import {
     Box,
     Divider,
     Link,
-    CircularProgress
+    CircularProgress,
+    Button
 } from '@material-ui/core';
 
-const StaticProfile = (props) => {
-    const user = props.user;
-    const role = user.employeeId === undefined ? "ceo" : "employee";
+const StaticProfile = ({user, deleteStaff}) => {
+    const { role } = useSelector((state) => state.user);
+    const userRole = user.employeeId === undefined ? "ceo" : "employee";
+    const email = user.email;
     const [loadPicture, setLoadPicture] = useState("none");
       
     setTimeout(() => {
@@ -31,16 +34,16 @@ const StaticProfile = (props) => {
                 <Divider variant="middle"/>
                 <div className="dialog-text">
                     <Typography>{user.firstname + " " + user.lastname}</Typography>
-                    <Typography>{role + " @ " + user.companyName}</Typography>
-                    {role === 'employee' && user.feedback === 0 && (
+                    <Typography>{userRole + " @ " + user.companyName}</Typography>
+                    {userRole === 'employee' && user.feedback === 0 && (
                         <Typography>No feedback yet.</Typography>
                     )}
-                    {role === 'employee' && user.feedback !== 0 && (
+                    {userRole === 'employee' && user.feedback !== 0 && (
                         <Typography>Feedback: {user.feedback.toFixed(2)}</Typography>
                     )}
                 </div>
             </DialogContentText>
-            {(role === 'employee' && user.schedule.length !== 0) && (
+            {(userRole === 'employee' && user.schedule.length !== 0) && (
                 <Box style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                     <Link onClick={openScheduleEmployee}>{openSchedule ? "Hide" : "See"} schedule</Link>
                     {openSchedule && (
@@ -54,8 +57,18 @@ const StaticProfile = (props) => {
                     )}
                 </Box>
             )}
-            {(role === 'employee' && user.schedule.length === 0) && (
+            {(userRole === 'employee' && user.schedule.length === 0) && (
                 <Typography>This employee has not boarded yet. No schedule avilable!</Typography>
+            )}
+            {role !== "employee" && (
+                <Button
+                    style={{ marginTop: "5%" }} 
+                    onClick={() => deleteStaff(userRole, email)} 
+                    variant="contained" 
+                    color="secondary"
+                >
+                    {`Delete ${userRole}`}
+                </Button>
             )}
         </DialogContent>
     )

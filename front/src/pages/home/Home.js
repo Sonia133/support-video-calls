@@ -8,8 +8,7 @@ import EmployeeHeader from "./headers/EmployeeHeader";
 import AdminHeader from "./headers/AdminHeader";
 import CallChart from './charts/CallChart';
 import FeedbackChart from './charts/FeedbackChart';
-import StuffTable from './charts/StuffTable';
-import ChatCorner from "../../components/VideoCalls/ChatCorner";
+import StaffTable from './charts/StaffTable';
 import { 
   getCalls,
   getCallsPerCompany,
@@ -114,7 +113,7 @@ const Home = () => {
                   {((loadingCeos || loadingEmployees) || (loadingCeos === undefined || loadingEmployees === undefined))
                             && (<CircularProgress />)}
                   {((!loadingCeos && !loadingEmployees) && (loadingCeos !== undefined && loadingEmployees !== undefined))
-                          && (<StuffTable />)}
+                          && (<StaffTable />)}
                   {!!errorEmployee?.error && <Typography color="error">{errorEmployee.error}</Typography>}
                   {!!errorCeo?.error && <Typography color="error">{errorCeo.error}</Typography>}
                 </Box>
@@ -125,7 +124,7 @@ const Home = () => {
                   {(loadingEmployees || loadingEmployees === undefined)
                             && (<CircularProgress />)}
                   {(!loadingEmployees && loadingEmployees !== undefined)
-                          && (<StuffTable />)}
+                          && (<StaffTable />)}
                   {!!errorEmployee?.error && <Typography color="error">{errorEmployee.error}</Typography>}
                   {!!errorCeo?.error && <Typography color="error">{errorCeo.error}</Typography>}
                 </Box>

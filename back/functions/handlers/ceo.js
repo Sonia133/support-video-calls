@@ -1,4 +1,4 @@
-const { db } = require('../util/functions/admin');
+const { db, admin } = require('../util/functions/admin');
 const { COLLECTION } = require('../util/constants/constant');
 
 exports.deleteEmployee = (req, res) => {
@@ -16,6 +16,9 @@ exports.deleteEmployee = (req, res) => {
             } else {
                 return document.delete();
             }
+        })
+        .then(() => {
+            return admin.auth().deleteUser(req.params.employeeEmail);
         })
         .then(() => {
             res.json({ message: 'Employee deleted successfully!' })

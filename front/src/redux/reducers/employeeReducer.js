@@ -2,7 +2,7 @@ import { ActionTypes } from "../types";
 
 const initialState = {};
 
-const CallReducer = (state = initialState, action) => {
+const EmployeeReducer = (state = initialState, action) => {
   switch (action.type) {
     case ActionTypes.EMPLOYEE.LOADING:
       return {
@@ -42,4 +42,4 @@ const CallReducer = (state = initialState, action) => {
   }
 };
 
-export default CallReducer;
+export default EmployeeReducer;

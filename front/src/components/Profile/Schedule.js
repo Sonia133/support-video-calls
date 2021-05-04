@@ -43,7 +43,7 @@ const Schedule = () => {
               className="auth-container single"
           >
             <h2>Add your schedule</h2>
-            <div>
+            <div style={{ display: "flex" }}>
               <TextField
                 error={!!errors['1']?.message}
                 helperText={errors['1']?.message ?? ""}
@@ -65,7 +65,7 @@ const Schedule = () => {
                 type="number"
               />
             </div>
-            <div>
+            <div style={{ display: "flex" }}>
               <TextField
                 error={!!errors['3']?.message}
                 helperText={errors['3']?.message ?? ""}
@@ -87,7 +87,7 @@ const Schedule = () => {
                 type="number"
               />
             </div>
-            <div>
+            <div style={{ display: "flex" }}>
               <TextField
                 error={!!errors['5']?.message}
                 helperText={errors['5']?.message ?? ""}
@@ -109,7 +109,7 @@ const Schedule = () => {
                 type="number"
               />
             </div>
-            <div>
+            <div style={{ display: "flex" }}>
               <TextField
                 error={!!errors['7']?.message}
                 helperText={errors['7']?.message ?? ""}
@@ -131,7 +131,7 @@ const Schedule = () => {
                 type="number"
               />
             </div>
-            <div>
+            <div style={{ display: "flex" }}>
               <TextField
                 error={!!errors['9']?.message}
                 helperText={errors['9']?.message ?? ""}

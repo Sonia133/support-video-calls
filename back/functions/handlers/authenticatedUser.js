@@ -86,3 +86,18 @@ exports.uploadImage = (req, res) => {
   });
   busboy.end(req.rawBody);
 };
+
+exports.deleteProfilePicture = (req, res) => {
+  const noImg = 'no-img.png';
+  const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${noImg}?alt=media`;
+  db
+    .doc(`/${req.user.role}/${req.user.email}`)
+    .update({ imageUrl })
+  .then(() => {
+    return res.json({ message: "Image deleted successfully!" });
+  })
+  .catch((err) => {
+    console.error(err);
+    return res.status(500).json({ error: err.code });
+  });
+}

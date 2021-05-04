@@ -23,13 +23,15 @@ import EventAvailableIcon from '@material-ui/icons/EventAvailable';
 import EventBusyIcon from '@material-ui/icons/EventBusy';
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { logoutUser, uploadImage, changeAvailability } from "../../redux/actions/userActions";
+import { logoutUser, uploadImage, changeAvailability, deleteProfilePicture } from "../../redux/actions/userActions";
 import { ActionTypes } from "../../redux/types";
 
 const Profile = () => {
     const [open, setOpen] = useState(false);
     const [openMenu, setOpenMenu] = useState(false);
     const [openSchedule, setOpenSchedule] = useState(false);
+    const [hasChanged, setHasChanged] = useState(false);
+    const [loadPicture, setLoadPicture] = useState("inline-block");
     const anchorRef = useRef(null);
     const history = useHistory();
     const dispatch = useDispatch();
@@ -42,6 +44,16 @@ const Profile = () => {
     ]);
     
     const [showError, setShowError] = useState("");
+
+    useEffect(() => {
+        if (loadingPicture === false && hasChanged === true) {
+            setLoadPicture("none");
+            setTimeout(() => {
+                setLoadPicture("inline-block");
+                setHasChanged(false);
+            }, 1000);
+        }
+    }, [loadingPicture])
 
     useEffect(() => {
         if (error) {
@@ -104,6 +116,7 @@ const Profile = () => {
         const formData = new FormData();
         formData.append('image', image, image.name);
 
+        setHasChanged(true);
         dispatch(uploadImage(formData));
     };
 
@@ -111,6 +124,12 @@ const Profile = () => {
         const fileInput = document.getElementById('imageInput');
         fileInput.click();
     };
+
+    const onDeleteProfilePicture = () => {
+        setHasChanged(true);
+        dispatch(deleteProfilePicture());
+
+    }
 
     const openScheduleEmployee = () => {
         setOpenSchedule(!openSchedule);
@@ -154,15 +173,20 @@ const Profile = () => {
                 aria-describedby="alert-dialog-slide-description"
             >
                 <DialogContent>
-                    {!loadingPicture && (
-                        <div onClick={onEditPicture} style={{ display: "contents" }}>
-                            <Tooltip placement="top" title="Update Image">
-                                <img src={imageUrl} alt="profile" className="profile-image"/>
-                            </Tooltip>
-                            <input style={{display: 'none'}} type="file" id="imageInput" onChange={onImageChange}></input>
+                    {!loadingPicture && loadPicture !== "none" && (
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "3%"}}>
+                            <div onClick={onEditPicture} style={{ display: "contents" }}>
+                                <Tooltip placement="top" title="Update Image">
+                                    <img src={imageUrl} alt="profile" className="profile-image" style={{ display: loadPicture }}/>
+                                </Tooltip>
+                                <input style={{display: 'none'}} type="file" id="imageInput" onChange={onImageChange}></input>
+                            </div>
+                            <Button onClick={onDeleteProfilePicture} color="secondary" variant="contained">
+                                Delete profile picture
+                            </Button>
                         </div>
                     )}
-                    {loadingPicture && (
+                    {(loadingPicture || loadPicture === "none") && (
                         <div style={{ width: "40%", height: "40%", display: "flex", justifyContent: "center", marginBottom: "3%" }}>
                             <CircularProgress/>
                         </div>
