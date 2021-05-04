@@ -18,7 +18,10 @@ exports.deleteEmployee = (req, res) => {
             }
         })
         .then(() => {
-            return admin.auth().deleteUser(req.params.employeeEmail);
+            return admin.auth().getUserByEmail(req.params.employeeEmail);
+        })
+        .then((user) => {
+            return admin.auth().deleteUser(user.uid);
         })
         .then(() => {
             res.json({ message: 'Employee deleted successfully!' })

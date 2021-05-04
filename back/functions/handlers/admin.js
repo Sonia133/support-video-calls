@@ -42,6 +42,8 @@ exports.deleteCeo = (req, res) => {
     const document = db.doc(`/${COLLECTION.CEO}/${req.params.ceoEmail}`);
     let companyName;
     let employeeEmails = [];
+    let emails = [];
+    let promises = [];
 
     document.get()
         .then(doc => {
@@ -68,7 +70,21 @@ exports.deleteCeo = (req, res) => {
                 })
         })
         .then(() => {
-            return admin.auth().deleteUsers([...employeeEmails, ceoEmail]);
+            emails = [...employeeEmails, ceoEmail];
+            emails.forEach((email) => {
+                promises.push(
+                    admin.auth().getUserByEmail(email)
+                );
+            })
+
+            return Promise.all(promises);
+        })
+        .then((responses) => {
+            responses.forEach((response, index) => {
+                response.data.forEach((user) => {
+                    admin.auth().deleteUser(user.uid);
+                });
+            });
         })
         .then(() => {
             res.json({ employeeEmails })
