@@ -19,14 +19,13 @@ export const validateTokenEnroll = (token) => (dispatch) => {
   })
 }
 
-export const signup = (userData, token, history) => (dispatch) => {
+export const signup = (userData, token) => (dispatch) => {
   dispatch({ type: ActionTypes.USER.LOADING_USER });
   axios.post(`/signup/${token}`, userData)
   .then(({ data }) => {
     localStorage.setItem("FBIdToken", data.token);
     dispatch(getUserData());
     dispatch({ type: ActionTypes.USER.CLEAR_ERRORS });
-    history.push('/');
   })
   .catch((err) => {
     console.log(err);

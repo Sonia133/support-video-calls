@@ -19,7 +19,7 @@ import { signup, validateTokenEnroll } from "../../../redux/actions/userActions"
 const SignUp = () => {
   const history = useHistory();
   const { loading: loadingUi, error: errorUi } = useSelector((state) => state.ui);
-  const { loading, error } = useSelector((state) => state.user);
+  const { loading, error, authenticated } = useSelector((state) => state.user);
   const validatedToken = useSelector((state) => state.user.token);
   const dispatch = useDispatch();
   const { register, handleSubmit, errors } = useForm();
@@ -61,6 +61,12 @@ const SignUp = () => {
   const goLogin = () => {
     history.push("/login");
   }
+
+  useEffect(() => {
+    if (authenticated) {
+      history.push('/');
+    }
+  }, [authenticated])
 
   let renderInitial = <CircularProgress />;
 

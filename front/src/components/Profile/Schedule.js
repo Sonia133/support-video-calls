@@ -36,7 +36,7 @@ const Schedule = () => {
     }
 
     return (
-        <div style={{height: "100%", display: "flex"}}>
+        <div style={{height: "80%", display: "flex"}}>
           <Box
               px={6}
               py={4}

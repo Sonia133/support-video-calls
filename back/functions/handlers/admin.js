@@ -70,7 +70,7 @@ exports.deleteCeo = (req, res) => {
                 })
         })
         .then(() => {
-            emails = [...employeeEmails, ceoEmail];
+            emails = [...employeeEmails, req.params.ceoEmail];
             emails.forEach((email) => {
                 promises.push(
                     admin.auth().getUserByEmail(email)
@@ -81,9 +81,7 @@ exports.deleteCeo = (req, res) => {
         })
         .then((responses) => {
             responses.forEach((response, index) => {
-                response.data.forEach((user) => {
-                    admin.auth().deleteUser(user.uid);
-                });
+                admin.auth().deleteUser(response.uid);
             });
         })
         .then(() => {

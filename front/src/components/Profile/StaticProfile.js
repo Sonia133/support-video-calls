@@ -10,12 +10,14 @@ import {
     CircularProgress,
     Button
 } from '@material-ui/core';
+import { FormatColorReset } from "@material-ui/icons";
 
 const StaticProfile = ({user, deleteStaff}) => {
     const { role } = useSelector((state) => state.user);
     const userRole = user.employeeId === undefined ? "ceo" : "employee";
     const email = user.email;
     const [loadPicture, setLoadPicture] = useState("none");
+    const [onDelete, setOnDelete] = useState(false);
       
     setTimeout(() => {
         setLoadPicture("inline-block");
@@ -60,12 +62,17 @@ const StaticProfile = ({user, deleteStaff}) => {
             {(userRole === 'employee' && user.schedule.length === 0) && (
                 <Typography>This employee has not boarded yet. No schedule avilable!</Typography>
             )}
-            {role !== "employee" && (
+            {(role === "ceo" || (role === "admin" && userRole === "ceo")) && (
                 <Button
                     style={{ marginTop: "5%" }} 
-                    onClick={() => deleteStaff(userRole, email)} 
+                    onClick={() => {
+                        deleteStaff(userRole, email);
+                        setOnDelete(true);
+                        }
+                    } 
                     variant="contained" 
                     color="secondary"
+                    disabled={onDelete}
                 >
                     {`Delete ${userRole}`}
                 </Button>
