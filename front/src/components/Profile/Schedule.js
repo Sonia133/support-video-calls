@@ -36,10 +36,8 @@ const Schedule = () => {
     }
 
     return (
-        <div style={{height: "80%", display: "flex"}}>
+        <div style={{height: "80%", display: "flex" }}>
           <Box
-              px={6}
-              py={4}
               className="auth-container single"
           >
             <h2>Add your schedule</h2>
@@ -156,18 +154,19 @@ const Schedule = () => {
             {showError !== "" && (
                 <Typography color="error">{showError}</Typography>
             )}
-            <Button 
-              onClick={handleSubmit(onSubmitSchedule)} 
-              disabled={loading} 
-              variant="contained" 
-              color="primary"
-              style={{ marginTop: "2%" }}
-            >
-                <Typography>Submit schedule</Typography>
-            </Button>
-            <Button onClick={onLogout} variant="contained" color="secondary" style={{ marginTop: "3%" }}>
-                <Typography>Logout</Typography>
-            </Button>
+            <div className="buttons-container">
+              <Button 
+                onClick={handleSubmit(onSubmitSchedule)} 
+                disabled={loading} 
+                variant="contained" 
+                color="primary"
+              >
+                  <Typography>Submit</Typography>
+              </Button>
+              <Button className="close-button" onClick={onLogout} variant="contained" color="secondary" >
+                  <Typography>Logout</Typography>
+              </Button>
+            </div>
           </Box>
         </div>
     );

@@ -51,11 +51,9 @@ const AddEmployee = () => {
     }
 
     return (
-        <Box style={{height: "100%", display: "flex"}}>
+        <Box style={{height: "100%", display: "flex", justifyContent: "center"}}>
             <Grow in>
                 <Box
-                    px={6}
-                    py={4}
                     className="auth-container single"
                 >
                     <h2>Add an employee</h2>
@@ -71,12 +69,14 @@ const AddEmployee = () => {
                     {showError !== "" && (
                         <Typography color="error">{showError}</Typography>
                     )}
-                    <Button onClick={handleSubmit(onSubmitEmployee)} disabled={loading} variant="contained" color="primary">
-                        {loading ? <CircularProgress /> : <Typography>Submit employee</Typography>}
-                    </Button>
-                    <Button style={{ marginTop: "3%" }} onClick={onClose} variant="contained" color="secondary">
-                        <Typography>Close</Typography>
-                    </Button>
+                    <div className="buttons-container">
+                        <Button onClick={handleSubmit(onSubmitEmployee)} disabled={loading} variant="contained" color="primary">
+                            {loading ? <CircularProgress /> : <Typography>Submit</Typography>}
+                        </Button>
+                        <Button className="close-button" onClick={onClose} variant="contained" color="secondary">
+                            <Typography>Close</Typography>
+                        </Button>
+                    </div>
                 </Box>
             </Grow>
         </Box>

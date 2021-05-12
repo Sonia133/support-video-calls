@@ -71,12 +71,11 @@ const Home = () => {
       {!loading && (
         <Box style={{ width: '93%', height: "90%", display: "flex", flexDirection: "column", justifyContent: "center" }}>
           <Box
-            style={{ height: "12%" }}
             display="flex"
             alignItems="center"
             justifyContent="space-around"
           >
-            <h2 style={{ color: "whitesmoke", marginBottom: "0px", marginTop: "0px" }}>Hi, {firstname}</h2>
+            {(boarded !== null && boarded !== false) && <h2 style={{ color: "whitesmoke", marginBottom: "0px", marginTop: "0px" }}>Hi, {firstname}</h2>}
             {isAdmin && (
               <AdminHeader />
             )}
@@ -95,8 +94,8 @@ const Home = () => {
             </Box>
           )}
           {(boarded || boarded === undefined) && (
-            <Box style={{ height: "43%", display: "flex", justifyContent: "space-between" }}>
-              <Box className="small-chart">
+            <Box className="small-charts-container">
+              <Box className="small-chart table-chart">
                 <h4>Comments</h4>
                 {(loadingCalls || loadingCalls === undefined) && (<CircularProgress />)}
                 {(!loadingCalls && loadingCalls !== undefined) && (<CommentsTable comments={comments}/>)}
@@ -108,7 +107,7 @@ const Home = () => {
                 {!!errorFeedback?.error && <Typography color="error">{errorFeedback.error}</Typography>}
               </Box>
               {isAdmin && (
-                <Box className="small-chart">
+                <Box className="small-chart table-chart last-chart">
                   <h4>Staff</h4>
                   {((loadingCeos || loadingEmployees) || (loadingCeos === undefined || loadingEmployees === undefined))
                             && (<CircularProgress />)}
@@ -119,7 +118,7 @@ const Home = () => {
                 </Box>
               )}
               {!isAdmin && (
-                <Box className="small-chart">
+                <Box className="small-chart table-chart last-chart">
                   <h4>Staff</h4>
                   {(loadingEmployees || loadingEmployees === undefined)
                             && (<CircularProgress />)}

@@ -25,6 +25,28 @@ const ChatCorner = ({ identity, roomname }) => {
 
     const list = useRef();
 
+    const getWindowDimensions = () => {
+      const { innerWidth: width } = window;
+      if (width > 570) {
+        console.log('right')
+        return 'right';
+      }
+
+      return 'bottom';
+    }
+
+    const [anchor, setAnchor] = useState(getWindowDimensions());
+
+    useEffect(() => {
+      function handleResize() {
+        console.log('here')
+        setAnchor(getWindowDimensions());
+      }
+
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     const addMessage = (newMessage) => {
       if (newMessage !== null) {
         console.log(newMessage)
@@ -77,7 +99,7 @@ const ChatCorner = ({ identity, roomname }) => {
             </IconButton>
           </Tooltip>
           <Drawer
-            anchor={'right'}
+            anchor={anchor}
             open={open}
           >
             <Tooltip title="Close chat" placement="top">

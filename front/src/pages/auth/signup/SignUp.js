@@ -85,10 +85,10 @@ const SignUp = () => {
         <div style={{height: "100%", display: "flex"}}>
           <Grow in>
             <Box
-              className="auth-container"
+              className="auth-container signup"
             >
               <Box 
-                className="alternative-auth-box"
+                className="alternative-auth-box alternative-signup-box"
                 p={6}
               >
                 <h1 style={{color: "#fff"}}>Welcome Back!</h1>
@@ -98,9 +98,8 @@ const SignUp = () => {
                   </Button>
               </Box>
               <Box
-                className="auth-box"
+                className="auth-box signup-box"
                 p={6}
-                style={{borderRadius: "0 2% 2% 0"}}
                 display="flex"
                 flexDirection="column"
                 justifyContent="center"

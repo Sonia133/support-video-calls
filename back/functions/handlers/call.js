@@ -177,14 +177,14 @@ exports.findEmployee = (req, res) => {
       let promises = [];
         
       data.forEach((doc) => {
-        if (doc.data().schedule.length < day) {
-          return res.status(404).json({ hours: "We are sorry, but our hours are done for today. Please come back tomorrow. Have a good day!" });
-        }
+        if (doc.data().available === true && doc.data().boarded == true) {
+          if (5 < day) {
+            return res.status(404).json({ hours: "We are sorry, but our hours are done for today. Please come back tomorrow. Have a good day!" });
+          }
 
-        let schedule = doc.data().schedule[day - 1].split("-");
-        if (schedule[0] <= hour && hour <= schedule[1]) {
-          endingHours = true;
-          if (doc.data().available === true && doc.data().boarded == true) {
+          let schedule = doc.data().schedule[day - 1].split("-");
+          if (schedule[0] <= hour && hour <= schedule[1]) {
+            endingHours = true;
             employees.push(doc.data());
 
             promises.push(

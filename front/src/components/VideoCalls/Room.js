@@ -86,6 +86,7 @@ const Room = ({ roomName, room, handleLogout }) => {
         display="flex"
         justifyContent="center"
         alignItems="center"
+        className="video-call-content"
       >
         <ChatCorner identity={room.localParticipant.identity} roomname={roomName}/>
         <div className="local-participant">

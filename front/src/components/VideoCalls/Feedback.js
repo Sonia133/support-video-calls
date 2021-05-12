@@ -47,8 +47,6 @@ const Feedback = () => {
         <div style={{height: "100%", display: "flex"}}>
             {sent && (
                 <Box
-                    px={6}
-                    py={4}
                     className="auth-container single"
                 >
                     <Typography>Thank you for your time! Feedback sent successfully!</Typography>
@@ -56,9 +54,7 @@ const Feedback = () => {
             )}
             {!sent && (
                 <Box
-                    px={6}
-                    py={4}
-                    className="auth-container"
+                    className="auth-container single"
                     style={{background: "#fff"}}
                     display="flex"
                     flexDirection="column"

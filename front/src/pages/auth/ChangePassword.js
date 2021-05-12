@@ -61,8 +61,6 @@ const ChangePassword = () => {
             {(!loadingUi || loadingUi === undefined) && (
                 <Grow in>
                     <Box
-                        px={6}
-                        py={4}
                         className="auth-container single"
                     >
                         <h2>Change your password</h2>
@@ -109,12 +107,14 @@ const ChangePassword = () => {
                         {showError !== "" && (
                             <Typography color="error">{showError}</Typography>
                         )}
-                        <Button onClick={handleSubmit(onSubmit)} disabled={loading} variant="contained" color="primary">
-                            {loading ? <CircularProgress /> : <Typography>Change</Typography>}
-                        </Button>
-                        <Button style={{ marginTop: "3%" }} onClick={onClose} variant="contained" color="secondary">
-                            <Typography>Close</Typography>
-                        </Button>
+                        <div className="buttons-container">
+                            <Button onClick={handleSubmit(onSubmit)} disabled={loading} variant="contained" color="primary">
+                                {loading ? <CircularProgress /> : <Typography>Change</Typography>}
+                            </Button>
+                            <Button className="close-button" onClick={onClose} variant="contained" color="secondary">
+                                <Typography>Close</Typography>
+                            </Button>
+                        </div>
                     </Box>
                 </Grow>
             )}

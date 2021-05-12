@@ -73,9 +73,7 @@ const GetStarted = () => {
             <div style={{height: "100%", display: "flex"}}>
                 <Grow in>
                     <Box
-                        px={6}
-                        py={4}
-                        className="auth-container"
+                        className="auth-container single"
                         style={{background: "#fff"}}
                         display="flex"
                         flexDirection="column"

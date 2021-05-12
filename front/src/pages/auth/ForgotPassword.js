@@ -36,6 +36,10 @@ const ForgotPassword = () => {
         dispatch(forgotPassword(formData, history));
     }
 
+    const onClose = () => {
+        history.push('/login');
+    }
+
     return (
         <Box style={{height: "100%", display: "flex"}}>
             {loadingUi && (
@@ -44,8 +48,6 @@ const ForgotPassword = () => {
             {(!loadingUi || loadingUi === undefined) && (
                 <Grow in>
                     <Box
-                        px={6}
-                        py={4}
                         className="auth-container single"
                     >
                         <h2>Forgot your password?</h2>
@@ -61,9 +63,14 @@ const ForgotPassword = () => {
                         {showError !== "" && (
                             <Typography color="error">{showError}</Typography>
                         )}
-                        <Button onClick={handleSubmit(onSubmit)} disabled={loading} variant="contained" color="primary">
-                            {loading ? <CircularProgress /> : <Typography>Submit</Typography>}
-                        </Button>
+                        <div className="buttons-container">
+                            <Button onClick={handleSubmit(onSubmit)} disabled={loading} variant="contained" color="primary">
+                                {loading ? <CircularProgress /> : <Typography>Submit</Typography>}
+                            </Button>
+                            <Button className="close-button" onClick={onClose} variant="contained" color="secondary">
+                                <Typography>Close</Typography>
+                            </Button>
+                        </div>
                     </Box>
                 </Grow>
             )}

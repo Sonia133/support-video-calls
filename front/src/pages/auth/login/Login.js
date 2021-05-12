@@ -61,12 +61,11 @@ const Login = () => {
     <div style={{height: "100%", display: "flex"}}>
       <Grow in>
         <Box 
-          className="auth-container"
+          className="auth-container login"
         >
           <Box
-            className="auth-box"
+            className="auth-box login-box"
             p={6}
-            style={{borderRadius: "2% 0 0 2%"}}
           >
             <h2>Sign in</h2>
             <TextField
@@ -108,7 +107,7 @@ const Login = () => {
             </Button>
           </Box>
           <Box 
-            className="alternative-auth-box"
+            className="alternative-auth-box alternative-login-box"
             p={6}
           >
             <h1 style={{color: "#fff"}}>Hello, Friend!</h1>

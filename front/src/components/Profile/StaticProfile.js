@@ -29,7 +29,7 @@ const StaticProfile = ({user, deleteStaff}) => {
     }
 
     return (
-        <DialogContent>
+        <DialogContent style={{overflowY:"initial"}}>
             {loadPicture === "none" && <CircularProgress style={{ marginBottom: "5%" }}/>}
             <img src={user.imageUrl} alt="profile" className="static-profile-image" style={{ display: loadPicture }}/>
             <DialogContentText style={{ width: "100%" }}>
