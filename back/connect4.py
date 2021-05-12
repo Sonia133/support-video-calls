@@ -302,8 +302,6 @@ def afis_daca_final(stare_curenta, pozitie):
 
     linie = pozitie // Joc.NR_COLOANE
     coloana = pozitie - (linie * Joc.NR_COLOANE)
-    print(linie)
-    print(coloana)
 
     # sus
     if linie - (Joc.NR_CONNECT - 1) >= 0:
@@ -348,7 +346,10 @@ def afis_daca_final(stare_curenta, pozitie):
             return True
 
     # jos stanga
-    if linie + (Joc.NR_CONNECT - 1) < Joc.NR_LINII and coloana - (Joc.NR_COLOANE - 1) >= 0:
+    if (pozitie == 10 or pozitie == 17 or pozitie == 3):
+            print(tabla_noua[pozitie:pozitie + ((Joc.NR_COLOANE - 1) * (Joc.NR_CONNECT - 1)) + 1:Joc.NR_COLOANE - 1])
+    
+    if linie + (Joc.NR_CONNECT - 1) < Joc.NR_LINII and coloana >= (Joc.NR_CONNECT - 1):
         rez = elem_identice(
             tabla_noua[pozitie:pozitie + ((Joc.NR_COLOANE - 1) * (Joc.NR_CONNECT - 1)) + 1:Joc.NR_COLOANE - 1])
         if rez:
@@ -357,7 +358,9 @@ def afis_daca_final(stare_curenta, pozitie):
             return True
 
     # stanga
-    if coloana - (Joc.NR_COLOANE - 1) >= 0:
+    if coloana >= (Joc.NR_CONNECT - 1):
+        print(tabla_noua[pozitie - 3:pozitie + 1])
+        print(pozitie)
         rez = elem_identice(tabla_noua[pozitie - 3:pozitie + 1])
         if rez:
             print(7)
@@ -365,7 +368,11 @@ def afis_daca_final(stare_curenta, pozitie):
             return True
 
     # stanga sus
+    
     if coloana - (Joc.NR_COLOANE - 1) >= 0 and linie - (Joc.NR_CONNECT - 1) >= 0:
+        if (pozitie == 10 or pozitie == 17 or pozitie == 3):
+            print(tabla_noua[pozitie - ((Joc.NR_COLOANE + 1) * (Joc.NR_CONNECT - 1)):pozitie + 1:Joc.NR_COLOANE + 1])
+        
         rez = elem_identice(
             tabla_noua[pozitie - ((Joc.NR_COLOANE + 1) * (Joc.NR_CONNECT - 1)):pozitie + 1:Joc.NR_COLOANE + 1])
         if rez:
@@ -383,11 +390,9 @@ def afis_daca_final(stare_curenta, pozitie):
 def main():
     # initializare algoritm
     raspuns_valid = False
-    raspuns_valid = False
     Stare.ADANCIME_MAX = 5
 
     [s1, s2] = Joc.SIMBOLURI_JUC.copy()  # lista de simboluri posibile
-    raspuns_valid = False
     while not raspuns_valid:
         Joc.JMIN = str(input("Doriti sa jucati cu {} sau cu {}? ".format(s1, s2))).upper()
         if (Joc.JMIN in Joc.SIMBOLURI_JUC):
@@ -462,6 +467,7 @@ def main():
             stare_curenta.tabla_joc = stare_actualizata.stare_aleasa.tabla_joc
             print("Tabla dupa mutarea calculatorului")
             print(str(stare_curenta))
+            print(stare_curenta.scor)
 
             if (afis_daca_final(stare_curenta, pozitie)):
                 break

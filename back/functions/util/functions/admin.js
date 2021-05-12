@@ -6,5 +6,6 @@ admin.initializeApp();
 const db = admin.firestore();
 
 firebase.initializeApp(config);
+const socket = firebase.database();
 
-module.exports = { admin, db, firebase };
+module.exports = { admin, db, firebase, socket };

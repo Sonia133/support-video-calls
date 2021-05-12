@@ -15,5 +15,6 @@ exports.COLLECTION = {
     CALL: 'call',
     CEO: 'ceo',
     EMPLOYEE: 'employee',
-    USER: 'user'
+    USER: 'user',
+    GAME: 'game'
 }

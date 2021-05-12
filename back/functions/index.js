@@ -23,6 +23,7 @@ const {
     getFeedback
 } = require('./handlers/call');
 const { videoToken } = require('./handlers/video');
+const { createGame, playGame } = require('./handlers/connect4');
 
 const FBRequestAuth = require('./util/functions/authValidations/FBRequestAuth');
 const FBAdminAuth = require('./util/functions/authValidations/FBAdminAuth');
@@ -74,5 +75,9 @@ app.get('/ceos/feedback', FBAdminAuth, getFeedback);
 
 // initiate video calls routes
 app.post('/video/token', videoToken);
+
+// game
+app.post('/start/game/:roomId', createGame);
+app.post('/play/:roomId', playGame);
 
 exports.api = functions.region('europe-west1').https.onRequest(app);
