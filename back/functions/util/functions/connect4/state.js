@@ -16,7 +16,7 @@ const moves = (matrix, curr_player, jmin, jmax, depth) => {
     var opponent = opposite_player(curr_player, jmin, jmax);
 
     for (move in poss_moves) {
-        next_moves.push({move: poss_moves[move], player: opponent, depth: depth - 1, score: 0, possible_moves: [], chosen_state: {}});
+        next_moves.push({move: poss_moves[move], player: opponent, depth: depth - 1});
     }
 
     return next_moves;

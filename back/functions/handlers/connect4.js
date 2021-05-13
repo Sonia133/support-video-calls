@@ -21,16 +21,6 @@ exports.createGame = (req, res) => {
             console.log(err)
             return res.status(500).json({ error: err.code });
         });
-
-    // db.doc(`/${COLLECTION.GAME}/${roomId}`)
-    //     .set(initialState)
-    //     .then(() => {
-    //         res.status(200).json({ message: 'Game successfully created.' });
-    //     })
-    //     .catch((err) => {
-    //         console.log(err)
-    //         return res.status(500).json({ error: err.code });
-    //     });
 }
 
 exports.playGame = (req, res) => {
@@ -44,13 +34,9 @@ exports.playGame = (req, res) => {
             if (!snapshot.exists) {
                 return res.status(404).json({ error: 'Game not found!'} );
             }
-            // console.log(snapshot.val())
     
             let [final, state] = play(row, column, snapshot.val(), snapshot.val().jmin, snapshot.val().jmax);
             state.end = final;
-            console.log(state.player)
-
-            // console.log("1", state)
 
             socket.ref(`/${COLLECTION.GAME}/${roomId}`).update(state);
         })

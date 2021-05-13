@@ -15,27 +15,6 @@ const identical_elems = (list) => {
     return false;
 }
 
-const find_three = (list) => {
-    var x = 0;
-    var o = 0;
-
-    for (let i = 0; i < list.length; i++) {
-        if (list[i] === GAME.SYMBOLS[0]) {
-            x += 1;
-        } else if (list[i] === GAME.SYMBOLS[1]) {
-            o += 1;
-        }
-    }
-
-    if (o === 3) {
-        return GAME.SYMBOLS[1];
-    } else if (x === 3) {
-        return GAME.SYMBOLS[0];
-    } else {
-        return false;
-    }
-}
-
 const is_in_matrix = (matrix, chr) => {
     for (let i = 0; i < GAME.ROWS; i++) {
         for (let j = 0; j < GAME.COLUMNS; j++) {
@@ -51,98 +30,134 @@ const is_in_matrix = (matrix, chr) => {
 const intermediate = (matrix) => {
     var rez = false;
 
+    // orizontal
     for (let i = 0; i < GAME.ROWS; i++) {
-        for (let j = 0; j < (GAME.COLUMNS - GAME.NR_CONNECT + 1); j++) {
-            rez = find_three(matrix.slice(i * GAME.COLUMNS + j, i * GAME.COLUMNS + j + GAME.NR_CONNECT))
+        for (let j = 0; j <= (GAME.COLUMNS - GAME.NR_CONNECT + 1); j++) {
+            if (!rez) {
+                rez = identical_elems(matrix.slice(i * GAME.COLUMNS + j, i * GAME.COLUMNS + j + GAME.NR_CONNECT - 1))
+                if (matrix[i * GAME.COLUMNS + j + GAME.NR_CONNECT - 1] !== GAME.TIE) {
+                    rez = false;
+                }
+            }
         }
     }
 
-    if (rez) {
+    // verticala
+    if (!rez) {
         for (let i = 0; i < GAME.COLUMNS; i++) {
-            for (let j = 0; j < (GAME.ROWS - GAME.NR_CONNECT + 1); j++) {
-                let items = [];
-                for (let k = j * GAME.COLUMNS + i; k < j * GAME.COLUMNS + i + GAME.NR_CONNECT * GAME.COLUMNS; k += GAME.COLUMNS) {
-                    items.push(matrix[k]);
-                }
+            for (let j = 0; j <= (GAME.ROWS - GAME.NR_CONNECT + 1); j++) {
+                if (!rez) {
+                    let items = [];
+                    for (let k = j * GAME.COLUMNS + i; k < j * GAME.COLUMNS + i + (GAME.NR_CONNECT - 1) * GAME.COLUMNS; k += GAME.COLUMNS) {
+                        items.push(matrix[k]);
+                    }
 
-                rez = find_three(items);
+                    rez = identical_elems(items);
+                    if (matrix[j * GAME.COLUMNS + i + (GAME.NR_CONNECT - 1) * GAME.COLUMNS] !== GAME.TIE) {
+                        rez = false;
+                    }
+                }
             }
         }
     }
 
-    if (rez) {
-        for (let i = 0; i < (GAME.COLUMNS - GAME.NR_CONNECT + 1); i++) {
-            for (let j = 0; j < (GAME.ROWS - GAME.NR_CONNECT + 1); j++) {
-                let items = [];
-                for (let k = j * GAME.COLUMNS + i; k < j * GAME.COLUMNS + i + GAME.NR_CONNECT * GAME.COLUMNS; k += (GAME.COLUMNS + 1)) {
-                    items.push(matrix[k]);
-                }
+    // diagonal st-dr
+    if (!rez) {
+        for (let i = 0; i <= (GAME.COLUMNS - GAME.NR_CONNECT + 1); i++) {
+            for (let j = 0; j <= (GAME.ROWS - GAME.NR_CONNECT + 1); j++) {
+                if (!rez) {
+                    let items = [];
+                    for (let k = j * GAME.COLUMNS + i; k < j * GAME.COLUMNS + i + GAME.NR_CONNECT * GAME.COLUMNS; k += (GAME.COLUMNS + 1)) {
+                        items.push(matrix[k]);
+                    }
 
-                rez = find_three(items);
+                    rez = identical_elems(items);
+                    if (matrix[j * GAME.COLUMNS + i + GAME.NR_CONNECT * GAME.COLUMNS] !== GAME.TIE) {
+                        rez = false;
+                    }
+                }
             }
         }
     }
 
-    if (rez) {
-        for (let i = GAME.COLUMNS - 1; i > (GAME.COLUMNS - GAME.NR_CONNECT); i--) {
-            for (let j = 0; j < (GAME.ROWS - GAME.NR_CONNECT + 1); j++) {
-                let items = [];
-                for (let k = j * GAME.COLUMNS + i; k < j * GAME.COLUMNS + i + GAME.NR_CONNECT * (GAME.COLUMNS - 1); k += (GAME.COLUMNS - 1)) {
-                    items.push(matrix[k]);
-                }
+    // diagonal dr-st
+    if (!rez) {
+        for (let i = GAME.COLUMNS - 1; i >= (GAME.COLUMNS - GAME.NR_CONNECT); i--) {
+            for (let j = 0; j <= (GAME.ROWS - GAME.NR_CONNECT + 1); j++) {
+                if (!rez) {
+                    let items = [];
+                    for (let k = j * GAME.COLUMNS + i; k < j * GAME.COLUMNS + i + (GAME.NR_CONNECT - 1) * (GAME.COLUMNS - 1); k += (GAME.COLUMNS - 1)) {
+                        items.push(matrix[k]);
+                    }
 
-                rez = find_three(items);
+                    rez = identical_elems(items);
+                    if (matrix[j * GAME.COLUMNS + i + (GAME.NR_CONNECT - 1) * (GAME.COLUMNS - 1)] !== GAME.TIE) {
+                        rez = false;
+                    }
+                }
             }
         }
     }
-
+    console.log(rez)
     return rez;
 }
 
 const final = (matrix) => {
     var rez = false;
 
+    // orizontala
     for (let i = 0; i < GAME.ROWS; i++) {
         for (let j = 0; j < (GAME.COLUMNS - GAME.NR_CONNECT + 1); j++) {
-            rez = identical_elems(matrix.slice(i * GAME.COLUMNS + j, i * GAME.COLUMNS + j + GAME.NR_CONNECT))
+            if (!rez) {
+                rez = identical_elems(matrix.slice(i * GAME.COLUMNS + j, i * GAME.COLUMNS + j + GAME.NR_CONNECT))
+            }
         }
     }
 
+    // verticala
     if (rez) {
         for (let i = 0; i < GAME.COLUMNS; i++) {
             for (let j = 0; j < (GAME.ROWS - GAME.NR_CONNECT + 1); j++) {
-                let items = [];
-                for (let k = j * GAME.COLUMNS + i; k < j * GAME.COLUMNS + i + GAME.NR_CONNECT * GAME.COLUMNS; k += GAME.COLUMNS) {
-                    items.push(matrix[k]);
+                if (!rez) {
+                    let items = [];
+                    for (let k = j * GAME.COLUMNS + i; k < j * GAME.COLUMNS + i + GAME.NR_CONNECT * GAME.COLUMNS; k += GAME.COLUMNS) {
+                        items.push(matrix[k]);
+                    }
+    
+                    rez = identical_elems(items);
                 }
-
-                rez = identical_elems(items);
             }
         }
     }
 
+    // diagonala st-dr
     if (rez) {
         for (let i = 0; i < (GAME.COLUMNS - GAME.NR_CONNECT + 1); i++) {
             for (let j = 0; j < (GAME.ROWS - GAME.NR_CONNECT + 1); j++) {
-                let items = [];
-                for (let k = j * GAME.COLUMNS + i; k < j * GAME.COLUMNS + i + GAME.NR_CONNECT * GAME.COLUMNS; k += (GAME.COLUMNS + 1)) {
-                    items.push(matrix[k]);
-                }
+                if (!rez) {
+                    let items = [];
+                    for (let k = j * GAME.COLUMNS + i; k < j * GAME.COLUMNS + i + GAME.NR_CONNECT * GAME.COLUMNS; k += (GAME.COLUMNS + 1)) {
+                        items.push(matrix[k]);
+                    }
 
-                rez = identical_elems(items);
+                    rez = identical_elems(items);
+                }
             }
         }
     }
 
+    // diagonala dr-st
     if (rez) {
         for (let i = GAME.COLUMNS - 1; i > (GAME.COLUMNS - GAME.NR_CONNECT); i--) {
             for (let j = 0; j < (GAME.ROWS - GAME.NR_CONNECT + 1); j++) {
-                let items = [];
-                for (let k = j * GAME.COLUMNS + i; k < j * GAME.COLUMNS + i + GAME.NR_CONNECT * (GAME.COLUMNS - 1); k += (GAME.COLUMNS - 1)) {
-                    items.push(matrix[k]);
-                }
+                if (!rez) {
+                    let items = [];
+                    for (let k = j * GAME.COLUMNS + i; k < j * GAME.COLUMNS + i + GAME.NR_CONNECT * (GAME.COLUMNS - 1); k += (GAME.COLUMNS - 1)) {
+                        items.push(matrix[k]);
+                    }
 
-                rez = identical_elems(items);
+                    rez = identical_elems(items);
+                }
             }
         }
     }
@@ -174,12 +189,13 @@ const possible_moves = (matrix, player) => {
 
 const open_intervals = (matrix, player) => {
     let rez = 0;
-    let opponent = player == GAME.SYMBOLS[0] ? GAME.SYMBOLS[1] : GAME.SYMBOLS[0];
+    let opponent = player === GAME.SYMBOLS[0] ? GAME.SYMBOLS[1] : GAME.SYMBOLS[0];
 
+    // orizontala
     for (let i = 0; i < GAME.ROWS; i++) {
         for (let j = 0; j < (GAME.COLUMNS - GAME.NR_CONNECT + 1); j++) {
             let verify = new Set(matrix.slice(i * GAME.COLUMNS + j, i * GAME.COLUMNS + j + GAME.NR_CONNECT));
-            if (verify.length <= 2) {
+            if (verify.size <= 2) {
                 if (!verify.has(opponent)) { 
                     rez += 1;      
                 }
@@ -187,6 +203,7 @@ const open_intervals = (matrix, player) => {
         }
     }
             
+    // verticala
     for (let i = 0; i < GAME.COLUMNS; i++) {
         for (let j = 0; j < (GAME.ROWS - GAME.NR_CONNECT + 1); j++) {
             let items = [];
@@ -194,7 +211,7 @@ const open_intervals = (matrix, player) => {
                 items.push(matrix[k]);
             }
             let verify = new Set(items);
-            if (verify.length <= 2) {
+            if (verify.size <= 2) {
                 if (!verify.has(opponent)) { 
                     rez += 1;      
                 }
@@ -202,6 +219,7 @@ const open_intervals = (matrix, player) => {
         }
     }
 
+    // diagonala st-dr
     for (let i = 0; i < (GAME.COLUMNS - GAME.NR_CONNECT + 1); i++) {
         for (let j = 0; j < (GAME.ROWS - GAME.NR_CONNECT + 1); j++) {
             let items = [];
@@ -209,7 +227,7 @@ const open_intervals = (matrix, player) => {
                 items.push(matrix[k]);
             }
             let verify = new Set(items);
-            if (verify.length <= 2) {
+            if (verify.size <= 2) {
                 if (!verify.has(opponent)) { 
                     rez += 1;      
                 }
@@ -217,6 +235,7 @@ const open_intervals = (matrix, player) => {
         }
     }
 
+    // diagonala dr-st
     for (let i = GAME.COLUMNS - 1; i > (GAME.COLUMNS - GAME.NR_CONNECT); i--) {
         for (let j = 0; j < (GAME.ROWS - GAME.NR_CONNECT + 1); j++) {
             let items = [];
@@ -224,7 +243,7 @@ const open_intervals = (matrix, player) => {
                 items.push(matrix[k]);
             }
             let verify = new Set(items);
-            if (verify.length <= 2) {
+            if (verify.size <= 2) {
                 if (!verify.has(opponent)) { 
                     rez += 1;      
                 }
@@ -240,18 +259,20 @@ const heuristic = (matrix, jmin, jmax) => {
     var opponent = open_intervals(matrix, jmin);
 
     if (player === opponent) {
-        if (opponent === GAME.SYMBOLS[0]) {
+        if (jmin === GAME.SYMBOLS[0]) {
             return -1;
         } else {
             return 0.3;
         }
     } else {
-        return open_intervals(matrix, jmax) - open_intervals(matrix, jmin);
+        // console.log("interv", player - opponent);
+        return player - opponent;
     }
 }
 
 const estimate_score = (matrix, jmin, jmax, depth) => {
     var t_final = final(matrix);
+    // console.log("final", t_final);
     if (t_final === jmax) {
         return (999 + depth);
     } else if (t_final === jmin) {
@@ -260,11 +281,10 @@ const estimate_score = (matrix, jmin, jmax, depth) => {
         return 0;
     } else {
         var t_intermediar = intermediate(matrix);
+        // console.log("interm", t_intermediar);
         if (t_intermediar === jmax) {
-            console.log('here1')
             return (799 + depth);
         } else if (t_intermediar === jmin) {
-            console.log('here2')
             return (-799 - depth);
         } else {
             return heuristic(matrix, jmin, jmax);

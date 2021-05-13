@@ -28,7 +28,6 @@ const ChatCorner = ({ identity, roomname }) => {
     const getWindowDimensions = () => {
       const { innerWidth: width } = window;
       if (width > 570) {
-        console.log('right')
         return 'right';
       }
 

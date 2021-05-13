@@ -5,6 +5,7 @@ const { GAME } = require("../../constants/connect4/game");
 const alpha_beta = (alpha, beta, state, jmin, jmax) => {
     if (state.depth === 0 || final(state.move)) {
         state.score = estimate_score(state.move, jmin, jmax, state.depth);
+        // console.log("depth", state.score);
         return state;
     }
 
@@ -130,7 +131,7 @@ const check_if_final = (state, position) => {
     }
 
     // jos stanga
-    if ((row + (GAME.NR_CONNECT - 1) < GAME.ROWS) && (coloana >= (GAME.NR_CONNECT - 1))) {
+    if ((row + (GAME.NR_CONNECT - 1) < GAME.ROWS) && (column >= (GAME.NR_CONNECT - 1))) {
         let items = [];
         for (let i = position; i < position + ((GAME.COLUMNS - 1) * (GAME.NR_CONNECT - 1)) + 1; i += (GAME.COLUMNS - 1)) {
             items.push(new_table[i]);
@@ -190,7 +191,7 @@ const initiate = (jmin) => {
     console.log(curr_table);
 
     // initiate state
-    var curr_state = {move: curr_table, player: GAME.SYMBOLS[0], depth: GAME.DEPTH, score: 0, possible_moves: [], chosen_state: {}}
+    var curr_state = {move: curr_table, player: GAME.SYMBOLS[0], depth: GAME.DEPTH}
 
     return curr_state;
 }
@@ -207,14 +208,10 @@ const play = (row, column, curr_state, jmin, jmax) => {
         console.log(curr_state.move);
 
         if (check_if_final(curr_state.move, position)) {
-            console.log('here1')
             final = 1;
         }
 
         curr_state.player = opposite_player(curr_state.player, jmin, jmax);
-
-        // update curr state
-
     } else {  // calculatorul e JMAX 
         var updated_state = alpha_beta(-5000, 5000, curr_state, jmin, jmax);
         for (let i = 0; i < (GAME.ROWS * GAME.COLUMNS); i++) {
@@ -229,13 +226,10 @@ const play = (row, column, curr_state, jmin, jmax) => {
         console.log(curr_state.move);
 
         if (check_if_final(curr_state.move, position)) {
-            console.log('here')
             final = 1;
         }
 
         curr_state.player = opposite_player(curr_state.player, jmin, jmax);
-
-        // update curr state
     }
 
     return [final, curr_state];

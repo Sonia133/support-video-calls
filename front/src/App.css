@@ -323,3 +323,29 @@ h4 {
     height: 40% !important;
   }
 }
+
+.game-box {
+  background-color: #3867d6;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 2%;
+  border-radius: 5%;
+  width: 350px;
+  height: 310px;
+}
+
+.game-row {
+  display: flex;
+  width: 350px;
+  height: 50px;
+  justify-content: space-between;
+  padding: 2%;
+}
+
+.game-slot {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: rgb(25, 46, 102);
+  padding: 1%;
+}

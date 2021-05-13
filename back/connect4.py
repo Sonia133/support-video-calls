@@ -169,16 +169,20 @@ class Joc:
         player = self.nr_intervale_deschise(Joc.JMAX)
         opponent = self.nr_intervale_deschise(Joc.JMIN)
 
+        print("player", player)
+
         if player == opponent:
-            if opponent == Joc.SIMBOLURI_JUC[0]:
+            if Joc.JMIN == Joc.SIMBOLURI_JUC[0]:
                 return -1
             else:
                 return 0.3
         else:
+            # print("interv")
             return self.nr_intervale_deschise(Joc.JMAX) - self.nr_intervale_deschise(Joc.JMIN)
 
     def estimeaza_scor(self, adancime):
         t_final = self.final()
+        # print("final", t_final)
         if t_final == Joc.JMAX:
             return (999 + adancime)
         elif t_final == Joc.JMIN:
@@ -187,6 +191,7 @@ class Joc:
             return 0
         else:
             t_intermediar = self.intermediar()
+            # print("interm", t_intermediar)
             if t_intermediar == Joc.JMAX:
                 return (799 + adancime)
             elif t_intermediar == Joc.JMIN:
@@ -254,6 +259,7 @@ class Stare:
 def alpha_beta(alpha, beta, stare):
     if stare.adancime == 0 or stare.tabla_joc.final():
         stare.scor = stare.tabla_joc.estimeaza_scor(stare.adancime)
+        # print("depth", stare.scor)
         return stare
 
     if alpha >= beta:
@@ -346,9 +352,6 @@ def afis_daca_final(stare_curenta, pozitie):
             return True
 
     # jos stanga
-    if (pozitie == 10 or pozitie == 17 or pozitie == 3):
-            print(tabla_noua[pozitie:pozitie + ((Joc.NR_COLOANE - 1) * (Joc.NR_CONNECT - 1)) + 1:Joc.NR_COLOANE - 1])
-    
     if linie + (Joc.NR_CONNECT - 1) < Joc.NR_LINII and coloana >= (Joc.NR_CONNECT - 1):
         rez = elem_identice(
             tabla_noua[pozitie:pozitie + ((Joc.NR_COLOANE - 1) * (Joc.NR_CONNECT - 1)) + 1:Joc.NR_COLOANE - 1])
@@ -412,6 +415,7 @@ def main():
     linie = -1
     coloana = -1
     while True:
+        print("here", stare_curenta.scor)
         if (stare_curenta.j_curent == Joc.JMIN):
             # muta jucatorul
             raspuns_valid = False
@@ -467,7 +471,6 @@ def main():
             stare_curenta.tabla_joc = stare_actualizata.stare_aleasa.tabla_joc
             print("Tabla dupa mutarea calculatorului")
             print(str(stare_curenta))
-            print(stare_curenta.scor)
 
             if (afis_daca_final(stare_curenta, pozitie)):
                 break
