@@ -4,13 +4,25 @@ import {
     IconButton
 } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import { PLAYERS, INSTRUCTIONS, RESULT, NAME } from "../../util/constants/connect4";
+import { INSTRUCTIONS, RESULT, NAME } from "../../util/constants/connect4";
+import { createInitialBoard, addNewMove, restartGame } from "../../redux/actions/gameActions";
+import { useDispatch, useSelector } from "react-redux";
+import socket from "../../socket/index.js";
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 
-const Game = () => {
+const Game = ({ roomId }) => {
+    const dispatch = useDispatch();
+    const { move, player, jmin, jmax, loadingMove, loadingBoard, end } = useSelector((state) => state.game)
+
     const [play, setPlay] = useState(false);
     const [decline, setDecline] = useState(false);
     const [next, setNext] = useState(false);
-    const [value, setValue] = useState(1);
+    const [board, setBoard] = useState([]);
+    const [full, setFull] = useState([false, false, false, false, false, false, false])
+
+    let empty = 'rgb(25, 46, 102)';
+    let ai = 'rgb(255, 255, 0)';
+    let client = 'rgb(255, 0, 0)';
 
     const declineGame = () => {
         setDecline(true);
@@ -18,51 +30,105 @@ const Game = () => {
 
     const acceptGame = () => {
         setNext(true);
-        console.log(play)
     }
 
-    const chooseX = () => {
-        console.log('X');
+    const startGame = () => {
         setPlay(true);
-    }
-    
-    const chooseO = () => {
-        console.log('0');
-        setPlay(true);
+        dispatch(createInitialBoard(roomId, 'X', player));
     }
 
-    let rr = [];
-    for (let i = 0; i < 42; i ++) {
-        rr.push(i);
+    const addMove = (column) => {
+        let row = 0;
+        for (let i = 5; i >= 0; i--) {
+            if (move[i * 7 + column] === '.') {
+                row = i;
+                break;
+            }
+        }
+        console.log(row)
+
+        if (row === 0) {
+            let prevState = full;
+            prevState[column] = true;
+            setFull(prevState);
+        }
+
+        dispatch(addNewMove(roomId, column, row, player, jmin));
     }
 
-    let tt = [];
-    for (let i = 0; i < 36; i += 7) {
-        tt.push(rr.slice(i, i + 7));
+    const restart = () => {
+        dispatch(restartGame(roomId, 'X'));
     }
 
-    let ss = tt.map((t) => {
-        return (<div className="game-row">
-            {t.map((p) => {
-                return (<div className="game-slot"></div>)
-            })}
-        </div>)
-    })
+    useEffect(() => {
+        if (move) {
+            console.log('here')
+            let colors = [];
+            for (let i = 0; i < 42; i++) {
+                if (move[i] === '.') {
+                    colors[i] = empty;
+                } else if (move[i] === jmin) {
+                    colors[i] = client;
+                } else {
+                    colors[i] = ai;
+                }
+            }
+
+            let tt = [];
+            for (let i = 0; i < 36; i += 7) {
+                tt.push(colors.slice(i, i + 7));
+            }
+
+            let ss = tt.map((t, index) => {
+                return (<div className="game-row" key={index + 100}>
+                    {t.map((p, index1) => {
+                        return (<div className="game-slot" key={index1} style={{ backgroundColor: p }}></div>)
+                    })}
+                </div>)
+            })
+
+            setBoard(ss);
+        }
+    }, [move]);
 
     return (
         <div style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
-            {play && (
+            {play && loadingBoard && (
                 <div style={{ display: "flex", alignItems: "center", flexDirection: "column", marginBottom: "30px" }}>
+                    <p style={{ color: "whitesmoke" }}>Game will start any moment...</p>
+                </div>
+            )}
+            {play && (!loadingMove && !loadingBoard) && (
+                <div style={{ display: "flex", alignItems: "center", flexDirection: "column", width: "100%" }}>
                     <p style={{ color: "whitesmoke" }}>Select the column for your next move</p>
-                    <div>
-                        <Button variant="contained" color="primary" style={{ marginRight: "3px" }}>1</Button>
-                        <Button variant="contained" color="primary" style={{ marginRight: "3px" }}>2</Button>
-                        <Button variant="contained" color="primary" style={{ marginRight: "3px" }}>3</Button>
-                        <Button variant="contained" color="primary" style={{ marginRight: "3px" }}>4</Button>
-                        <Button variant="contained" color="primary" style={{ marginRight: "3px" }}>5</Button>
-                        <Button variant="contained" color="primary" style={{ marginRight: "3px" }}>6</Button>
-                        <Button variant="contained" color="primary">7</Button>
+                    <div style={{ display: "flex", width: "100%", justifyContent: "space-around" }}>
+                        <IconButton style={{ marginRight: "3px", color: "whitesmoke" }} onClick={() => addMove(0)} disabled={full[0]}>
+                            <ArrowDownwardIcon className="choose-column" />
+                        </IconButton>
+                        <IconButton style={{ marginRight: "3px", color: "whitesmoke" }} onClick={() => addMove(1)} disabled={full[1]}>
+                            <ArrowDownwardIcon className="choose-column" />
+                        </IconButton>
+                        <IconButton style={{ marginRight: "3px", color: "whitesmoke" }} onClick={() => addMove(2)} disabled={full[2]}>
+                            <ArrowDownwardIcon className="choose-column" />
+                        </IconButton>
+                        <IconButton style={{ marginRight: "3px", color: "whitesmoke" }} onClick={() => addMove(3)} disabled={full[3]}>
+                            <ArrowDownwardIcon className="choose-column" />
+                        </IconButton>
+                        <IconButton style={{ marginRight: "3px", color: "whitesmoke" }} onClick={() => addMove(4)} disabled={full[4]}>
+                            <ArrowDownwardIcon className="choose-column" />
+                        </IconButton>
+                        <IconButton style={{ marginRight: "3px", color: "whitesmoke" }} onClick={() => addMove(5)} disabled={full[5]}>
+                            <ArrowDownwardIcon className="choose-column" />
+                        </IconButton>
+                        <IconButton style={{ color: "whitesmoke" }} onClick={() => addMove(6)} disabled={full[6]}>
+                            <ArrowDownwardIcon className="choose-column" />
+                        </IconButton>
                     </div>
+                </div>
+            )}
+            {play && loadingMove && (
+                <div style={{ display: "flex", alignItems: "center", flexDirection: "column", marginBottom: "30px" }}>
+                    <p style={{ color: "whitesmoke" }}>AI is thinking...</p>
                 </div>
             )}
             <div className="game-box">
@@ -85,17 +151,25 @@ const Game = () => {
                     <div style={{ margin: "auto", padding: "10%"}}>
                         <h3 style={{ textAlign: "center", color: "whitesmoke" }}>{NAME.toUpperCase()}</h3>
                         <p style={{ textAlign: "center", color: "whitesmoke" }}>{INSTRUCTIONS.RULES}</p>
-                        <p style={{ textAlign: "center", color: "whitesmoke", fontWeight: "bold", margin: 0 }}>CHOOSE YOUR PLAYER</p>
                         <div style={{ display: "flex", justifyContent: "center" }}>
-                            <IconButton style={{ marginRight: "10px", color: "whitesmoke" }} onClick={chooseX}>{PLAYERS.X}</IconButton>
-                            <IconButton style={{ color: "whitesmoke" }} onClick={chooseO}>{PLAYERS.O}</IconButton>
+                            <Button variant="contained" onClick={startGame}>PLAY</Button>
                         </div>
                     </div>
                 )}
-                {play && ss}
+                {play && loadingBoard && (
+                    <div style={{ margin: "auto" }}>
+                        <CircularProgress />
+                    </div>
+                )}
+                {play && !loadingBoard && !end && board}
+                {play && !loadingBoard && end && (
+                    <div style={{ margin: "auto", padding: "10%", display: "flex", flexDirection: "column", alignItems: "center"}}>
+                        <p style={{ textAlign: "center", color: "whitesmoke" }}>{player === jmax? "You win!" : "You lose!"}</p>
+                    </div>
+                )}
             </div>
             {play && (
-                <Button variant="contained" color="secondary" style={{ marginTop: "30px" }}>Restart</Button>
+                <Button variant="contained" color="secondary" style={{ marginTop: "30px" }} onClick={restart}>Restart</Button>
             )}
         </div>
     );

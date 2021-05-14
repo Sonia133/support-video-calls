@@ -98,7 +98,6 @@ const intermediate = (matrix) => {
             }
         }
     }
-    console.log(rez)
     return rez;
 }
 
@@ -265,14 +264,12 @@ const heuristic = (matrix, jmin, jmax) => {
             return 0.3;
         }
     } else {
-        // console.log("interv", player - opponent);
         return player - opponent;
     }
 }
 
 const estimate_score = (matrix, jmin, jmax, depth) => {
     var t_final = final(matrix);
-    // console.log("final", t_final);
     if (t_final === jmax) {
         return (999 + depth);
     } else if (t_final === jmin) {
@@ -281,7 +278,6 @@ const estimate_score = (matrix, jmin, jmax, depth) => {
         return 0;
     } else {
         var t_intermediar = intermediate(matrix);
-        // console.log("interm", t_intermediar);
         if (t_intermediar === jmax) {
             return (799 + depth);
         } else if (t_intermediar === jmin) {

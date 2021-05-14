@@ -61,8 +61,11 @@ const alpha_beta = (alpha, beta, state, jmin, jmax) => {
 const check_if_final = (state, position) => {
     new_table = state;
 
-    row = position / GAME.COLUMNS; 
-    column = position - (row * GAME.COLUMN);
+    row = Math.floor(position / GAME.COLUMNS); 
+    column = position - (row * GAME.COLUMNS);
+    console.log(position)
+    console.log(row)
+    console.log(column)
 
     // sus
     if (row - (GAME.NR_CONNECT - 1) >= 0) {
@@ -146,7 +149,9 @@ const check_if_final = (state, position) => {
 
     // stanga
     if (column >= (GAME.NR_CONNECT - 1)) {
+        console.log('q')
         let rez = identical_elems(new_table.slice(position - 3, position + 1));
+        console.log(rez)
         if (rez) {
             console.log("A castigat " + rez);
             return true;
@@ -204,10 +209,11 @@ const play = (row, column, curr_state, jmin, jmax) => {
         var position = row * GAME.COLUMNS + column;
         curr_state.move[position] = jmin;
 
-        console.log("\nTabla dupa mutarea jucatorului");
-        console.log(curr_state.move);
+        // console.log("\nTabla dupa mutarea jucatorului");
+        // console.log(curr_state.move);
 
         if (check_if_final(curr_state.move, position)) {
+            console.log('here1')
             final = 1;
         }
 
@@ -222,10 +228,11 @@ const play = (row, column, curr_state, jmin, jmax) => {
         }
 
         curr_state.move = updated_state.chosen_state.move;
-        console.log("Tabla dupa mutarea calculatorului");
-        console.log(curr_state.move);
+        // console.log("Tabla dupa mutarea calculatorului");
+        // console.log(curr_state.move);
 
         if (check_if_final(curr_state.move, position)) {
+            console.log('here2')
             final = 1;
         }
 

@@ -15,7 +15,7 @@ exports.createGame = (req, res) => {
     socket.ref(`/${COLLECTION.GAME}/${roomId}`)
         .set(initialState)
         .then(() => {
-            res.status(200).json({ message: 'Game successfully created.' });
+            res.status(200).json({ game: initialState });
         })
         .catch((err) => {
             console.log(err)
@@ -28,6 +28,8 @@ exports.playGame = (req, res) => {
     let column = req.body.column;
     let row = req.body.row;
 
+    let response;
+
     socket.ref(`/${COLLECTION.GAME}/${roomId}`)
         .once('value')
         .then((snapshot) => {
@@ -38,10 +40,17 @@ exports.playGame = (req, res) => {
             let [final, state] = play(row, column, snapshot.val(), snapshot.val().jmin, snapshot.val().jmax);
             state.end = final;
 
+            if (state.chosen_state) {
+                state.chosen_state.possible_moves = {};
+                state.chosen_state.chosen_state = {};
+            }
+            state.possible_moves = {};
+
+            response = state;
             socket.ref(`/${COLLECTION.GAME}/${roomId}`).update(state);
         })
         .then(() => {
-            res.status(200).json({ message: 'Game successfully updated.' });
+            res.status(200).json({ game: response });
         })
         .catch((err) => {
             console.log(err)

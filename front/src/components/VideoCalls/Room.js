@@ -102,7 +102,7 @@ const Room = ({ roomName, room, handleLogout }) => {
         </div>
         <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
           {eodError !== "" && (<p style={{ color: "whitesmoke", textAlign: "center"}}>{eodError}</p>)}
-          {eodError === "" && participants.length === 0 && (<Game />)}
+          {eodError === "" && participants.length === 0 && (<Game roomId={roomName}/>)}
           <div className="remote-participants">{remoteParticipants}</div>
         </div>
       </Box>

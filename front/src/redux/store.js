@@ -6,7 +6,7 @@ import CallReducer from "./reducers/callReducer";
 import UIReducer from "./reducers/uiReducer";
 import EmployeeReducer from "./reducers/employeeReducer";
 import CeoReducer from "./reducers/ceoReducer";
-
+import GameReducer from "./reducers/gameReducer";
 
 const initialState = {};
 
@@ -17,7 +17,8 @@ const reducers = combineReducers({
   call: CallReducer,
   ui: UIReducer,
   employee: EmployeeReducer,
-  ceo: CeoReducer
+  ceo: CeoReducer,
+  game: GameReducer
 });
 
 const store = createStore(
