@@ -48,7 +48,6 @@ const ChatCorner = ({ identity, roomname }) => {
 
     const addMessage = (newMessage) => {
       if (newMessage !== null) {
-        console.log(newMessage)
         let messArray = messages;
         messArray.push(newMessage);
 
@@ -64,7 +63,8 @@ const ChatCorner = ({ identity, roomname }) => {
           </ListItem>
         ));
 
-        // list.current.scrollTop = list.current.scrollHeight;
+        console.log(list.current)
+        list.current.scrollTop = list.current.scrollHeight;
       }
     }
 
@@ -77,11 +77,11 @@ const ChatCorner = ({ identity, roomname }) => {
 
     const onMessageSent = () => {
       const newMessage = uuidv4();
-      socket.ref(`messages/${roomname}/${newMessage}`).set({
-        date: new Date(),
-        identity,
-        content: value
-      });
+        socket.ref(`messages/${roomname}/${newMessage}`).set({
+          date: new Date(),
+          identity,
+          content: value
+        });
     
       setValue("");
     }
@@ -101,28 +101,32 @@ const ChatCorner = ({ identity, roomname }) => {
             anchor={anchor}
             open={open}
           >
-            <Tooltip title="Close chat" placement="top">
-              <IconButton onClick={handleDrawerOpen}>
-                <ChatIcon />
-              </IconButton>
-            </Tooltip>
-            <div style={{ width: "100%" }}>
-              <List style={{ width: "100%", overflowY: "auto" }} ref={list} className="chat">
-                {chatMessages}
-              </List>
-              <OutlinedInput
-                style={{ marginTop: "2%", width: "100%", overflowY: "hidden" }}
-                value={value}
-                onChange={(event) => setValue(event.target.value)}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton onClick={onMessageSent}>
-                      <SendIcon />
-                    </IconButton>
-                  </InputAdornment>
-                }
-              />
+            <div>
+              <Tooltip title="Close chat" placement="top">
+                <IconButton onClick={handleDrawerOpen}>
+                  <ChatIcon />
+                </IconButton>
+              </Tooltip>
             </div>
+            <div style={{ overflowY: "auto" }} ref={list}>
+              <div style={{ width: "100%" }}>
+                <List style={{ width: "100%" }} className="chat">
+                  {chatMessages}
+                </List>
+              </div>
+              <OutlinedInput
+                  style={{ marginTop: "2%", width: "100%" }}
+                  value={value}
+                  onChange={(event) => setValue(event.target.value)}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton onClick={onMessageSent} disabled={value === ""}>
+                        <SendIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                />
+              </div>
           </Drawer>
         </Box>
     );

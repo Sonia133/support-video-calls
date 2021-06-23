@@ -1,4 +1,4 @@
-import { Box, Button, TextField } from "@material-ui/core";
+import { Box, Button, TextField, Typography } from "@material-ui/core";
 import React from "react";
 
 const Lobby = ({
@@ -6,6 +6,7 @@ const Lobby = ({
   handleUsernameChange,
   handleSubmit,
   connecting,
+  error
 }) => {
   return (
     <div style={{height: "100%", display: "flex"}}>
@@ -20,7 +21,7 @@ const Lobby = ({
             <TextField
               type="text"
               id="field"
-              label="Email"
+              label="Username"
               value={username}
               onChange={handleUsernameChange}
               required
@@ -28,6 +29,9 @@ const Lobby = ({
               InputLabelProps={{shrink: true }}
             />
           </div>
+          {error === true && (
+              <Typography color="error">Username already taken.</Typography>
+          )}
           <Button type="submit" disabled={connecting} variant="contained" color="primary">
               {connecting ? "Connecting" : "Join"}
           </Button>

@@ -9,13 +9,14 @@ export const findEmployee = (roomName, companyName) => (dispatch) => {
   axios
     .post(`/call/start/${companyName}`, { roomName })
     .then(({ data }) => {
+      console.log(data)
       dispatch({ type: ActionTypes.CALL.SET_EMPLOYEE, payload: data})
       socket.ref(`calls/${data.email.replace(".", "-")}`).update({
         roomId: roomName
       });
     })
     .catch((err) => {
-      console.log(err);
+      console.log(err.response?.data);
       dispatch({
         type: ActionTypes.CALL.SET_ERRORS,
         payload: err.response?.data,

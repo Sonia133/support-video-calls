@@ -19,10 +19,19 @@ const Game = ({ roomId }) => {
     const [next, setNext] = useState(false);
     const [board, setBoard] = useState([]);
     const [full, setFull] = useState([false, false, false, false, false, false, false])
+    const [check, setCheck] = useState(false);
 
     let empty = 'rgb(25, 46, 102)';
     let ai = 'rgb(255, 255, 0)';
     let client = 'rgb(255, 0, 0)';
+
+    useEffect(() => {
+        if (end && play && !loadingBoard) {
+            setCheck(true);
+        } else {
+            setCheck(false);
+        }
+    }, [end, play, loadingBoard])
 
     const declineGame = () => {
         setDecline(true);
@@ -45,7 +54,6 @@ const Game = ({ roomId }) => {
                 break;
             }
         }
-        console.log(row)
 
         if (row === 0) {
             let prevState = full;
@@ -78,14 +86,16 @@ const Game = ({ roomId }) => {
             for (let i = 0; i < 36; i += 7) {
                 tt.push(colors.slice(i, i + 7));
             }
+            console.log(tt)
 
             let ss = tt.map((t, index) => {
-                return (<div className="game-row" key={index + 100}>
+                return (<div className="game-row" key={index + 10}>
                     {t.map((p, index1) => {
                         return (<div className="game-slot" key={index1} style={{ backgroundColor: p }}></div>)
                     })}
                 </div>)
             })
+
 
             setBoard(ss);
         }
@@ -162,7 +172,7 @@ const Game = ({ roomId }) => {
                     </div>
                 )}
                 {play && !loadingBoard && !end && board}
-                {play && !loadingBoard && end && (
+                {check && (
                     <div style={{ margin: "auto", padding: "10%", display: "flex", flexDirection: "column", alignItems: "center"}}>
                         <p style={{ textAlign: "center", color: "whitesmoke" }}>{player === jmax? "You win!" : "You lose!"}</p>
                     </div>

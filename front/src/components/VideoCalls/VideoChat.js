@@ -23,6 +23,7 @@ const VideoChat = () => {
   const [roomName, setRoomName] = useState("");
   const [room, setRoom] = useState(null);
   const [connecting, setConnecting] = useState(false);
+  const [uniqueError, setUniqueError] = useState(false);
 
   const handleUsernameChange = useCallback((event) => {
     setUsername(event.target.value);
@@ -34,48 +35,62 @@ const VideoChat = () => {
   const handleSubmit = useCallback(
     async (event) => {
       event.preventDefault();
-      setConnecting(true);
-      
-      const data = await axios
-        .post("/video/token", { identity: username, room: roomName })
-        .then((res) => res.data);
-      
-      Video.connect(data.token, {
-        name: roomName,
+      setConnecting(true); 
+
+      let error = false;
+
+      await socket.ref(`calls/${username}`)
+      .once("value", (data) => {
+        if (!!data.val()) {
+          console.log(data.val())
+          setUniqueError(true);
+          setConnecting(false);
+          error = true;
+        }
       })
-        .then((room) => {
-          setConnecting(false);
-          setRoom(room);
-        })
-        .then(() => {
-          socket.ref(`calls/${username.replace(".", "-")}`).remove();
-          socket.ref(`calls/${username.replace(".", "-")}`).set({
-            roomId: roomName,
-            joinedAt: new Date().toISOString(),
-            companyName: companyName,
-            isClient: true,
-            inCall: false,
-            hasEnded: false
-          });
 
-          socket
-          .ref(`calls/${username.replace(".", "-")}/hasEnded`)
-          .on("value", (snapshot) => {
-            if (snapshot.val() === true || snapshot.val() === null) {
-              if(!isEmployee) {
-                history.push(`/endcall/${companyName}/${roomName}`);
+      if (!error) {        
+        const data = await axios
+          .post("/video/token", { identity: username, room: roomName })
+          .then((res) => res.data);
+        
+        Video.connect(data.token, {
+          name: roomName,
+        })
+          .then((room) => {
+            setConnecting(false);
+            setRoom(room);
+          })
+          .then(() => {
+            socket.ref(`calls/${username.replace(".", "-")}`).remove();
+            socket.ref(`calls/${username.replace(".", "-")}`).set({
+              roomId: roomName,
+              joinedAt: new Date().toISOString(),
+              companyName: companyName,
+              isClient: true,
+              inCall: false,
+              hasEnded: false
+            });
+
+            socket
+            .ref(`calls/${username.replace(".", "-")}/hasEnded`)
+            .on("value", (snapshot) => {
+              if (snapshot.val() === true || snapshot.val() === null) {
+                if(!isEmployee) {
+                  history.push(`/endcall/${companyName}/${roomName}`);
+                }
               }
-            }
-          });
+            });
 
-          dispatch(findEmployee(roomName, companyName));
-        })
-        .catch((err) => {
-          console.error(err);
-          setConnecting(false);
-        });
+            dispatch(findEmployee(roomName, companyName));
+          })
+          .catch((err) => {
+            console.error(err);
+            setConnecting(false);
+          });
+      }
     },
-    [roomName, username]
+    [roomName, username, uniqueError]
   );
 
   const handleLogout = useCallback(() => {
@@ -187,6 +202,7 @@ const VideoChat = () => {
           handleUsernameChange={handleUsernameChange}
           handleSubmit={handleSubmit}
           connecting={connecting}
+          error={uniqueError}
         />
       );
     }

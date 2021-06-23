@@ -177,34 +177,39 @@ exports.findEmployee = (req, res) => {
     .where("companyName", "==", companyName)
     .get()
     .then((data) => {
+      console.log('wtfffffffffffffffff')
       let endingHours = false;
       let promises = [];
         
       data.forEach((doc) => {
-        let schedule = doc.data().schedule[day - 1].split("-");
-        if (schedule[0] <= hour && hour <= schedule[1]) {
-          endingHours = true;
-          if (doc.data().available === true && doc.data().boarded === true) {
-            employees.push(doc.data());
+        if (doc.data().boarded === true) {
+          let schedule = doc.data().schedule[day - 1].split("-");
+          if (schedule[0] <= hour && hour <= schedule[1]) {
+            endingHours = true;
+            if (doc.data().available === true) {
+              employees.push(doc.data());
 
-            promises.push(
-              db
-                .collection(COLLECTION.CALL)
-                .where("employeeEmail", "==", doc.data().email)
-                .orderBy("createdAt")
-                .get()
-            );
+              promises.push(
+                db
+                  .collection(COLLECTION.CALL)
+                  .where("employeeEmail", "==", doc.data().email)
+                  .orderBy("createdAt")
+                  .get()
+              );
+            }
           }
         }
       });
 
       if (endingHours === false) {
+        console.log('second')
         return res.status(404).json({ hours: "We are sorry, but our hours are done for today! Please come back tomorrow. Have a good day!" });
       }
 
       return Promise.all(promises);
     })
     .then((responses) => {
+      console.log('third')
       responses.forEach((response, index) => {
         if (Array.isArray(response.data)) {
           response.data.forEach((call) => {
@@ -218,11 +223,13 @@ exports.findEmployee = (req, res) => {
         }
       });
 
+      console.log(employees)
       if (employees.length == 0) {
         return res.status(404).json({ error: "Employee not found" });
       }
 
       chosenEmployee = chooseEmployee(employees);
+      console.log(chosenEmployee)
       return db
         .doc(`${COLLECTION.EMPLOYEE}/${chosenEmployee.email}`)
         .update({
