@@ -49,6 +49,7 @@ const Home = () => {
       dispatch(getCallsPerEmployee(companyName, email));
       dispatch(getFeedbackPerEmployee(companyName, email))
       dispatch(getEmployees(companyName));
+      dispatch(getCeos());
     } else if (isAdmin) {
       dispatch(getCalls());
       dispatch(getFeedback());
@@ -58,6 +59,7 @@ const Home = () => {
       dispatch(getCallsPerCompany(companyName));
       dispatch(getFeedbackPerCompany(companyName))
       dispatch(getEmployees(companyName));
+      dispatch(getCeos());
     }
 
   }, [isLoggedIn, isEmployee, isCeo, isAdmin]);

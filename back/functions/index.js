@@ -51,7 +51,7 @@ app.delete('/employee/:employeeEmail', FBCeoAuth, deleteEmployee);
 
 // admin routes
 app.delete('/ceo/:ceoEmail', FBAdminAuth, deleteCeo);
-app.get('/ceos', FBAdminAuth, getCeos);
+app.get('/ceos', getCeos);
 app.get('/ceo/:ceoEmail', FBAdminAuth, getCeo);
 
 // user auth -> common functionality

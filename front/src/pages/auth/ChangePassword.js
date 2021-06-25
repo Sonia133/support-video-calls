@@ -78,7 +78,7 @@ const ChangePassword = () => {
                                     <IconButton
                                       onClick={onToggleVisibility1}
                                     >
-                                      {showPassword1 ? <Visibility /> : <VisibilityOff />}
+                                      {showPassword1 ? <VisibilityOff /> : <Visibility />}
                                     </IconButton>
                                   </InputAdornment>
                             }}
@@ -98,7 +98,7 @@ const ChangePassword = () => {
                                     <IconButton
                                       onClick={onToggleVisibility2}
                                     >
-                                      {showPassword2 ? <Visibility /> : <VisibilityOff />}
+                                      {showPassword2 ? <VisibilityOff /> : <Visibility />}
                                     </IconButton>
                                   </InputAdornment>
                             }}

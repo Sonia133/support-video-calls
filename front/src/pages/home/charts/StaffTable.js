@@ -16,7 +16,7 @@ import { deleteCeo } from "../../../redux/actions/ceoActions";
 const StaffTable = () => {
   const { employees } = useSelector((state) => state.employee);
   const { ceos } = useSelector((state) => state.ceo);
-  const { role } = useSelector((state) => state.user);
+  const { role, companyName } = useSelector((state) => state.user);
   const [staff, setStaff] = useState([]);
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState();
@@ -26,7 +26,8 @@ const StaffTable = () => {
     if (role === "admin") {
       setStaff(employees.concat(ceos));
     } else {
-      setStaff(employees);
+      let myCeo = ceos.filter((ceo) => ceo.companyName === companyName);
+      setStaff(employees.concat(myCeo));
     }
   }
 

@@ -63,8 +63,7 @@ const ChatCorner = ({ identity, roomname }) => {
           </ListItem>
         ));
 
-        console.log(list.current)
-        list.current.scrollTop = list.current.scrollHeight;
+        list.current.scrollTop = list.current.scrollTopMax;
       }
     }
 

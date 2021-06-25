@@ -15,15 +15,22 @@ const VideoChat = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { companyName } = useParams();
-  const [isEmployee, email] = useSelector((state) => [
+  const [isEmployee, email, authenticated] = useSelector((state) => [
     state.user?.role === "employee",
     state.user?.email,
+    state.user?.authenticated
   ]);
   const [username, setUsername] = useState("");
   const [roomName, setRoomName] = useState("");
   const [room, setRoom] = useState(null);
   const [connecting, setConnecting] = useState(false);
   const [uniqueError, setUniqueError] = useState(false);
+
+  useEffect(() => {
+    if (authenticated) {
+      history.push("/");
+    }
+  }, [authenticated]);
 
   const handleUsernameChange = useCallback((event) => {
     setUsername(event.target.value);

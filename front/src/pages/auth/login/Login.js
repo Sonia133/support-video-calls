@@ -91,7 +91,7 @@ const Login = () => {
                     <IconButton
                       onClick={onToggleVisibility}
                     >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
               }}
