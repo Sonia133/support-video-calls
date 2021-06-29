@@ -26,12 +26,6 @@ const VideoChat = () => {
   const [connecting, setConnecting] = useState(false);
   const [uniqueError, setUniqueError] = useState(false);
 
-  useEffect(() => {
-    if (authenticated) {
-      history.push("/");
-    }
-  }, [authenticated]);
-
   const handleUsernameChange = useCallback((event) => {
     setUsername(event.target.value);
     const roomNameUuid = uuidv4();

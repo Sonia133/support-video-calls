@@ -26,8 +26,12 @@ const StaffTable = () => {
     if (role === "admin") {
       setStaff(employees.concat(ceos));
     } else {
-      let myCeo = ceos.filter((ceo) => ceo.companyName === companyName);
-      setStaff(employees.concat(myCeo));
+      if (ceos) {
+        let myCeo = ceos.filter((ceo) => ceo.companyName === companyName);
+        setStaff(employees.concat(myCeo));
+      } else {
+        setStaff(employees);
+      }
     }
   }
 

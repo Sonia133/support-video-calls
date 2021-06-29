@@ -63,7 +63,6 @@ const ChatCorner = ({ identity, roomname }) => {
           </ListItem>
         ));
 
-        list.current.scrollTop = list.current.scrollTopMax;
       }
     }
 
@@ -107,7 +106,7 @@ const ChatCorner = ({ identity, roomname }) => {
                 </IconButton>
               </Tooltip>
             </div>
-            <div style={{ overflowY: "auto" }} ref={list}>
+            <div style={{ overflowY: "auto", width: "100%" }} ref={list}>
               <div style={{ width: "100%" }}>
                 <List style={{ width: "100%" }} className="chat">
                   {chatMessages}

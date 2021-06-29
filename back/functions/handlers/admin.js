@@ -70,6 +70,19 @@ exports.deleteCeo = (req, res) => {
                 })
         })
         .then(() => {
+            const batch = db.batch();
+    
+            return db.collection(COLLECTION.CALL).where('companyName', '==', companyName)
+                .get()
+                .then(data => {
+                    data.forEach(doc => {
+                        batch.delete(db.doc(`/${COLLECTION.CALL}/${doc.id}`));
+                    })
+    
+                    return batch.commit();
+                })
+        })
+        .then(() => {
             emails = [...employeeEmails, req.params.ceoEmail];
             emails.forEach((email) => {
                 promises.push(

@@ -114,7 +114,8 @@ exports.updateSchedule = (req, res) => {
     db.doc(`/${COLLECTION.EMPLOYEE}/${req.user.email}`)
     .update({
         schedule,
-        boarded: true
+        boarded: true,
+        available: true
     })
     .then(() => {
         return db.collection(COLLECTION.CEO).where('companyName', '==', req.user.companyName).get();
